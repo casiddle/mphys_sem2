@@ -58,10 +58,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # Initialize a scaler
 scaler = StandardScaler()
-
 # Fit the scaler on the training data and transform it
 X_train_scaled = scaler.fit_transform(X_train)
-
 # Use the same scaler (don't refit) to scale the test data
 X_test_scaled = scaler.transform(X_test)
 
@@ -205,24 +203,72 @@ all_predictions = np.concatenate(all_predictions, axis=0)
 test_targets = np.concatenate([batch_targets.cpu().numpy() for _, batch_targets in test_dataloader], axis=0)
 #print("True Values (Emittance):", test_targets)
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
-# Assuming `all_predictions` contains the predicted emittance values
-# And `test_targets` contains the actual (true) emittance values
+# # Assuming `all_predictions` contains the predicted emittance values
+# # And `test_targets` contains the actual (true) emittance values
 
-# Create a scatter plot to visualize the predictions vs true values
-plt.figure(figsize=(8, 6))
-plt.scatter(test_targets, all_predictions, color='blue', alpha=0.5)
+# # Create a scatter plot to visualize the predictions vs true values
+# plt.figure(figsize=(8, 6))
+# plt.scatter(test_targets, all_predictions, color='blue', alpha=0.5)
 
-# Adding labels and title
-plt.xlabel("Actual Emittance")
-plt.ylabel("Predicted Emittance")
-plt.title("Actual vs Predicted Emittance")
+# # Adding labels and title
+# plt.xlabel("Actual Emittance")
+# plt.ylabel("Predicted Emittance")
+# plt.title("Actual vs Predicted Emittance")
 
-# Optionally, add a line for perfect predictions (y = x line)
-plt.plot([min(test_targets), max(test_targets)], [min(test_targets), max(test_targets)], color='red', linestyle='--', label="Perfect Prediction")
+# # Optionally, add a line for perfect predictions (y = x line)
+# plt.plot([min(test_targets), max(test_targets)], [min(test_targets), max(test_targets)], color='red', linestyle='--', label="Perfect Prediction")
 
-# Display the plot
-plt.legend()
+# # Display the plot
+# plt.legend()
+# plt.show()
+
+mse=average_loss
+#all_predictions = all_predictions.numpy()
+y_test = y_test.numpy()
+
+x=np.linspace(min(min(all_predictions), min(y_test)),max(max(all_predictions), max(y_test)),100)
+x = x.flatten() # Convert to 1D array
+print("x:",x)
+y_upper = x + np.sqrt(mse)
+y_lower = x - np.sqrt(mse)
+
+y_upper3 = x + np.sqrt(mse)*3
+y_lower3 = x - np.sqrt(mse)*3
+
+x_error=np.linspace(mse,mse,len(all_predictions))
+
+
+# Calculate residuals
+residuals =all_predictions-y_test
+
+# Create figure and GridSpec
+fig = plt.figure(figsize=(12, 10))
+gs = fig.add_gridspec(2, 1, height_ratios=[3, 1], hspace=0.4)
+
+# Main scatter plot
+ax1 = fig.add_subplot(gs[0, 0])
+ax1.scatter(y_test, all_predictions, label="Emittance data", color='tab:blue')
+ax1.plot(x, x, color='k', label=r"$y=\^y$")
+ax1.fill_between(x, y_lower, y_upper, color="red", alpha=0.2, label=r"$\sqrt{\text{MSE}}$")
+ax1.set_ylabel(r"Neural network model prediction for emittance ($\mu m$)", fontsize=14)
+ax1.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
+ax1.set_title(r"Emittance predicted by model vs QV3D simulation", fontsize=16)
+ax1.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.5)
+ax1.legend(fontsize=12)
+ax1.tick_params(axis='both', labelsize=12)
+
+# Residuals plot (in units of sigma)
+ax2 = fig.add_subplot(gs[1, 0])
+ax2.errorbar(y_test, residuals, color='tab:blue', alpha=0.7, fmt='o',label="Residuals")
+
+ax2.axhline(0, color='k', linestyle='--', linewidth=1)
+ax2.axhline(-1,color='r',linestyle='--',linewidth=1)
+ax2.axhline(1,color='r',linestyle='--',linewidth=1)
+ax2.set_ylabel(r"Residuals ($\sigma$)", fontsize=14)
+ax2.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
+ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*residuals/np.sqrt(mse)))))
+
+plt.savefig(r'Machine Learning\Plots\Initial_NN_plot',dpi=250)
 plt.show()
-
