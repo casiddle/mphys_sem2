@@ -51,3 +51,6 @@ for batch_features, batch_targets in dataloader:
     print("Features:", batch_features)
     print("Targets:", batch_targets)
     break  # Check one batch
+
+device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
+print(f"Using {device} device")
