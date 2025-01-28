@@ -112,7 +112,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)  # Adam optimizer with lear
 
 # Step 2: Training Loop
 epochs = 375  # Number of epochs to train
-patience = 10  # number of epochs with no improvement before stopping
+patience = 15  # number of epochs with no improvement before stopping
 epochs_since_improvement = 0  # Initialize counter for early stopping
 # Initialize best_loss with a very large number
 best_loss = float('inf')  # Start with infinity, so any loss will be smaller
