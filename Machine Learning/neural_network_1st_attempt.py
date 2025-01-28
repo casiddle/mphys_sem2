@@ -111,7 +111,12 @@ loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
 optimizer = optim.Adam(model.parameters(), lr=0.001)  # Adam optimizer with learning rate = 0.001
 
 # Step 2: Training Loop
-epochs = 250  # Number of epochs to train
+epochs = 375  # Number of epochs to train
+patience = 10  # number of epochs with no improvement before stopping
+epochs_since_improvement = 0  # Initialize counter for early stopping
+# Initialize best_loss with a very large number
+best_loss = float('inf')  # Start with infinity, so any loss will be smaller
+
 epoch_array=np.empty(0)
 loss_array=np.empty(0)
 for epoch in range(epochs):
@@ -141,6 +146,17 @@ for epoch in range(epochs):
         
         # Update running loss
         running_loss += loss.item()
+
+            # Check if the loss has improved
+    if running_loss < best_loss:
+        best_loss = running_loss
+        epochs_since_improvement = 0
+    else:
+        epochs_since_improvement += 1
+
+    if epochs_since_improvement >= patience:
+        print("Early stopping triggered!")
+        break
     
     # Print loss for every epoch
     print(f"Epoch [{epoch+1}/{epochs}], Loss: {running_loss/len(dataloader)}")
@@ -155,10 +171,10 @@ plt.ylabel('Loss', fontsize=12)
 plt.title('Training Loss vs Epoch', fontsize=14)
 plt.grid(True)
 plt.legend()
-plt.savefig(f'Machine Learning/Plots/Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
+#plt.savefig(f'Machine Learning/Plots/Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
 
 #focus on the last epochs
-no_epochs_focus=70
+no_epochs_focus=100
 
 if len(epoch_array) > no_epochs_focus:
     epoch_array_last = epoch_array[-no_epochs_focus:]  # Slice the last no_epochs_focus epochs
@@ -177,7 +193,6 @@ plt.title(f'Training Loss vs Epoch (Last {no_epochs_focus} Epochs)', fontsize=14
 plt.grid(True)
 plt.legend()
 plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
-
 plt.show()
 
 
