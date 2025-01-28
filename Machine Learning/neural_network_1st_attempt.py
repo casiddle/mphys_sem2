@@ -54,7 +54,7 @@ dataset = EmittanceDataset(X, y)
 dataloader = DataLoader(dataset, batch_size=2, shuffle=True)  # Batch size = 2
 
 # Split data into training and test sets (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=45)
 
 # Initialize a scaler
 scaler = StandardScaler()
@@ -111,7 +111,7 @@ loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
 optimizer = optim.Adam(model.parameters(), lr=0.001)  # Adam optimizer with learning rate = 0.001
 
 # Step 2: Training Loop
-epochs = 120  # Number of epochs to train
+epochs = 250  # Number of epochs to train
 epoch_array=np.empty(0)
 loss_array=np.empty(0)
 for epoch in range(epochs):
@@ -156,10 +156,9 @@ plt.title('Training Loss vs Epoch', fontsize=14)
 plt.grid(True)
 plt.legend()
 plt.savefig(f'Machine Learning/Plots/Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
-plt.show()
 
 #focus on the last epochs
-no_epochs_focus=40
+no_epochs_focus=70
 
 if len(epoch_array) > no_epochs_focus:
     epoch_array_last = epoch_array[-no_epochs_focus:]  # Slice the last no_epochs_focus epochs
@@ -253,7 +252,7 @@ y_test = y_test.numpy()
 
 x=np.linspace(min(min(test_predictions), min(test_targets)),max(max(test_predictions), max(test_targets)),100)
 x = x.flatten() # Convert to 1D array
-print("x:",x)
+#print("x:",x)
 y_upper = x + np.sqrt(mse)
 y_lower = x - np.sqrt(mse)
 
