@@ -111,10 +111,13 @@ loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
 optimizer = optim.Adam(model.parameters(), lr=0.001)  # Adam optimizer with learning rate = 0.001
 
 # Step 2: Training Loop
-epochs = 100  # Number of epochs to train
+epochs = 120  # Number of epochs to train
+epoch_array=np.empty(0)
+loss_array=np.empty(0)
 for epoch in range(epochs):
     model.train()  # Set the model to training mode
     running_loss = 0.0
+    
     
     # Loop over batches of data
     for batch_features, batch_targets in train_dataloader:
@@ -141,6 +144,45 @@ for epoch in range(epochs):
     
     # Print loss for every epoch
     print(f"Epoch [{epoch+1}/{epochs}], Loss: {running_loss/len(dataloader)}")
+    epoch_array=np.append(epoch_array,epoch)
+    loss_array=np.append(loss_array,running_loss/len(dataloader))
+
+# After training is done, plot the results
+plt.figure(figsize=(10, 6))
+plt.plot(epoch_array, loss_array, label='Training Loss', color='tab:blue', marker='o')
+plt.xlabel('Epoch', fontsize=12)
+plt.ylabel('Loss', fontsize=12)
+plt.title('Training Loss vs Epoch', fontsize=14)
+plt.grid(True)
+plt.legend()
+plt.savefig(f'Machine Learning/Plots/Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
+plt.show()
+
+#focus on the last epochs
+no_epochs_focus=40
+
+if len(epoch_array) > no_epochs_focus:
+    epoch_array_last = epoch_array[-no_epochs_focus:]  # Slice the last no_epochs_focus epochs
+    loss_array_last = loss_array[-no_epochs_focus:]    # Slice the corresponding last no_epochs_focus loss values
+else:
+    # If there are fewer than 20 epochs, use all epochs
+    epoch_array_last = epoch_array
+    loss_array_last= loss_array
+
+# Plot the last 2no_epochs_focus epochs
+plt.figure(figsize=(10, 6))
+plt.plot(epoch_array_last, loss_array_last, label='Training Loss', color='tab:blue', marker='o')
+plt.xlabel('Epoch', fontsize=12)
+plt.ylabel('Loss', fontsize=12)
+plt.title(f'Training Loss vs Epoch (Last {no_epochs_focus} Epochs)', fontsize=14)
+plt.grid(True)
+plt.legend()
+plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
+
+plt.show()
+
+
+
 
 # Step 3: Evaluate the model
 # Evaluate the model on a test dataset
@@ -194,7 +236,7 @@ with torch.no_grad():
         all_predictions.append(predictions.cpu().numpy())  # Move to CPU and convert to numpy if needed
 
 # Convert all predictions into a single array
-all_predictions = np.concatenate(all_predictions, axis=0)
+test_predictions = np.concatenate(all_predictions, axis=0)
 
 # Print or store your predictions (e.g., for comparison with actual targets)
 #print("Predictions on the Test Data:", all_predictions)
@@ -203,45 +245,22 @@ all_predictions = np.concatenate(all_predictions, axis=0)
 test_targets = np.concatenate([batch_targets.cpu().numpy() for _, batch_targets in test_dataloader], axis=0)
 #print("True Values (Emittance):", test_targets)
 
-# import matplotlib.pyplot as plt
 
-# # Assuming `all_predictions` contains the predicted emittance values
-# # And `test_targets` contains the actual (true) emittance values
-
-# # Create a scatter plot to visualize the predictions vs true values
-# plt.figure(figsize=(8, 6))
-# plt.scatter(test_targets, all_predictions, color='blue', alpha=0.5)
-
-# # Adding labels and title
-# plt.xlabel("Actual Emittance")
-# plt.ylabel("Predicted Emittance")
-# plt.title("Actual vs Predicted Emittance")
-
-# # Optionally, add a line for perfect predictions (y = x line)
-# plt.plot([min(test_targets), max(test_targets)], [min(test_targets), max(test_targets)], color='red', linestyle='--', label="Perfect Prediction")
-
-# # Display the plot
-# plt.legend()
-# plt.show()
 
 mse=average_loss
 #all_predictions = all_predictions.numpy()
 y_test = y_test.numpy()
 
-x=np.linspace(min(min(all_predictions), min(y_test)),max(max(all_predictions), max(y_test)),100)
+x=np.linspace(min(min(test_predictions), min(test_targets)),max(max(test_predictions), max(test_targets)),100)
 x = x.flatten() # Convert to 1D array
 print("x:",x)
 y_upper = x + np.sqrt(mse)
 y_lower = x - np.sqrt(mse)
 
-y_upper3 = x + np.sqrt(mse)*3
-y_lower3 = x - np.sqrt(mse)*3
-
-x_error=np.linspace(mse,mse,len(all_predictions))
-
+x_error=np.linspace(mse,mse,len(test_predictions))
 
 # Calculate residuals
-residuals =all_predictions-y_test
+residuals =test_predictions-test_targets
 
 # Create figure and GridSpec
 fig = plt.figure(figsize=(12, 10))
@@ -249,7 +268,7 @@ gs = fig.add_gridspec(2, 1, height_ratios=[3, 1], hspace=0.4)
 
 # Main scatter plot
 ax1 = fig.add_subplot(gs[0, 0])
-ax1.scatter(y_test, all_predictions, label="Emittance data", color='tab:blue')
+ax1.scatter(test_targets, test_predictions, label="Emittance data", color='tab:blue')
 ax1.plot(x, x, color='k', label=r"$y=\^y$")
 ax1.fill_between(x, y_lower, y_upper, color="red", alpha=0.2, label=r"$\sqrt{\text{MSE}}$")
 ax1.set_ylabel(r"Neural network model prediction for emittance ($\mu m$)", fontsize=14)
@@ -261,7 +280,7 @@ ax1.tick_params(axis='both', labelsize=12)
 
 # Residuals plot (in units of sigma)
 ax2 = fig.add_subplot(gs[1, 0])
-ax2.errorbar(y_test, residuals, color='tab:blue', alpha=0.7, fmt='o',label="Residuals")
+ax2.errorbar(test_targets, residuals, color='tab:blue', alpha=0.7, fmt='o',label="Residuals")
 
 ax2.axhline(0, color='k', linestyle='--', linewidth=1)
 ax2.axhline(-1,color='r',linestyle='--',linewidth=1)
