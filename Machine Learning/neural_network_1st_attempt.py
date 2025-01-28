@@ -56,15 +56,29 @@ dataloader = DataLoader(dataset, batch_size=2, shuffle=True)  # Batch size = 2
 # Split data into training and test sets (80% train, 20% test)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+# Initialize a scaler
+scaler = StandardScaler()
+
+# Fit the scaler on the training data and transform it
+X_train_scaled = scaler.fit_transform(X_train)
+
+# Use the same scaler (don't refit) to scale the test data
+X_test_scaled = scaler.transform(X_test)
+
+# Convert the scaled data into tensors
+X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32)
+X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
+
+
 # Create training dataset and dataloader
-train_dataset = EmittanceDataset(X_train, y_train)
+train_dataset = EmittanceDataset(X_train_tensor, y_train)
 train_dataloader = DataLoader(train_dataset, batch_size=2, shuffle=True)
 
 # Create test dataset and dataloader
-test_dataset = EmittanceDataset(X_test, y_test)
+test_dataset = EmittanceDataset(X_test_tensor, y_test)
 test_dataloader = DataLoader(test_dataset, batch_size=2, shuffle=False)
 
-for batch_features, batch_targets in dataloader:
+for batch_features, batch_targets in train_dataloader:
     print("Features:", batch_features)
     print("Targets:", batch_targets)
     break  # Check one batch
@@ -91,6 +105,7 @@ class NeuralNetwork(nn.Module): #define custom neural network
         return logits
 
 model = NeuralNetwork().to(device)
+
 print(model)   
 
 # Step 1: Define a loss function and optimizer
