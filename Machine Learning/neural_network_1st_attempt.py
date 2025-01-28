@@ -52,5 +52,26 @@ for batch_features, batch_targets in dataloader:
     print("Targets:", batch_targets)
     break  # Check one batch
 
-device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
+# Check if a GPU (CUDA) is available, otherwise default to CPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Print the device being used
 print(f"Using {device} device")
+
+class NeuralNetwork(nn.Module): #define custom neural network
+    def __init__(self):
+        super().__init__()
+        self.linear_relu_stack = nn.Sequential(
+            nn.Linear(4, 10),
+            nn.ReLU(),
+            nn.Linear(10, 10),
+            nn.ReLU(),
+            nn.Linear(10, 1),
+        )
+
+    def forward(self, x):
+        logits = self.linear_relu_stack(x)
+        return logits
+
+model = NeuralNetwork().to(device)
+print(model)   
