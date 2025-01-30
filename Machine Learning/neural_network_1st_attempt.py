@@ -62,7 +62,7 @@ dataset = EmittanceDataset(X, y)
 dataloader = DataLoader(dataset, batch_size=2, shuffle=True)  # Batch size = 2
 
 # Split data into training and test sets (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=45)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
 
 # Initialize a scaler
 scaler = StandardScaler()
