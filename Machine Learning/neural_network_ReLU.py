@@ -125,10 +125,12 @@ class NeuralNetwork(nn.Module): #define custom neural network
 model = NeuralNetwork().to(device)
 
 print(model)   
-learning_rate=0.001
+learning_rate=0.01
 # Step 1: Define a loss function and optimizer
 loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
+#optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
+#optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
+optimizer = optim.RMSprop(model.parameters(), lr=learning_rate, alpha=0.99)
 
 # Step 2: Training Loop
 epoch_times = [] 
