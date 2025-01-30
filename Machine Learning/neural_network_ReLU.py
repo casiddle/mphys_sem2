@@ -20,26 +20,36 @@ epochs = 375  # Number of epochs to train
 patience = 10  # number of epochs with no improvement before stopping
 batch_no=2 #batch size
 activation_function="ReLU" #activation function- note this string needs to be changed manually
-no_hidden_layers=3 #number of hidden layers - note this number needs to be changed manually
+no_hidden_layers=3 #number of hidden layers 
 learning_rate=0.001
-no_nodes=87 #number of nodes in each hidden layer
+no_nodes=90 #number of nodes in each hidden layer
+input_size=3 #number of input features
 
 
 # Define the neural network class and relative loss and optimiser functions
-class NeuralNetwork(nn.Module): #define custom neural network
-    def __init__(self):
+class NeuralNetwork(nn.Module):  # Define custom neural network
+    def __init__(self, input_size=3, hidden_size=10, num_hidden_layers=3):
         super().__init__()
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear(3, no_nodes),
-            nn.ReLU(),
-            nn.Linear(no_nodes, no_nodes),
-            nn.ReLU(),
-            nn.Linear(no_nodes, no_nodes),
-            nn.ReLU(),
-            nn.Linear(no_nodes, 1),
-        )
+        
+        # Initialize an empty list to hold layers
+        layers = []
+        
+        # First hidden layer (input layer to the first hidden layer)
+        layers.append(nn.Linear(input_size, hidden_size))
+        layers.append(nn.ReLU())  # ReLU activation function
+        
+        # Loop to add the hidden layers
+        for _ in range(num_hidden_layers - 1):  # Subtract 1 since the first hidden layer is already added
+            layers.append(nn.Linear(hidden_size, hidden_size))
+            layers.append(nn.ReLU())  # ReLU activation for each hidden layer
+        
+        # Output layer
+        layers.append(nn.Linear(hidden_size, 1))  # Output layer (single output)
+        
+        # Use Sequential to combine layers
+        self.linear_relu_stack = nn.Sequential(*layers)
 
-    def forward(self, x): #check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    def forward(self, x):
         logits = self.linear_relu_stack(x)
         return logits
 
@@ -48,7 +58,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Print the device being used
 print(f"Using {device} device")
-model = NeuralNetwork().to(device)
+
+model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers).to(device)  # Initialize the model
 loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
 
