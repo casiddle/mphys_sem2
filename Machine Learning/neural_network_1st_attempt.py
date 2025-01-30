@@ -75,14 +75,15 @@ X_test_scaled = scaler.transform(X_test)
 X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32)
 X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
 
+batch_no=2
 
 # Create training dataset and dataloader
 train_dataset = EmittanceDataset(X_train_tensor, y_train)
-train_dataloader = DataLoader(train_dataset, batch_size=2, shuffle=True)
+train_dataloader = DataLoader(train_dataset, batch_size=batch_no, shuffle=True)
 
 # Create test dataset and dataloader
 test_dataset = EmittanceDataset(X_test_tensor, y_test)
-test_dataloader = DataLoader(test_dataset, batch_size=2, shuffle=False)
+test_dataloader = DataLoader(test_dataset, batch_size=batch_no, shuffle=False)
 
 for batch_features, batch_targets in train_dataloader:
     print("Features:", batch_features)
@@ -271,13 +272,14 @@ metrics = {
     'optimiser': type(optimizer).__name__,
     'learning_rate': learning_rate,
     'activation_function': activation_function,
-    'no_hidden_layers': no_hidden_layers  
+    'no_hidden_layers': no_hidden_layers ,
+    'batch_size': batch_no
 }
 
 # Check if the CSV file exists (to decide whether to create or append)
 if save_metrics and not os.path.exists(csv_file_path):
     # If the file doesn't exist, we need to create a new one with column headers
-    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers']
+    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_no']
     # Initialize the CSV file with column names
     training_metrics = []
 else:
