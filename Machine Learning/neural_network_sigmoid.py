@@ -22,25 +22,35 @@ batch_no=2 #batch size
 activation_function="Sigmoid" #activation function- note this string needs to be changed manually
 no_hidden_layers=3 #number of hidden layers - note this number needs to be changed manually
 learning_rate=0.001
-no_nodes=10 #number of nodes in each hidden layer
+no_nodes=81 #number of nodes in each hidden layer
+input_size=3 #number of input features
 
-
+    
 # Define the neural network class and relative loss and optimiser functions
-class NeuralNetwork(nn.Module): #define custom neural network
-    def __init__(self):
+class NeuralNetwork(nn.Module):  # Define custom neural network
+    def __init__(self, input_size=3, hidden_size=10, num_hidden_layers=3, num_ouputs=1):
         super().__init__()
-        self.linear_sigmoid_stack = nn.Sequential(
-            nn.Linear(3, no_nodes),
-            nn.Sigmoid(),
-            nn.Linear(no_nodes, no_nodes),
-            nn.Sigmoid(),
-            nn.Linear(no_nodes, no_nodes),
-            nn.Sigmoid(),
-            nn.Linear(no_nodes, 1),
-        )
+        
+        # Initialize an empty list to hold layers
+        layers = []
+        
+        # First hidden layer (input layer to the first hidden layer)
+        layers.append(nn.Linear(input_size, hidden_size))
+        layers.append(nn.Sigmoid())  # ReLU activation function
+        
+        # Loop to add the hidden layers
+        for _ in range(num_hidden_layers - 1):  # Subtract 1 since the first hidden layer is already added
+            layers.append(nn.Linear(hidden_size, hidden_size))
+            layers.append(nn.Sigmoid())  # RSigmoid activation for each hidden layer
+        
+        # Output layer
+        layers.append(nn.Linear(hidden_size, num_ouputs))  # Output layer (single output)
+        
+        # Use Sequential to combine layers
+        self.linear_relu_stack = nn.Sequential(*layers)
 
-    def forward(self, x): #check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        logits = self.linear_sigmoid_stack(x)
+    def forward(self, x):
+        logits = self.linear_relu_stack(x)
         return logits
 
 # Check if a GPU (CUDA) is available, otherwise default to CPU

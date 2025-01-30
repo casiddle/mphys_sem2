@@ -16,12 +16,12 @@ import os
 save_metrics = True  # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_1_target.csv"
 data_file_path="Data/full_data_set_sem1.csv"
-epochs = 375  # Number of epochs to train
-patience = 10  # number of epochs with no improvement before stopping
+epochs = 250  # Number of epochs to train
+patience = 15  # number of epochs with no improvement before stopping
 batch_no=2 #batch size
-no_hidden_layers=3 #number of hidden layers 
+no_hidden_layers=10 #number of hidden layers 
 learning_rate=0.001
-no_nodes=90 #number of nodes in each hidden layer
+no_nodes=10 #number of nodes in each hidden layer
 input_size=3 #number of input features
 
 activation_function="ReLU" #activation function- note this string needs to be changed manually
