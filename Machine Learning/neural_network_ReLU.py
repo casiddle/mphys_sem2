@@ -22,7 +22,7 @@ batch_no=2 #batch size
 activation_function="ReLU" #activation function- note this string needs to be changed manually
 no_hidden_layers=3 #number of hidden layers - note this number needs to be changed manually
 learning_rate=0.001
-no_nodes=10 #number of nodes in each hidden layer
+no_nodes=27 #number of nodes in each hidden layer
 
 
 # Define the neural network class and relative loss and optimiser functions
@@ -389,6 +389,6 @@ ax2.set_ylabel(r"Residuals ($\sigma$)", fontsize=14)
 ax2.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
 ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*residuals/np.sqrt(mse)))))
 
-plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU',dpi=250)
-plt.show()
+#plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU',dpi=250)
+#plt.show()
 

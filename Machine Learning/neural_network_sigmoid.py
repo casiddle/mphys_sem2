@@ -389,6 +389,6 @@ ax2.set_ylabel(r"Residuals ($\sigma$)", fontsize=14)
 ax2.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
 ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*residuals/np.sqrt(mse)))))
 
-plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU',dpi=250)
-plt.show()
+#plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU',dpi=250)
+#plt.show()
 
