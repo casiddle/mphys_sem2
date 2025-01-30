@@ -15,14 +15,15 @@ import os
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_1_target.csv"
-data_file_path="Data/full_data_set_sem1.csv"
+data_file_path="Data/beam_energy_data_set.csv"
 epochs = 250  # Number of epochs to train
-patience = 15  # number of epochs with no improvement before stopping
+patience = 20  # number of epochs with no improvement before stopping
 batch_no=2 #batch size
 no_hidden_layers=10 #number of hidden layers 
 learning_rate=0.001
 no_nodes=10 #number of nodes in each hidden layer
 input_size=3 #number of input features
+predicted_feature="Beam Energy" #name of the feature to be predicted
 
 activation_function="ReLU" #activation function- note this string needs to be changed manually
 
@@ -60,6 +61,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using {device} device")
 
 model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers).to(device)  # Initialize the model
+print(model)
 loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
 
@@ -94,7 +96,7 @@ df = pd.read_csv(data_file_path)
 df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
 # Separate features and target
 X = df[["UV/X-ray", "R", "Critical Energy"]].values # Features
-y = df["Emittance"].values # Target
+y = df[predicted_feature].values # Target
 
 # Convert to PyTorch tensors
 X = torch.tensor(X, dtype=torch.float32)
@@ -300,13 +302,14 @@ metrics = {
     'activation_function': activation_function,
     'no_hidden_layers': no_hidden_layers ,
     'batch_size': batch_no,
-    'no_nodes': no_nodes    
+    'no_nodes': no_nodes,
+    'predicted_feature': predicted_feature   
 }
 
 # Check if the CSV file exists (to decide whether to create or append)
 if save_metrics and not os.path.exists(csv_file_path):
     # If the file doesn't exist, we need to create a new one with column headers
-    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes']
+    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes','predicted_feature']
     # Initialize the CSV file with column names
     training_metrics = []
 else:
