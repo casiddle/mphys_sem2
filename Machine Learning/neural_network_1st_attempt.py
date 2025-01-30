@@ -234,12 +234,9 @@ plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epoc
 
 #TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Step 3: Evaluate the model
-# Evaluate the model on a test dataset
-# Assuming you have a test DataLoader called `test_dataloader`
+# Evaluate the model on a test dataset to check its performance
 
-
-
-# First, set the model to evaluation mode (turns off dropout, batchnorm, etc.)
+# First, set the model to evaluation mode (turns off dropout, batchnorm, etc.)--- this step very important
 model.eval()
 
 # Initialize variables to keep track of the total loss and number of samples
