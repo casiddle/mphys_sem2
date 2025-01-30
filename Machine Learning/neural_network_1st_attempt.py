@@ -258,6 +258,7 @@ with torch.no_grad():
         
         # Calculate the loss (using the same loss function as in training)
         loss = loss_fn(predictions, batch_targets)
+        print(f"Test Loss: {loss.item():.4f}")
         loss_array=np.append(loss_array,loss.item())
         
         # Accumulate the loss and number of samples
