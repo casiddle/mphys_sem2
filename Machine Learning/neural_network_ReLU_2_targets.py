@@ -22,6 +22,7 @@ batch_no=2 #batch size
 activation_function="ReLU" #activation function- note this string needs to be changed manually
 no_hidden_layers=3 #number of hidden layers - note this number needs to be changed manually
 learning_rate=0.001
+no_nodes=10 #number of nodes in each hidden layer - note this number needs to be changed manually
 
 
 # Define the neural network class and relative loss and optimiser functions
@@ -29,13 +30,13 @@ class NeuralNetwork(nn.Module): #define custom neural network
     def __init__(self):
         super().__init__()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(3, 10),
+            nn.Linear(3, no_nodes),
             nn.ReLU(),
-            nn.Linear(10, 10),
+            nn.Linear(no_nodes, no_nodes),
             nn.ReLU(),
-            nn.Linear(10, 10),
+            nn.Linear(no_nodes, no_nodes),
             nn.ReLU(),
-            nn.Linear(10, 2),
+            nn.Linear(no_nodes, 2),
         )
 
     def forward(self, x): #check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -242,7 +243,6 @@ average_loss = total_loss / num_samples
 loss_error=np.std(loss_array)
 print(f"Test Set Loss: {average_loss:.4f}")
 mse=average_loss
-
 #Save necessary metrics
 metrics = {
     'avg_epoch_time': avg_epoch_time,
@@ -257,13 +257,14 @@ metrics = {
     'learning_rate': learning_rate,
     'activation_function': activation_function,
     'no_hidden_layers': no_hidden_layers ,
-    'batch_size': batch_no
+    'batch_size': batch_no,
+    'no_nodes': no_nodes    
 }
 
 # Check if the CSV file exists (to decide whether to create or append)
 if save_metrics and not os.path.exists(csv_file_path):
     # If the file doesn't exist, we need to create a new one with column headers
-    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_no']
+    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes']
     # Initialize the CSV file with column names
     training_metrics = []
 else:
