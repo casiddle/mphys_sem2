@@ -345,9 +345,6 @@ test_targets = np.concatenate([batch_targets.cpu().numpy() for _, batch_targets 
 
 
 
-#mse=average_loss
-#all_predictions = all_predictions.numpy()
-#y_test = y_test.numpy()
 
 x=np.linspace(min(min(test_predictions), min(test_targets)),max(max(test_predictions), max(test_targets)),100)
 x = x.flatten() # Convert to 1D array
@@ -387,6 +384,6 @@ ax2.set_ylabel(r"Residuals ($\sigma$)", fontsize=14)
 ax2.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
 ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*residuals/np.sqrt(mse)))))
 
-plt.savefig(r'Machine Learning\Plots\NN_plot',dpi=250)
+plt.savefig(r'Machine Learning\Plots\NN_plot_sigmoid',dpi=250)
 #plt.show()
 
