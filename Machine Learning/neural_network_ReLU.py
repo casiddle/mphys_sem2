@@ -22,7 +22,7 @@ batch_no=2 #batch size
 activation_function="ReLU" #activation function- note this string needs to be changed manually
 no_hidden_layers=3 #number of hidden layers - note this number needs to be changed manually
 learning_rate=0.001
-no_nodes=27 #number of nodes in each hidden layer
+no_nodes=87 #number of nodes in each hidden layer
 
 
 # Define the neural network class and relative loss and optimiser functions
@@ -232,7 +232,7 @@ plt.ylabel('Loss', fontsize=12)
 plt.title(f'Training Loss vs Epoch (Last {no_epochs_focus} Epochs)', fontsize=14)
 plt.grid(True)
 plt.legend()
-plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
+#plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
 #plt.show()
 
 
@@ -260,7 +260,7 @@ with torch.no_grad():
         
         # Calculate the loss (using the same loss function as in training)
         loss = loss_fn(predictions, batch_targets)
-        print(f"Test Loss: {loss.item():.4f}")
+        #print(f"Test Loss: {loss.item():.4f}")
         loss_array=np.append(loss_array,loss.item())
         
         # Accumulate the loss and number of samples
