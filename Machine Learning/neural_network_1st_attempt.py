@@ -1,4 +1,3 @@
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -75,6 +74,15 @@ X_test_scaled = scaler.transform(X_test)
 X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32)
 X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
 
+#check if there is any overlap between training and test sets
+# Convert tensors to numpy for easy comparison
+train_features_np = X_train_tensor.numpy()
+test_features_np = X_test_tensor.numpy()
+
+# Check if there is any overlap between training and test sets
+overlap = np.isin(test_features_np, train_features_np).all(axis=1).sum()
+print(f"Number of overlapping samples: {overlap}")
+
 batch_no=2
 
 # Create training dataset and dataloader
@@ -96,12 +104,14 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Print the device being used
 print(f"Using {device} device")
 activation_function="ReLU"
-no_hidden_layers=2
+no_hidden_layers=3
 class NeuralNetwork(nn.Module): #define custom neural network
     def __init__(self):
         super().__init__()
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(3, 10),
+            nn.ReLU(),
+            nn.Linear(10, 10),
             nn.ReLU(),
             nn.Linear(10, 10),
             nn.ReLU(),
@@ -123,7 +133,7 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer w
 # Step 2: Training Loop
 epoch_times = [] 
 epochs = 375  # Number of epochs to train
-patience = 15  # number of epochs with no improvement before stopping
+patience = 10  # number of epochs with no improvement before stopping
 epochs_since_improvement = 0  # Initialize counter for early stopping
 # Initialize best_loss with a very large number
 best_loss = float('inf')  # Start with infinity, so any loss will be smaller
@@ -219,16 +229,15 @@ plt.title(f'Training Loss vs Epoch (Last {no_epochs_focus} Epochs)', fontsize=14
 plt.grid(True)
 plt.legend()
 plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
-plt.show()
+#plt.show()
 
 
 
-
+#TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Step 3: Evaluate the model
-# Evaluate the model on a test dataset
-# Assuming you have a test DataLoader called `test_dataloader`
+# Evaluate the model on a test dataset to check its performance
 
-# First, set the model to evaluation mode (turns off dropout, batchnorm, etc.)
+# First, set the model to evaluation mode (turns off dropout, batchnorm, etc.)--- this step very important
 model.eval()
 
 # Initialize variables to keep track of the total loss and number of samples
@@ -247,12 +256,14 @@ with torch.no_grad():
         
         # Calculate the loss (using the same loss function as in training)
         loss = loss_fn(predictions, batch_targets)
+        print(f"Test Loss: {loss.item():.4f}")
         loss_array=np.append(loss_array,loss.item())
         
         # Accumulate the loss and number of samples
         total_loss += loss.item() * batch_features.size(0)  # Multiply by batch size
         num_samples += batch_features.size(0)
 
+        
 # Calculate average loss
 average_loss = total_loss / num_samples
 loss_error=np.std(loss_array)
@@ -376,6 +387,6 @@ ax2.set_ylabel(r"Residuals ($\sigma$)", fontsize=14)
 ax2.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
 ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*residuals/np.sqrt(mse)))))
 
-plt.savefig(r'Machine Learning\Plots\Initial_NN_plot',dpi=250)
-plt.show()
+plt.savefig(r'Machine Learning\Plots\NN_plot',dpi=250)
+#plt.show()
 
