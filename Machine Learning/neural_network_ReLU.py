@@ -14,7 +14,7 @@ import os
 
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
-csv_file_path = "Machine Learning/training_metrics_2_targets.csv"
+csv_file_path = "Machine Learning/training_metrics_1_target.csv"
 data_file_path="Data/full_data_set_sem1.csv"
 epochs = 375  # Number of epochs to train
 patience = 10  # number of epochs with no improvement before stopping

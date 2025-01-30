@@ -1,2 +1,2 @@
 avg_epoch_time,total_training_time,total_num_epochs,num_epochs_early_stopping,patience,loss_function,loss,loss_error,optimiser,learning_rate,activation_function,no_hidden_layers,batch_size,no_nodes
-0.06851713531895688,13.79064679145813,375,110,10,MSELoss(),0.23088140677856772,0.22917577422407118,Adam,0.001,ReLU,3,2,10
+0.06729493092654044,46.553863286972046,375,375,10,MSELoss(),0.41932855458243895,0.5472575977698888,Adam,0.001,Sigmoid,3,2,10
