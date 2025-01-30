@@ -23,7 +23,7 @@ no_hidden_layers=10 #number of hidden layers
 learning_rate=0.001
 no_nodes=10 #number of nodes in each hidden layer
 input_size=3 #number of input features
-predicted_feature="Beam Energy" #name of the feature to be predicted
+predicted_feature="Emittance" #name of the feature to be predicted
 
 activation_function="ReLU" #activation function- note this string needs to be changed manually
 
