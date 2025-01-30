@@ -8,7 +8,7 @@ import numpy as np
 
 driver_filename="Data_processing/Data/ContinueBack/h5files_driver/v2d_mframe_00001.h5"
 witness_filename="Data_processing/Data/ContinueBack/h5files_witness/v2d_mframe_00001.h5"
-no_CB_filename="Data_processing/Data/ContinueBack/h5files_witness/v2d_mframe_00001.h5"
+no_CB_filename="Data_processing/Data/ContinueBack/h5files_no_CB/v2d_mframe_00001.h5"
 
 driver_file = h5py.File(driver_filename, 'r')
 witness_file = h5py.File(witness_filename, 'r')
@@ -45,14 +45,15 @@ No_CB_X_array=X_no_CB[:]
 
 # Create figure and axis
 fig, ax = plt.subplots()
-ax.plot(Driver_X_array, Driver_Ex_field, color='tab:blue', label='Driver only')
+ax.plot(No_CB_X_array, No_CB_Ex_field, color='tab:green', linewidth=5, label='No ContinueBack')
+ax.plot(Driver_X_array, Driver_Ex_field, color='tab:orange', label='Driver only')
 ax.plot(Witness_X_array, Witness_Ex_field, color='tab:red', label='Witness only')
-ax.plot(No_CB_X_array, No_CB_Ex_field, color='tab:red', label='No ContinueBack')
+
 
 # Labels and title
 ax.set_xlabel('x*k_p')
 ax.set_ylabel('E_x/E_wb')
-ax.set_title('E field comparison using ContinueBack')
+ax.set_title('E field comparison using ContinueBack with a single timestep')
 ax.legend()
 
 # Show plot
