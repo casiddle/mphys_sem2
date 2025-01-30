@@ -354,9 +354,6 @@ test_targets = test_targets.flatten()  # Convert to 1D array
 x=np.linspace(min(min(test_predictions), min(test_targets)),max(max(test_predictions), max(test_targets)),100)
 x = x.flatten() # Convert to 1D array
 
-print("x:",x,'\n x shape:',x.shape,'\n y shape:',test_predictions.shape)
-print('\n y:',test_predictions)
-
 y_upper = x + np.sqrt(mse)
 y_lower = x - np.sqrt(mse)
 
