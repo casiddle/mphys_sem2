@@ -95,6 +95,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Print the device being used
 print(f"Using {device} device")
 activation_function="ReLU"
+no_hidden_layers=2
 class NeuralNetwork(nn.Module): #define custom neural network
     def __init__(self):
         super().__init__()
@@ -252,7 +253,7 @@ with torch.no_grad():
         num_samples += batch_features.size(0)
 
 # Calculate average loss
-average_loss = np.mean(loss_array)
+average_loss = total_loss / num_samples
 loss_error=np.std(loss_array)
 print(f"Test Set Loss: {average_loss:.4f}")
 mse=average_loss
@@ -269,13 +270,14 @@ metrics = {
     'loss_error': loss_error,
     'optimiser': type(optimizer).__name__,
     'learning_rate': learning_rate,
-    'activation_function': activation_function
+    'activation_function': activation_function,
+    'no_hidden_layers': no_hidden_layers  
 }
 
 # Check if the CSV file exists (to decide whether to create or append)
 if save_metrics and not os.path.exists(csv_file_path):
     # If the file doesn't exist, we need to create a new one with column headers
-    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function']
+    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers']
     # Initialize the CSV file with column names
     training_metrics = []
 else:
