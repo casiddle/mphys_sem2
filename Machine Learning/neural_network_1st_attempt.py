@@ -75,6 +75,15 @@ X_test_scaled = scaler.transform(X_test)
 X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32)
 X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
 
+#check if there is any overlap between training and test sets
+# Convert tensors to numpy for easy comparison
+train_features_np = X_train_tensor.numpy()
+test_features_np = X_test_tensor.numpy()
+
+# Check if there is any overlap between training and test sets
+overlap = np.isin(test_features_np, train_features_np).all(axis=1).sum()
+print(f"Number of overlapping samples: {overlap}")
+
 batch_no=2
 
 # Create training dataset and dataloader
@@ -219,14 +228,16 @@ plt.title(f'Training Loss vs Epoch (Last {no_epochs_focus} Epochs)', fontsize=14
 plt.grid(True)
 plt.legend()
 plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
-plt.show()
+#plt.show()
 
 
 
-
+#TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Step 3: Evaluate the model
 # Evaluate the model on a test dataset
 # Assuming you have a test DataLoader called `test_dataloader`
+
+
 
 # First, set the model to evaluation mode (turns off dropout, batchnorm, etc.)
 model.eval()
@@ -253,6 +264,7 @@ with torch.no_grad():
         total_loss += loss.item() * batch_features.size(0)  # Multiply by batch size
         num_samples += batch_features.size(0)
 
+        
 # Calculate average loss
 average_loss = total_loss / num_samples
 loss_error=np.std(loss_array)
@@ -376,6 +388,6 @@ ax2.set_ylabel(r"Residuals ($\sigma$)", fontsize=14)
 ax2.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
 ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*residuals/np.sqrt(mse)))))
 
-plt.savefig(r'Machine Learning\Plots\Initial_NN_plot',dpi=250)
-plt.show()
+plt.savefig(r'Machine Learning\Plots\NN_plot',dpi=250)
+#plt.show()
 
