@@ -19,16 +19,16 @@ data_file_path="Data/full_data_set_sem1.csv"
 epochs = 375  # Number of epochs to train
 patience = 10  # number of epochs with no improvement before stopping
 batch_no=2 #batch size
-activation_function="ReLU" #activation function- note this string needs to be changed manually
 no_hidden_layers=3 #number of hidden layers 
 learning_rate=0.001
 no_nodes=90 #number of nodes in each hidden layer
 input_size=3 #number of input features
 
+activation_function="ReLU" #activation function- note this string needs to be changed manually
 
 # Define the neural network class and relative loss and optimiser functions
 class NeuralNetwork(nn.Module):  # Define custom neural network
-    def __init__(self, input_size=3, hidden_size=10, num_hidden_layers=3):
+    def __init__(self, input_size=3, hidden_size=10, num_hidden_layers=3, num_ouputs=1):
         super().__init__()
         
         # Initialize an empty list to hold layers
@@ -44,7 +44,7 @@ class NeuralNetwork(nn.Module):  # Define custom neural network
             layers.append(nn.ReLU())  # ReLU activation for each hidden layer
         
         # Output layer
-        layers.append(nn.Linear(hidden_size, 1))  # Output layer (single output)
+        layers.append(nn.Linear(hidden_size, num_ouputs))  # Output layer (single output)
         
         # Use Sequential to combine layers
         self.linear_relu_stack = nn.Sequential(*layers)
