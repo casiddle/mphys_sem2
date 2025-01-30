@@ -1,4 +1,3 @@
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -105,12 +104,14 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Print the device being used
 print(f"Using {device} device")
 activation_function="ReLU"
-no_hidden_layers=2
+no_hidden_layers=3
 class NeuralNetwork(nn.Module): #define custom neural network
     def __init__(self):
         super().__init__()
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(3, 10),
+            nn.ReLU(),
+            nn.Linear(10, 10),
             nn.ReLU(),
             nn.Linear(10, 10),
             nn.ReLU(),
@@ -132,7 +133,7 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer w
 # Step 2: Training Loop
 epoch_times = [] 
 epochs = 375  # Number of epochs to train
-patience = 15  # number of epochs with no improvement before stopping
+patience = 10  # number of epochs with no improvement before stopping
 epochs_since_improvement = 0  # Initialize counter for early stopping
 # Initialize best_loss with a very large number
 best_loss = float('inf')  # Start with infinity, so any loss will be smaller
