@@ -12,17 +12,59 @@ from sklearn.preprocessing import StandardScaler
 import time
 import os
 
-# Flag to decide whether to save the metrics to CSV or not
+# Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
+csv_file_path = "Machine Learning/training_metrics_1_target.csv"
+data_file_path="Data/beam_energy_data_set.csv"
+epochs = 250  # Number of epochs to train
+patience = 20  # number of epochs with no improvement before stopping
+batch_no=2 #batch size
+no_hidden_layers=4 #number of hidden layers 
+learning_rate=0.001
+no_nodes=10 #number of nodes in each hidden layer
+input_size=3 #number of input features
+predicted_feature="Emittance" #name of the feature to be predicted
 
-# Path to the CSV file
-csv_file_path = "Machine Learning/training_metrics.csv"
-data_file_path="Data/full_data_set_sem1.csv"
+activation_function="ReLU" #activation function- note this string needs to be changed manually
 
-def theta_to_r(theta, distance):
-    
-    r=distance*np.tan(theta)
-    return r
+# Define the neural network class and relative loss and optimiser functions
+class NeuralNetwork(nn.Module):  # Define custom neural network
+    def __init__(self, input_size=3, hidden_size=10, num_hidden_layers=3, num_ouputs=1):
+        super().__init__()
+        
+        # Initialize an empty list to hold layers
+        layers = []
+        
+        # First hidden layer (input layer to the first hidden layer)
+        layers.append(nn.Linear(input_size, hidden_size))
+        layers.append(nn.ReLU())  # ReLU activation function
+        
+        # Loop to add the hidden layers
+        for _ in range(num_hidden_layers - 1):  # Subtract 1 since the first hidden layer is already added
+            layers.append(nn.Linear(hidden_size, hidden_size))
+            layers.append(nn.ReLU())  # ReLU activation for each hidden layer
+        
+        # Output layer
+        layers.append(nn.Linear(hidden_size, num_ouputs))  # Output layer (single output)
+        
+        # Use Sequential to combine layers
+        self.linear_relu_stack = nn.Sequential(*layers)
+
+    def forward(self, x):
+        logits = self.linear_relu_stack(x)
+        return logits
+
+# Check if a GPU (CUDA) is available, otherwise default to CPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Print the device being used
+print(f"Using {device} device")
+
+model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers).to(device)  # Initialize the model
+print(model)
+loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
+optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
+
 
 class EmittanceDataset(Dataset):
     # Constructor method to initialize the dataset with features and targets
@@ -43,12 +85,18 @@ class EmittanceDataset(Dataset):
         # at the given index `idx`
         return self.features[idx], self.targets[idx]
 
-# Load into a DataFrame
+#Functions
+def theta_to_r(theta, distance):
+    
+    r=distance*np.tan(theta)
+    return r
+
+# MAIN
 df = pd.read_csv(data_file_path)
 df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
 # Separate features and target
 X = df[["UV/X-ray", "R", "Critical Energy"]].values # Features
-y = df["Emittance"].values # Target
+y = df[predicted_feature].values # Target
 
 # Convert to PyTorch tensors
 X = torch.tensor(X, dtype=torch.float32)
@@ -83,7 +131,6 @@ test_features_np = X_test_tensor.numpy()
 overlap = np.isin(test_features_np, train_features_np).all(axis=1).sum()
 print(f"Number of overlapping samples: {overlap}")
 
-batch_no=2
 
 # Create training dataset and dataloader
 train_dataset = EmittanceDataset(X_train_tensor, y_train)
@@ -98,42 +145,12 @@ for batch_features, batch_targets in train_dataloader:
     print("Targets:", batch_targets)
     break  # Check one batch
 
-# Check if a GPU (CUDA) is available, otherwise default to CPU
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Print the device being used
-print(f"Using {device} device")
-activation_function="ReLU"
-no_hidden_layers=3
-class NeuralNetwork(nn.Module): #define custom neural network
-    def __init__(self):
-        super().__init__()
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear(3, 10),
-            nn.ReLU(),
-            nn.Linear(10, 10),
-            nn.ReLU(),
-            nn.Linear(10, 10),
-            nn.ReLU(),
-            nn.Linear(10, 1),
-        )
 
-    def forward(self, x): #check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        logits = self.linear_relu_stack(x)
-        return logits
 
-model = NeuralNetwork().to(device)
-
-print(model)   
-learning_rate=0.001
-# Step 1: Define a loss function and optimizer
-loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
 
 # Step 2: Training Loop
 epoch_times = [] 
-epochs = 375  # Number of epochs to train
-patience = 10  # number of epochs with no improvement before stopping
 epochs_since_improvement = 0  # Initialize counter for early stopping
 # Initialize best_loss with a very large number
 best_loss = float('inf')  # Start with infinity, so any loss will be smaller
@@ -228,7 +245,7 @@ plt.ylabel('Loss', fontsize=12)
 plt.title(f'Training Loss vs Epoch (Last {no_epochs_focus} Epochs)', fontsize=14)
 plt.grid(True)
 plt.legend()
-plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
+#plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
 #plt.show()
 
 
@@ -256,7 +273,7 @@ with torch.no_grad():
         
         # Calculate the loss (using the same loss function as in training)
         loss = loss_fn(predictions, batch_targets)
-        print(f"Test Loss: {loss.item():.4f}")
+        #print(f"Test Loss: {loss.item():.4f}")
         loss_array=np.append(loss_array,loss.item())
         
         # Accumulate the loss and number of samples
@@ -284,13 +301,15 @@ metrics = {
     'learning_rate': learning_rate,
     'activation_function': activation_function,
     'no_hidden_layers': no_hidden_layers ,
-    'batch_size': batch_no
+    'batch_size': batch_no,
+    'no_nodes': no_nodes,
+    'predicted_feature': predicted_feature   
 }
 
 # Check if the CSV file exists (to decide whether to create or append)
 if save_metrics and not os.path.exists(csv_file_path):
     # If the file doesn't exist, we need to create a new one with column headers
-    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_no']
+    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes','predicted_feature']
     # Initialize the CSV file with column names
     training_metrics = []
 else:
@@ -335,23 +354,20 @@ with torch.no_grad():
 
 # Convert all predictions into a single array
 test_predictions = np.concatenate(all_predictions, axis=0)
+test_predictions = test_predictions.flatten()  # Convert to 1D array
 
 # Print or store your predictions (e.g., for comparison with actual targets)
-#print("Predictions on the Test Data:", all_predictions)
+#print("Predictions on the Test Data:", test_predictions)
 
 # If you want to compare with the true values (targets) on the test set
 test_targets = np.concatenate([batch_targets.cpu().numpy() for _, batch_targets in test_dataloader], axis=0)
+test_targets = test_targets.flatten()  # Convert to 1D array
 #print("True Values (Emittance):", test_targets)
 
 
-
-#mse=average_loss
-#all_predictions = all_predictions.numpy()
-#y_test = y_test.numpy()
-
 x=np.linspace(min(min(test_predictions), min(test_targets)),max(max(test_predictions), max(test_targets)),100)
 x = x.flatten() # Convert to 1D array
-#print("x:",x)
+
 y_upper = x + np.sqrt(mse)
 y_lower = x - np.sqrt(mse)
 
@@ -387,6 +403,6 @@ ax2.set_ylabel(r"Residuals ($\sigma$)", fontsize=14)
 ax2.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
 ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*residuals/np.sqrt(mse)))))
 
-plt.savefig(r'Machine Learning\Plots\NN_plot',dpi=250)
+#plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU',dpi=250)
 #plt.show()
 
