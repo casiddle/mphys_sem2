@@ -1,6 +1,7 @@
 #!/bin/bash --login
 #$ -cwd                 # Job will run in the current directory (where you ran qsub)
-#$ -pe smp.pe 32        # Choose a PE name from the tables below and a number of cores
+#$ -pe smp.pe 4        # Choose a PE name from the tables below and a number of cores
+#$ -l s_rt=00:05:00     # Sets job time limit
 #$ -N qv3d              # Set the job's name
 
 # Load any required modulefiles
@@ -14,4 +15,4 @@ module load mpi/intel-18.0/openmpi/4.0.1
 #mpirun qv3dMPIX.e v.ini
 
 # For MPI applications (small jobs on a single node or larger jobs across multiple compute nodes)
-mpirun -n $NSLOTS ~/scratch/qv3dMPIX.e v_half.ini
+mpirun -n $NSLOTS qv3dMPIX.e v_no_CB.ini
