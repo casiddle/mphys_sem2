@@ -15,7 +15,7 @@ import os
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_2_targets.csv"
-data_file_path="Data/beam_energy_data_set.csv"
+data_file_path="Processed Data/beam_energy_data_set.csv"
 epochs = 500  # Number of epochs to train
 patience = 100  # number of epochs with no improvement before stopping
 batch_no=2 #batch size
@@ -60,7 +60,7 @@ print(f"Using {device} device")
 model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers).to(device)
 print(model)
 loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
+optimizer = optim.SGD(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
 
 
 class EmittanceDataset(Dataset):
