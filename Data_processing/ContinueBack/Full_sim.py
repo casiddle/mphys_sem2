@@ -6,7 +6,7 @@ from matplotlib.image import NonUniformImage
 from matplotlib import cm
 import numpy as np
 
-driver_filename="Data_processing/Data/ContinueBack/h5files_driver_full/v2d_mframe_00001.h5"
+driver_filename="Data_processing/Data/ContinueBack/h5files_driver_full/v2d_mframe_00002.h5"
 witness_filename="Data_processing/Data/ContinueBack/h5files_witness/v2d_mframe_00001.h5"
 no_CB_filename="Data_processing/Data/ContinueBack/h5files_no_CB/v2d_mframe_00001.h5"
 
@@ -53,7 +53,7 @@ ax.plot(Driver_X_array, Driver_Ex_field, color='tab:orange', label='Driver only'
 # Labels and title
 ax.set_xlabel('x*k_p')
 ax.set_ylabel('E_x/E_wb')
-ax.set_title('E field comparison using ContinueBack with a single timestep')
+ax.set_title('E field when just simulating the driver')
 ax.legend()
 
 # Show plot
