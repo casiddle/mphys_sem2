@@ -1,6 +1,6 @@
 #!/bin/bash --login
 #$ -cwd                 # Job will run in the current directory (where you ran qsub)
-#$ -pe smp.pe 4        # Choose a PE name from the tables below and a number of cores
+#$ -pe smp.pe 2        # Choose a PE name from the tables below and a number of cores
 #$ -l s_rt=00:05:00     # Sets job time limit
 #$ -N qv3d              # Set the job's name
 
