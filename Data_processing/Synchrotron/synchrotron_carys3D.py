@@ -38,8 +38,8 @@ uv_max=124 #eV
 uv_min=3.1 #eV
 xray_max=124e3 #eV
 
-e_max=124e3
-e_min=3.1
+total_e_max=124e3
+total_e_min=3.1
 
 
 
@@ -119,7 +119,7 @@ for i in range(5, 6):
 
     # Define the directory path
     # save_dir = r'C:\Users\carys\OneDrive - The University of Manchester\University\Year 4\MPhys\mphys_docs\Python_scripts\plots\carys_synchrotron'
-    save_dir = r'C:\Users\jaspe\OneDrive - The University of Manchester\Documents\Physics\MPhys_Project\mphys_docs\Python_scripts\plots\carys_synchrotron'
+    save_dir = 'Data_processing/Synchrotron/plots'
 
     # Ensure the directory exists
     os.makedirs(save_dir, exist_ok=True)
@@ -152,67 +152,45 @@ for i in range(5, 6):
     print("photons_per_energy sum:"+str(np.sum(photons_per_energy)))
     #integrate to get no. of x-ray photons
     # Mask the data to include only the range of interest
-    mask = (e >= uv_max) 
-    energies_integration = e[mask]
-    photons_integration = photons_per_energy[mask]
-    x_ray_photons=integrate.simpson(photons_integration,x=energies_integration)
-    print("x-ray photons:"+str(x_ray_photons))
 
-    #integrate to get no. of UV photons
-    # Mask the data to include only the range of interest
-    mask = (e >= uv_min) & (e <= uv_max)
-    energies_integration = e[mask]
-    photons_integration = photons_per_energy[mask]
-    uv_photons=integrate.simpson(photons_integration,x=energies_integration)
-    print("UV photons:"+str(uv_photons))
-
-    #integrate to get no. of other photons
-    # Mask the data to include only the range of interest
-    #mask = (e >= 0) & (e <= uv_min)
-    mask = (e <= uv_min)
-    energies_integration = e[mask]
-    photons_integration = photons_per_energy[mask]
-    other_photons=integrate.simpson(photons_integration,x=energies_integration)
-    print("other photons:"+str(other_photons))
-
-    integral_sum=x_ray_photons+uv_photons+other_photons
-    print("SUM:"+str(integral_sum))
-    #print("X-ray percentage:"+str(x_ray_photons/integral_sum))
-
-    # Prepare data for the pie chart
-    labels = ['UV Photons', 'X-ray Photons', 'Other Photons']
-    sizes = [uv_photons, x_ray_photons, other_photons]
-    colors = ['#ff9999', '#66b3ff', '#99ff99']  # Colors for each section
-    save_path2 = os.path.join(save_dir, 'synchrotron_proportions_'+str(run_no)+'.png')
-
-    # Create pie chart
-    plt.figure(figsize=(8, 8))
-    plt.pie(sizes, labels=labels, colors=colors,
-            autopct='%1.1f%%', shadow=False, startangle=140)
-
-    plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-    plt.title("Relative Proportions of UV, X-ray, and Other Photons at "+str(run_no)+"m")
-    plt.savefig(save_path2, dpi=300, bbox_inches='tight')
-    #plt.show()
-
-    # Plotting
-    plt.figure(figsize=(8, 8))
-    plt.contourf( phi,theta, photons_per_theta_per_phi.T,levels=100,cmap='Greens')
-    plt.colorbar(label='No. Photons')  # Optional: Add a color scale
-    plt.title(r'Photon no. as a function of $\phi$ and $\theta$'+' '+str(run_no)+r'm')
-    plt.ylabel(r'$\theta$(mrad)')
-    plt.xlabel(r'$\phi$(rad)')
-    plt.xlim(np.min(phi), np.max(phi))
-    plt.ylim(np.min(theta), 0.4)
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    #plt.show()
+    # Define energy ranges as a list of tuples (min, max)
+    energy_ranges = [
+        ("X-ray", 10, 100),  # X-ray range (adjust as needed)
+        ("UV", 3, 10),       # UV range
+        ("Other", 0, 3)      # Other photons
+    ]
 
 
-    save_path3 = os.path.join(save_dir, 'synchrotron_plot.ylims_3D_phi.png')
-    photons_per_phi=np.sum(full_synchrotron_array[run_no],axis=(1,2))
-    plt.plot(phi,photons_per_phi)
-    plt.title(r"Plot of number of photons against $\phi$"+' '+str(run_no)+r'm')
-    plt.ylabel("Number of photons")
-    plt.xlabel(r"$\phi$(rad)")
-    plt.savefig(save_path3, dpi=300, bbox_inches='tight')
-    #plt.show()
+    # Dictionary to store results
+    photon_counts = {}
+
+    # Compute total number of photons in the specified range
+    mask_total = (e >= total_e_min) & (e <= total_e_max)
+    energies_total = e[mask_total]
+    photons_total = photons_per_energy[mask_total]
+
+    total_photon_count = integrate.simpson(photons_total, x=energies_total)
+    print(f"Total photons from {total_e_min} to {total_e_max}: {total_photon_count}")
+    # Store total count in dictionary
+    photon_counts["Total"] = total_photon_count
+
+    # Loop over energy ranges and integrate for each range
+    for label, e_min, e_max in energy_ranges:
+        mask = (e >= e_min) & (e <= e_max)
+        energies_integration = e[mask]
+        photons_integration = photons_per_energy[mask]
+
+        photon_count = integrate.simpson(photons_integration, x=energies_integration)
+        photon_counts[label] = photon_count
+        percentage = (photon_count / total_photon_count) * 100
+
+        photon_counts[label] = (photon_count, percentage)
+
+        print(f"{label} photons: {photon_count:.2f} ({percentage:.2f}%)")
+
+
+
+    
+
+    # Optional: Access results as needed
+    print(photon_counts)
