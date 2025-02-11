@@ -407,3 +407,13 @@ ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*res
 #plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU',dpi=250)
 #plt.show()
 
+
+grad_norms = [p.grad.norm().item() for p in model.parameters()]
+print("Gradient Norms:", grad_norms)
+
+
+# Loop over the parameters and print them
+# for name, param in model.named_parameters():
+#     print(f"Parameter: {name} - Shape: {param.shape}")
+#     print(param.data)  # This gives you the actual value of the weights/biases
+
