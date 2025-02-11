@@ -9,7 +9,7 @@ from scipy.special import kv
 from scipy.integrate import quad
 from scipy import integrate
 from scipy import signal
-import time
+
 
 import numpy as np
 
@@ -31,36 +31,13 @@ def S_integral(E, E_c, upper_bound):
     result = ratio * integral_result  # Multiply by ratio
     return result
 
-def S_integral2(E, E_c, upper_bound):
-    ratio = E / E_c
-    # Use a vectorized approach to apply the integral over all elements of the arrays
-    integrand_array = np.vectorize(integrand)(np.linspace(ratio, upper_bound))
-    integral_result, _ = quad(integrand, ratio, upper_bound)
-    result = ratio * integral_result
-    return result
-def S_integral2(E, E_c, upper_bound):
-    # Calculate the ratio of E to E_c
-    ratio = E / E_c
-    
-    # Apply the integrand function over all elements of the array
-    # np.vectorize creates a vectorized function (one that can work over entire arrays) for the integrand over the range from 'ratio' to 'upper_bound'
-    integrand_array = np.vectorize(integrand)(np.linspace(ratio, upper_bound))
-    
-    # Calculate the integral of the integrand function using the quad method from scipy
-    # quad returns the value of the integral and an estimate of the error (which is ignored with '_')
-    integral_result, _ = quad(integrand, ratio, upper_bound)
-    
-    # Multiply the integral result by the ratio to get the final result
-    result = ratio * integral_result
-    
-    # Return the final result of the integral calculation
-    return result
 
 run_no=8
 nu = 5/3  # order of the Bessel function
-uv_max=124 #eV
-uv_min=3.1 #eV
+middle_max=1000 #eV
+middle_min=500#eV
 xray_max=124e3 #eV
+min=124 #eV
 
 
 
@@ -112,28 +89,27 @@ for i in range(0, 11):
     matrix_file_name=r'Data_processing\Single_run\matrices\S_matrix_'+str(run_no)+'.npy'
 
     # # Initialize an empty matrix to store the results of the integral
-    start_time = time.time()
+
     try:
         S_matrix=np.load(matrix_file_name)
     except FileNotFoundError:
         S_matrix = np.zeros_like(matrix)
-        # Create an upper bound matrix
-        upper_bound_matrix = (e[:, None] / e_c) * 100  # Broadcasting to create a matrix of shape (i, j)
 
-        # Use np.vectorize  to apply the integral to each element of the matrix
-        S_matrix = np.vectorize(S_integral2)(e[:, None], e_c, upper_bound_matrix)
+    # Apply the integral to each element in the matrix
+        for i in range(matrix.shape[0]):
+            for j in range(matrix.shape[1]):
+                upper_bound=(e[i]/e_c[j])*100
+                S_matrix[i, j] = S_integral(e[i], e_c[j], upper_bound)
+
+
         np.save(matrix_file_name, S_matrix)
         S_matrix=np.load(matrix_file_name)
 
 
-
-    # End timer
-    end_time = time.time()
-    # Calculate and print the elapsed time
-    elapsed_time = end_time - start_time
-    print(f"Time taken to compute the matrix: {elapsed_time:.6f} seconds")
-
     # Perform matrix multiplication
+    #print("S_matrix shape:",S_matrix.shape)
+    #print("photons_per_crit_energy shape:",photons_per_crit_energy.shape)
+    #result_matrix = np.dot(S_matrix, photons_per_crit_energy)
     result_matrix = np.einsum('ij,klj->kli', S_matrix, photons_per_crit_energy)
     normalised_result=result_matrix/np.sum(S_matrix,axis=1)
 
@@ -141,7 +117,7 @@ for i in range(0, 11):
 
     photons_per_theta_per_phi=np.sum(full_synchrotron_array[run_no],axis=2)
 
-
+    #print("photons_per_theta_per_phi shape:",photons_per_theta_per_phi.shape)
     phi=full_phi_array[run_no]
     theta=full_theta_array[run_no]*1e3
 
@@ -149,7 +125,7 @@ for i in range(0, 11):
 
     #integrate to get no. of x-ray photons
     # Mask the data to include only the range of interest
-    mask = (e >= uv_max) 
+    mask = (e >= middle_max) 
     energies_integration = e[mask]
     photons_integration = photons_per_energy[mask]
     x_ray_photons=integrate.simpson(photons_integration,x=energies_integration)
@@ -157,7 +133,7 @@ for i in range(0, 11):
 
     #integrate to get no. of UV photons
     # Mask the data to include only the range of interest
-    mask = (e >= uv_min) & (e <= uv_max)
+    mask = (e >= middle_min) & (e <= middle_max)
     energies_integration = e[mask]
     photons_integration = photons_per_energy[mask]
     uv_photons=integrate.simpson(photons_integration,x=energies_integration)
@@ -165,7 +141,7 @@ for i in range(0, 11):
 
     #integrate to get no. of other photons
     # Mask the data to include only the range of interest
-    mask = (e <= uv_min)
+    mask =(e >= min) & (e <= middle_min)
     energies_integration = e[mask]
     photons_integration = photons_per_energy[mask]
     other_photons=integrate.simpson(photons_integration,x=energies_integration)
@@ -178,14 +154,14 @@ for i in range(0, 11):
 #Plot the integrated number of x-ray photons against distance
 distances=[0,1,2,3,4,5,6,7,8,9,10]
 plt.figure(figsize=(10, 6))
-plt.plot(distances,no_xray_photons,marker='o',color='red',label='X-ray Photons')
-plt.plot(distances,no_uv_photons,marker='o',color='blue',label='UV Photons')
-plt.plot(distances,no_other_photons,marker='o',color='green',label='Other Photons')
+plt.plot(distances,no_xray_photons,marker='o',color='red',label=f'{middle_max}< X-ray Photons < {xray_max} eV')
+plt.plot(distances,no_uv_photons,marker='o',color='blue',label=f'{middle_min}< X-ray Photons < {middle_max} eV')
+plt.plot(distances,no_other_photons,marker='o',color='green',label=f'{min}< X-ray Photons < {middle_min} eV')
 plt.xlabel("Distance (m)")
-plt.ylabel("Integrated No. Photons")
-plt.title("Integrated No. Photons against Distance")
+plt.ylabel("Integrated No. X-ray Photons")
+plt.title("Integrated No. X-ray Photons against Distance")
 plt.legend()
-plt.savefig("Data_processing/Single_run/plots/carys_synchrotron/integrated_no_photons.png", dpi=300, bbox_inches='tight')
+plt.savefig("Data_processing/Single_run/plots/carys_synchrotron/x_ray_integrated_no_photons.png", dpi=300, bbox_inches='tight')
 plt.show()
 
 #Plot the number of x-ray photons against distance
@@ -201,14 +177,14 @@ for i in range (1,11):
 
 
 plt.figure(figsize=(10, 6))
-plt.plot(distances,non_int_no_xray_photons, marker='o',color='red',label='X-ray Photons')
-plt.plot(distances,non_int_no_uv_photons, marker='o',color='blue',label='UV Photons')
-plt.plot(distances,non_int_no_other_photons, marker='o',color='green',label='Other Photons')
+plt.plot(distances,non_int_no_xray_photons, marker='o',color='red',label=f'{middle_max}< X-ray Photons < {xray_max} eV')    
+plt.plot(distances,non_int_no_uv_photons, marker='o',color='blue',label=f'{middle_min}< X-ray Photons < {middle_max} eV')
+plt.plot(distances,non_int_no_other_photons, marker='o',color='green',label=f'{min}< X-ray Photons < {middle_min} eV')
 plt.xlabel("Distance (m)")
-plt.ylabel("No. Photons")
-plt.title("No. Photons against Distance")
+plt.ylabel("No. X-ray Photons")
+plt.title("No. X-ray Photons against Distance")
 plt.legend()
-plt.savefig("Data_processing/Single_run/plots/carys_synchrotron/no_photons.png", dpi=200, bbox_inches='tight')
+plt.savefig("Data_processing/Single_run/plots/carys_synchrotron/x_ray_no_photons.png", dpi=200, bbox_inches='tight')
 plt.show()
 
 percentage_xray_photons=non_int_no_xray_photons/non_int_sum_array
@@ -217,13 +193,13 @@ percentage_other_photons=non_int_no_other_photons/non_int_sum_array
 
 
 plt.figure(figsize=(10, 6))
-plt.plot(distances,percentage_xray_photons, marker='o',color='red',label='X-ray Photons')
-plt.plot(distances,percentage_uv_photons, marker='o',color='blue',label='UV Photons')
-plt.plot(distances,percentage_other_photons, marker='o',color='green',label='Other Photons')
+plt.plot(distances,percentage_xray_photons, marker='o',color='red',label=f'{middle_max}< X-ray Photons < {xray_max} eV')
+plt.plot(distances,percentage_uv_photons, marker='o',color='blue',label=f'{middle_min}< X-ray Photons < {middle_max} eV')
+plt.plot(distances,percentage_other_photons, marker='o',color='green',label=f'{middle_min}< X-ray Photons < {min} eV')
 plt.xlabel("Distance (m)")
-plt.ylabel("Percentage Photons")
-plt.title("Percentage Photons against Distance")
+plt.ylabel("Percentage X-ray Photons")
+plt.title("Percentage X-ray Photons against Distance")
 plt.legend()
-plt.savefig("Data_processing/Single_run/plots/carys_synchrotron/percentage_photons.png", dpi=200, bbox_inches='tight')
+plt.savefig("Data_processing/Single_run/plots/carys_synchrotron/x_ray_percentage_photons.png", dpi=200, bbox_inches='tight')
 plt.show()
 
