@@ -22,6 +22,7 @@ def integrand(x):
     return kv(nu, x)
 
 def S_integral(E, E_c, upper_bound):
+
     ratio = E / E_c
     array=np.linspace(ratio,upper_bound)
     integrand_array=integrand(array)
@@ -31,14 +32,13 @@ def S_integral(E, E_c, upper_bound):
     result = ratio * integral_result  # Multiply by ratio
     return result
 
+
 def S_integral2(E, E_c, upper_bound):
-    ratio = E / E_c
-    # Use a vectorized approach to apply the integral over all elements of the arrays
-    integrand_array = np.vectorize(integrand)(np.linspace(ratio, upper_bound))
-    integral_result, _ = quad(integrand, ratio, upper_bound)
-    result = ratio * integral_result
-    return result
-def S_integral2(E, E_c, upper_bound):
+    """
+    Calculate the integral of the function S(E, E_c) = E/E_c * K_v(E/E_c) from E/E_c to upper_bound,
+    where upper bound is some large number (in practice this should be inifinity) and E is energy and E_c is
+    critical energy. This function uses vectorize to do this integral for an array of E values.
+    """
     # Calculate the ratio of E to E_c
     ratio = E / E_c
     
@@ -99,10 +99,10 @@ for i in range(0, 11):
     matrix = []
 
     # Loop through each value of omega_c
-    for ec in e_c:
+    for e_c_val in e_c: #e_c_val is the critical energy from an array e_c of critical energies
         array = []  # Create a new list for each omega_c
-        for i in e:
-            value = i/ ec  # Calculate the normalized value
+        for i in e: #creates an array for each energy value
+            value = i/ e_c_val  # Calculate the normalized value
             array.append(value)  # Append to the array
         matrix.append(array)  # Append the array to the matrix
 
