@@ -85,8 +85,8 @@ for file_number in file_numbers:
 
 for i in range(0, 11):
     run_no=i
-    e_c=full_energy_array[run_no]
-    e=full_energy_array[run_no]
+    E_c=full_energy_array[run_no]
+    E=full_energy_array[run_no]
 
     #print("E_c sum:",str(np.sum(e_c)))
     #print("E sum:",str(np.sum(e)))
@@ -98,11 +98,11 @@ for i in range(0, 11):
     # Initialize an empty list to store the result arrays
     matrix = []
 
-    # Loop through each value of omega_c
-    for e_c_val in e_c: #e_c_val is the critical energy from an array e_c of critical energies
-        array = []  # Create a new list for each omega_c
-        for i in e: #creates an array for each energy value
-            value = i/ e_c_val  # Calculate the normalized value
+    # Loop through each value of critical energy
+    for E_c_val in E_c: #E_c_val is the critical energy from an array E_c of critical energies
+        array = []  # Create a new list for each critical energy
+        for E_val in E: #creates an array for each energy value
+            value = E_val/ E_c_val  # Calculate the normalized value
             array.append(value)  # Append to the array
         matrix.append(array)  # Append the array to the matrix
 
