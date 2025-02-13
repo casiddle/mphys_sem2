@@ -118,10 +118,10 @@ for i in range(0, 11):
     except FileNotFoundError:
         S_matrix = np.zeros_like(matrix)
         # Create an upper bound matrix
-        upper_bound_matrix = (e[:, None] / e_c) * 100  # Broadcasting to create a matrix of shape (i, j)
+        upper_bound_matrix = (E[:, None] / E_c) * 100  # Broadcasting to create a matrix of shape (i, j)
 
         # Use np.vectorize  to apply the integral to each element of the matrix
-        S_matrix = np.vectorize(S_integral2)(e[:, None], e_c, upper_bound_matrix)
+        S_matrix = np.vectorize(S_integral2)(E[:, None], E_c, upper_bound_matrix)
         np.save(matrix_file_name, S_matrix)
         S_matrix=np.load(matrix_file_name)
 
