@@ -145,7 +145,7 @@ for E_c_val in E_c: #E_c_val is the critical energy from an array E_c of critica
 # Convert the list of arrays into a 2D NumPy array
 matrix = np.array(matrix)
 
-matrix_file_name=f'matrices/S_matrix_{emittance_no}_{run_no}.npy'
+matrix_file_name=f'Data_processing/Parameters/matrices/S_matrix_{emittance_no}_{run_no}.npy'
 
 # # Initialize an empty matrix to store the results of the integral
 
@@ -202,8 +202,8 @@ x_ray_photons=integrate.simpson(photons_integration,x=energies_integration)
 
 #integrate to get no. of UV photons
 # Mask the data to include only the range of interest
-mask = (e >= uv_min) & (e <= uv_max)
-energies_integration = e[mask]
+mask = (E >= uv_min) & (E <= uv_max)
+energies_integration = E[mask]
 photons_integration = photons_per_energy[mask]
 uv_photons=integrate.simpson(photons_integration,x=energies_integration)
 #print("UV photons:"+str(uv_photons))

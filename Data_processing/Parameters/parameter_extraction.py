@@ -101,7 +101,7 @@ def get_properties_em(data_dir,save_num,species):
 
 
 
-run_no=5
+run_no=10 #change to run number of interest usually last number in scan -1
 data_directory=r"Data_processing\Parameters\emittance_scan" #change to directory within cluster where scan is
 species=2
 # suffix=np.array([str(1), 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 
