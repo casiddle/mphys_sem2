@@ -9,6 +9,7 @@ from scipy.special import kv
 from scipy.integrate import quad
 from scipy import integrate
 from scipy import signal
+import scipy.signal as signal
 import time
 
 import numpy as np
@@ -55,6 +56,26 @@ def S_integral2(E, E_c, upper_bound):
     
     # Return the final result of the integral calculation
     return result
+
+
+def calculate_critical_energy(energy_array, photons_per_energy_array):
+    mean_energy_array=[]
+    mean_energy = np.sum((energy_array*photons_per_energy_array))/np.sum(photons_per_energy_array)
+    mean_energy_array.append(mean_energy)
+    critical_energy_array = mean_energy_array/(8/(15*np.sqrt(3)))
+    return critical_energy_array
+
+def calculate_mean_theta(theta_array, photons_per_theta_array):
+    mean_theta_array=[]
+    mean_theta = np.sum((theta_array*photons_per_theta_array))/np.sum(photons_per_theta_array)
+    mean_theta_array.append(mean_theta)
+    # print([float(num) for num in mean_theta_array])
+    return mean_theta_array
+
+def sum_over_energy_and_phi(synchrotron_array):
+    photons_per_theta = np.sum(synchrotron_array, axis = (0, 2))
+    return photons_per_theta
+
 
 run_no=8
 nu = 5/3  # order of the Bessel function
@@ -136,6 +157,11 @@ for i in range(0, 11):
     # Perform matrix multiplication
     result_matrix = np.einsum('ij,klj->kli', S_matrix, photons_per_crit_energy)
     normalised_result=result_matrix/np.sum(S_matrix,axis=1)
+
+    print("s matrix shape:",S_matrix.shape)
+    print("photons per crit energy shape:",photons_per_crit_energy.shape)
+
+
 
 
 
@@ -226,4 +252,23 @@ plt.title("Percentage Photons against Distance")
 plt.legend()
 plt.savefig("Data_processing/Parameters/plots/carys_synchrotron/percentage_photons.png", dpi=200, bbox_inches='tight')
 plt.show()
+
+E=full_energy_array[10]
+theta=full_theta_array[10]
+print("E shape:",E.shape)
+print("theta shape:",theta.shape)   
+# Mask the data to include only the X-ray energy range
+xray_mask = (E >= uv_max) & (E <= xray_max)  # Mask for energies in the X-ray range
+
+# Apply the mask to the energies and photons
+xray_energies = E[xray_mask]
+xray_photons_per_energy = photons_per_energy[xray_mask]
+
+# Calculate the critical energy for X-ray photons
+xray_critical_energy = calculate_critical_energy(xray_energies, xray_photons_per_energy)
+
+# Debugging: Print the calculated critical energy
+print("Critical Energy for X-ray photons:", xray_critical_energy)
+
+
 

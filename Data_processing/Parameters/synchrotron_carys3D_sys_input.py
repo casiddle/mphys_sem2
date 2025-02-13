@@ -239,3 +239,41 @@ print("UV/Xray ratio:"+str(uv_photons/x_ray_photons))
 
 print("Mean Theta:"+str(mean_theta_array[0])) 
 print("Critical Energy:"+str(critical_energy_array[0])) 
+
+E=full_energy_array[10]
+theta=full_theta_array[10]
+print("E shape:",E.shape)
+print("theta shape:",theta.shape)   
+# Mask the data to include only the X-ray energy range
+xray_mask = (E >= uv_max) & (E <= xray_max)  # Mask for energies in the X-ray range
+
+# Apply the mask to the energies and photons
+xray_energies = E[xray_mask]
+xray_photons_per_energy = photons_per_energy[xray_mask]
+
+# Calculate the critical energy for X-ray photons
+xray_critical_energy = calculate_critical_energy(xray_energies, xray_photons_per_energy)
+
+# Debugging: Print the calculated critical energy
+print("Critical Energy for X-ray photons:", xray_critical_energy)
+
+print(full_theta_array[10].shape)
+print(full_phi_array[10].shape)
+print(full_energy_array[10].shape)
+
+print(full_synchrotron_array[10].shape)
+
+# Define your energy threshold (e.g., uv_max or some other value)
+energy_threshold = uv_max  # Replace with your specific threshold
+
+# Get the energy values for the current run (full_energy_array[10])
+energy_values = full_energy_array[10]  # Shape: (300,)
+
+# Find the indices where the energy is above the threshold
+valid_energy_indices = energy_values >= energy_threshold  # This gives a boolean array
+
+# Create a new synchrotron array that excludes energies below the threshold
+new_synchrotron_array = full_synchrotron_array[10][:, :, valid_energy_indices]
+
+# Now, new_synchrotron_array will have shape (100, 100, n), where n is the number of energy values above the threshold
+print(f"New synchrotron array shape (excluding low-energy photons): {new_synchrotron_array.shape}")
