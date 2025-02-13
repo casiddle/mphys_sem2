@@ -60,7 +60,7 @@ run_no=8
 nu = 5/3  # order of the Bessel function
 uv_max=124 #eV
 uv_min=3.1 #eV
-xray_max=124e3 #eV
+xray_max=124e1 #eV
 
 
 

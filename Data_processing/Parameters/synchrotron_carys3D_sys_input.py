@@ -237,6 +237,5 @@ std_dev=std_from_frequency(full_theta_array[0],photons_per_theta_array)
 print("UV/Xray ratio:"+str(uv_photons/x_ray_photons))
 #print("UV/Xray percentage ratio:"+str(uv_percentage/x_ray_percentage)) --same value as above
 
-print("Mean Theta:"+str(mean_theta_array[0])) #replsce with correct value
-print("Critical Energy:"+str(critical_energy_array[0])) #replace with correct value
-print("Theta STD:",std_dev)
+print("Mean Theta:"+str(mean_theta_array[0])) 
+print("Critical Energy:"+str(critical_energy_array[0])) 

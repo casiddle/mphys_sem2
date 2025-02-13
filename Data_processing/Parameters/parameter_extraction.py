@@ -21,8 +21,6 @@ def extract_properties_sync(output):
                 properties['mean_theta'] = float(line.split(":")[-1].strip())
             elif "Critical Energy:" in line:
                 properties['crit_energy'] = float(line.split(":")[-1].strip())
-            elif "Theta STD:" in line:
-                properties['theta_std'] = float(line.split(":")[-1].strip())
 
         except ValueError:
             print(f"Could not convert the line to float: '{line}'")
@@ -66,6 +64,11 @@ def extract_properties_em(output):
             # Adjust based on actual output format
             if "Geometric Emittance:" in line:
                 properties['geometric_emittance'] = float(line.split(":")[-1].strip())
+            elif "Energy:" in line:
+                properties['beam_energy'] = float(line.split(":")[-1].strip())
+            elif "Spread:" in line:
+                properties['beam_spread'] = float(line.split(":")[-1].strip())
+            
             
 
         except ValueError:
@@ -126,7 +129,9 @@ emittance_list = []
 initial_emittance_list=[]
 mean_theta_list=[]
 crit_energy_list=[]
-theta_std_list=[]
+beam_energy_list=[]
+beam_spread_list=[]
+
 
 for index, subfolder in enumerate(sub_folders):
     full_path = os.path.join(data_directory, subfolder)
@@ -143,7 +148,7 @@ for index, subfolder in enumerate(sub_folders):
         ratio_list.append(properties_sync.get('ratio', None))
         mean_theta_list.append(properties_sync.get('mean_theta', None))
         crit_energy_list.append(properties_sync.get('crit_energy', None))
-        theta_std_list.append(properties_sync.get('theta_std',None))
+
 
 
     else:
@@ -153,6 +158,8 @@ for index, subfolder in enumerate(sub_folders):
         print(f"Directory {subfolder}: Properties = final {properties_em}")
         #save properties to relevant list
         emittance_list.append(properties_em.get('geometric_emittance', None))
+        beam_energy_list.append(properties_em.get('beam_energy', None))
+        beam_spread_list.append(properties_em.get('beam_spread', None))
 
     else:
         print(f"Directory {subfolder}: Failed to retrieve final em properties.")
@@ -171,10 +178,11 @@ emittance_array=np.array(emittance_list)
 initial_emittance_array=np.array(initial_emittance_list)
 mean_theta_array=np.array(mean_theta_list)
 crit_energy_array=np.array(crit_energy_list)
-theta_std_array=np.array(theta_std_list)
+beam_energy_array=np.array(beam_energy_list)
+beam_spread_array=np.array(beam_spread_list)
 # Create a DataFrame from the two arrays
-df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Theta Std':theta_std_array})
+df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array})
 
 # Save to CSV
-df.to_csv('output.csv', index=False)
+df.to_csv(r'Data_processing\Parameters\output.csv', index=False)
 

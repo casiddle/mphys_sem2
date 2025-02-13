@@ -185,13 +185,14 @@ else:
         energy_string = "%g TeV" % (energy / 1e12)
 
     # New output for energy, gamma, and spread
-    print(f"Energy: {energy} eV")  # Prints the energy in a human-readable format
+    print(f"Energy: {energy} ")  # Prints the energy in a human-readable format
     print(f"Gamma: {wmg}")  # Prints the gamma value formatted to 2 decimal places
     spread_percentage = 100 * stdev_g / wmg if wmg != 0 else 0  # Calculate the spread in percentage
-    print(f"Spread: {spread_percentage:.2f}%")  # Prints the spread formatted to 2 decimal places with a percentage sign
+    print(f"Spread: {spread_percentage:.2f}")  # Prints the spread formatted to 2 decimal places with a percentage sign
     print(f"Geometric Emittance: {(em_y*em_z)**0.5}")
     print(f"Y Emittance:{em_y}")
     print(f"Z Emittance:{em_z}")
+
 
   
 
