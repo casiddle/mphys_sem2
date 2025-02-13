@@ -1,0 +1,223 @@
+# ########################## #
+# Main parameters to change  #
+# ########################## #
+& about
+# -----
+  About_inputs = simulation with CLARA FEBE parameters. # short explanation about the script
+
+& plasma
+# ------
+  plasma_density = 7.03e14 # /cm3
+  plasma_length  = 10   # m
+  output_every_what_distance = 1 #m
+
+& driver beam: Specie1
+# --------------------
+  Energy1 = 400e3 # MeV
+  Espread1 = 0. # (*100 gives energy spread percentage)
+  Charge1 = 2.34e3 #pc
+  sigx1 = 40e-6 #m
+  sigr1 = 200.0e-6 #m
+  EmittanceN1 = 0. # normalized emittance m.rad
+
+& witness beam: Specie2
+# ---------------------
+  Energy2 = 150 # MeV
+  Espread2 = 0.001 # (*100 gives energy spread percentage)
+  Charge2 = 120 #pc
+  sigx2 = 60e-6 #m
+  EmittanceN2 = 1e-6 # normalized emittance m.rad
+
+&Synchrotron
+# ----------
+  Emax = 1e5			# eV
+  Emin = 1.			# eV
+  ThetaMax = 0.005		# rad; max theta
+  nPhibins = 100		# number of bins to divide phi angle
+  nThetabins = 100		# number of bins to divide theta angle
+  nEbins = 300			# number of bins to divide E
+  SynMin = 1e0			# 1, 100; minimum photon energy to be counted
+  screen_to_cell_distance = 1 	#m
+
+# ##################################### #
+# Parameters to be set at the beginning #
+# ##################################### #
+& plasma
+  Distribution = 9    #(=9) uniform plasma [see plasma.cpp file in the source files]
+  P_perCell = 4       #particelpercell at the peak density (choose a square number)
+
+& driver beam: Specie1
+  Distribution1 = 1		# Gaussian ellipsoid
+  x01 = 9.
+  y01 = 0.0			# On axis
+  z01 = 0.0			# On axis
+  Delta1 = 0.0
+  P_perCell1 = 1		# particle per cell: 16, 27, 100
+  Polarity1 = 1		# charge: 1-proton; -1-electron
+  MassAE1 = 1e6		# particle mass in atomic units
+  SkipSaveFlag1 = 0		# (=1) to turn off beam particles saving
+
+& witness beam: Specie1
+  Distribution2 = 1		# Gaussian ellipsoid
+  x02 = 3 #6.8497			# 10*RadiusX + dx
+  y02 = 0.0			# On axis
+  z02 = 0.0			# On axis
+  Delta2 = 0.0			# (?????)
+  P_perCell2 = 16		# particle per cell: 16, 27, 100
+  Polarity2 = -1		# charge: 1-proton; -1-electron
+  MassAE2 = 5.485e-4		# particle mass in atomic units
+  SkipSaveFlag2 = 0		# (=1) to turn off beam particles saving
+
+# ########################################## #
+# Simulation environment to be selected once #
+# ########################################## #
+&Domain
+  # Moving window length
+  Xlength = 10.
+  NxSplit = 2
+  Ylength = 5.
+  Zlength = 5.
+
+  # resolution
+  Hx = 0.1
+  Hy = 0.05
+  Hz = 0.05
+
+  Ts = 10		# Time step
+
+  Nspecies = 3			# includes plasma, driver, witness
+  Npulses = 1			# number of laser pulses available (0, 1 (?????))
+
+  # outputs diag
+  NMovieFramesH5 = 0		# 0 variable outputs in 3d space
+  NMovie2dFramesH5 = 6		# 4, 5, 6 variable outputs in 2d slices
+
+&MPP_partition
+  Xpartition = 8
+  Ypartition = 2
+  Zpartition = 2
+
+# ##################################### #
+# Better not to change these defaults!  #
+# ##################################### #
+& plasma
+  Px0 = 0.            #initial momentum; cold plasma
+  Py0 = 0.            #initial momentum; cold plasma
+  Pz0 = 0.            #initial momentum; cold plasma
+
+&Domain
+  nIter = 1			# 1, 8 (?????)
+  Accuracy = 1e-5		# 1e-5, 2e-5 (?????)
+
+  # Time parameters
+  TsIni = 1e-10		# 1E-10 (?????)
+  TimeIni = 1e-11		# 1e-10, 1e-11 (?????)
+
+  # PIC algorithm
+  MaxwellSolver = 0 		# 0 -> RFFT; 1 -> CFFT; (?????)
+  ParticlePusher = 15 		# 0 -> NGP, 1-> trilinear, 2-> quadratic (why 15 ?????)
+  FollowParticles = 0		# in order to save plasma particles; advance topic - better not use it (0 to deactivate, 1 to activate)
+  Guess = 1 			# 0 - simple, 1 - linear (?????)
+  Hybrid = 0      		# 1-linear; 2-density change; 3-momenta nonlinearity and B-response (?????)
+  DiffractLasers = 0		# (?????)
+  RefractLasers = 0		# (?????)
+  NSplitTimeStepRear = 1	# (?????)
+  RandomSeed = 0		# 0: grid loading - 1: particles initialised with random position inside cell
+  RearPosition = -1   		# 3.5 advance topic- to make use of ContinueBack (?????)
+  SuppressLogs = 1		# (?????)
+
+&Controls
+  ContinueBack = 0	# advanced topic (?????)
+  Reload = 0		# to resume form input data (?????)
+  Nwrite = 0		# to resume form input data (?????)
+  FirstSaveTime=0	# (?????) to alter the default: first movie frame is saved after the first time step; first particle saves is after SavePeriod
+  PostProcessing = 0	# code internal postprocessing plots vlp3 (?????)
+  Ndiagnose = 1	# (?????)
+  CPUstop = 0		# (?????)
+  SaveFieldsFlag = 0
+  FullSaveStride = 2
+
+&Pulse0
+  a0 = 0. #002
+  Ypol = 1.
+  Zpol = 1.
+  Length = 1
+  Ywidth = 120
+  Zwidth = 120
+  RiseTime = 0
+  DropTime = 0
+  Xcenter = 45
+  XperiodPulse = 10000
+  Ycenter = 0
+  Zcenter = 0
+  Yphase = 0.
+  Zphase = -1.57
+  FromBoundary = XM
+  Kx = 1
+  Ky = 0
+  Kz = 0
+
+&Electrons/Plasma           # The first species, "electrons", is always the background plasma.
+  Begin = 0           #Beginning of plasma on x- left boundary
+  PlateauBegin = 0   #beginning of polateau on x
+  PlateauEnd = 1e10  #end of plateau on x
+#  End = 21620#13300    #end of plasma - right boundary; caluclated by script
+  Xperiod = 0         #(?????)
+  Delta = 0.0         #(?????)
+#  RadiusY = 10    #= Ylength; calulated by the script
+#  RadiusZ = 10    #= Zlength; calulated by the script
+
+& Specie1
+  Begin1 = 0			# (?????)
+  PlateauBegin1 = 0		# (?????)
+  PlateauEnd1 = 1e10		# (?????)
+  End1 = 1e10			# (?????)
+  PhaseSpaceFillFlag1 = 0
+  Type1 = 1			# (?????)
+  Zombie1 = 0			# (?????)
+  Beam1 = 1			# if species is beam set to one
+  RandomSeed1 = 1		# 0: grid loading - 1: particles initialised with random position inside cell; when it is beam put it to 1
+
+& Specie2
+  Begin2 = 0			# (?????)
+  PlateauBegin2 = 0		# (?????)
+  PlateauEnd2 = 1e10		# (?????)
+  End2 = 1e10			# (?????)
+  PhaseSpaceFillFlag2 = 0
+  Type2 = 1			# (?????)
+  Zombie2 = 0			# (?????)
+  Beam2 = 1			# if species is beam set to one
+  RandomSeed2 = 1		# 0: grid loading - 1: particles initialised with random position inside cell; when it is beam put it to 1
+
+&Movie2dHDF5			# save in 2d
+  Frame0 = n0
+  Frame1 = n1
+  Frame2 = n2
+  Frame3 = ex
+  Frame4 = ForceY   #ey-c*bz
+  Frame5 = psi
+
+
+&Boundary_Xm
+  FieldCondition_Boundary_Xm = 1
+  ParticlesCondition_Boundary_Xm = 1
+
+&Boundary_Xp
+  FieldCondition_Boundary_Xp = 1
+  ParticlesCondition_Boundary_Xp = 1
+
+&Boundary_Ym
+  FieldCondition_Boundary_Ym = 1
+  ParticlesCondition_Boundary_Ym = 1
+
+&Boundary_Yp
+  FieldCondition_Boundary_Yp = 1
+  ParticlesCondition_Boundary_Yp = 1
+
+&Boundary_Zm
+  FieldCondition_Boundary_Zm = 1
+  ParticlesCondition_Boundary_Zm = 1
+
+&Boundary_Zp
+  FieldCondition_Boundary_Zp = 1
+  ParticlesCondition_Boundary_Zp = 1
