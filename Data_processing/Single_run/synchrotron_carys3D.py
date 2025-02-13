@@ -149,24 +149,24 @@ for i in range(0, 11):
 
     #integrate to get no. of x-ray photons
     # Mask the data to include only the range of interest
-    mask = (e >= uv_max) 
-    energies_integration = e[mask]
+    mask = (E >= uv_max) 
+    energies_integration = E[mask]
     photons_integration = photons_per_energy[mask]
     x_ray_photons=integrate.simpson(photons_integration,x=energies_integration)
     no_xray_photons=np.append(no_xray_photons,x_ray_photons)
 
     #integrate to get no. of UV photons
     # Mask the data to include only the range of interest
-    mask = (e >= uv_min) & (e <= uv_max)
-    energies_integration = e[mask]
+    mask = (E >= uv_min) & (E <= uv_max)
+    energies_integration = E[mask]
     photons_integration = photons_per_energy[mask]
     uv_photons=integrate.simpson(photons_integration,x=energies_integration)
     no_uv_photons=np.append(no_uv_photons,uv_photons)   
 
     #integrate to get no. of other photons
     # Mask the data to include only the range of interest
-    mask = (e <= uv_min)
-    energies_integration = e[mask]
+    mask = (E <= uv_min)
+    energies_integration = E[mask]
     photons_integration = photons_per_energy[mask]
     other_photons=integrate.simpson(photons_integration,x=energies_integration)
     no_other_photons=np.append(no_other_photons,other_photons)  
