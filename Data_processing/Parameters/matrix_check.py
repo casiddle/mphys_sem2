@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-matrix_file1=r'Data_processing\Single_run\matrices\S_matrix_1.npy'
-matrix_file2=r'Data_processing\Single_run\matrices\S_matrix_opt1_1.npy'
+matrix_file1=r'Data_processing\Parameters\matrices\S_matrix_1_10.npy'
+matrix_file2=r'Data_processing\Parameters\matrices\S_matrix_10.npy'
 matrix1=np.load(matrix_file1)
 matrix2=np.load(matrix_file2)
 

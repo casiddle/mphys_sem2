@@ -68,6 +68,8 @@ def extract_properties_em(output):
                 properties['beam_energy'] = float(line.split(":")[-1].strip())
             elif "Spread:" in line:
                 properties['beam_spread'] = float(line.split(":")[-1].strip())
+            elif "Beam Radius:" in line:
+                properties['beam_radius'] = float(line.split(":")[-1].strip())  
             
             
 
@@ -131,6 +133,7 @@ mean_theta_list=[]
 crit_energy_list=[]
 beam_energy_list=[]
 beam_spread_list=[]
+beam_radius_list=[]
 
 
 for index, subfolder in enumerate(sub_folders):
@@ -160,6 +163,7 @@ for index, subfolder in enumerate(sub_folders):
         emittance_list.append(properties_em.get('geometric_emittance', None))
         beam_energy_list.append(properties_em.get('beam_energy', None))
         beam_spread_list.append(properties_em.get('beam_spread', None))
+        beam_radius_list.append(properties_em.get('beam_radius', None))
 
     else:
         print(f"Directory {subfolder}: Failed to retrieve final em properties.")
@@ -180,8 +184,9 @@ mean_theta_array=np.array(mean_theta_list)
 crit_energy_array=np.array(crit_energy_list)
 beam_energy_array=np.array(beam_energy_list)
 beam_spread_array=np.array(beam_spread_list)
+beam_radius_array=np.array(beam_radius_list)
 # Create a DataFrame from the two arrays
-df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array})
+df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array})
 
 # Save to CSV
 df.to_csv(r'Data_processing\Parameters\output.csv', index=False)
