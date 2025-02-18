@@ -151,7 +151,7 @@ for E_c_val in E_c: #E_c_val is the critical energy from an array E_c of critica
 # Convert the list of arrays into a 2D NumPy array
 matrix = np.array(matrix)
 
-matrix_file_name=f'matrices/S_matrix_{emittance_no}_{run_no}.npy'
+matrix_file_name=f'matrices/S_matrix_10.npy'
 
 # # Initialize an empty matrix to store the results of the integral
 
