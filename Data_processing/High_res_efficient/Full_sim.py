@@ -8,7 +8,7 @@ import numpy as np
 
 driver_filename="Data_processing/Data/High_res_efficient/Driver/v2d_mframe_00005.h5"
 witness_filename="Data_processing/Data/High_res_efficient/Witness/v2d_mframe_00005.h5"
-no_CB_filename="Data_processing/Data/ContinueBack/h5files_no_CB_full/v2d_mframe_00001.h5"
+no_CB_filename="Data_processing/Data/High_res_efficient/Witness/v2d_mframe_00002.h5"
 
 driver_file = h5py.File(driver_filename, 'r')
 witness_file = h5py.File(witness_filename, 'r')
@@ -45,7 +45,7 @@ No_CB_X_array=X_no_CB[:]
 
 # Create figure and axis
 fig, ax = plt.subplots()
-# ax.plot(No_CB_X_array, No_CB_Ex_field, color='tab:green', linewidth=7, label='No ContinueBack')
+ax.plot(No_CB_X_array, No_CB_Ex_field, color='tab:green', label='Initial Witness only')
 ax.plot(Driver_X_array, Driver_Ex_field, color='black', label='Driver only')
 ax.plot(Witness_X_array, Witness_Ex_field, color='magenta', label='Witness only')
 
