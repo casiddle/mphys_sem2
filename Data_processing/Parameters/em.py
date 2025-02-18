@@ -2,9 +2,10 @@
 
 # VLP3 - Virtual Laser Plasma Post-Processing
 # Developed by John Farmer
+# This version was edited by Carys Siddle
 # Calculates various beam parameters from a particles.h5 file
 # usage:  em.py <directory> <save number> <species>
-# output:  phase, emittance_in_y, emittance_in_z, mean_energy, _standard_deviation_energy, total_species_weight
+
 #
 # For time evolution, combine with a bash script to loop over files
 
