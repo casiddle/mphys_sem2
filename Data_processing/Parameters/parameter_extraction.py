@@ -4,6 +4,12 @@ import matplotlib.pyplot as plt
 import os
 import pandas as pd
 
+# Get the directory where the current script is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Change the current working directory to the script directory
+os.chdir(script_dir)
+
 def extract_properties_sync(output):
     """
     Extract properties from the output string of the synchrotron_carys3D_sys_input.py script.
@@ -33,7 +39,7 @@ def get_properties_sync(save_num,emittance_num):
     Run synchrotron_carys3D_sys_input.py  with given parameters and return the extracted properties.
     """
     cmd = [
-        "python",  r"Data_processing\Parameters\synchrotron_carys3D_sys_input.py",  # Call the synchrotron_carys3D_sys_input.py script         
+        "python",  r"synchrotron_carys3D_sys_input.py",  # Call the synchrotron_carys3D_sys_input.py script         
         "--run_no", str(save_num),"--emittance",str(emittance_num)     # Save number argument, emittance argument
 
     ]
@@ -68,6 +74,8 @@ def extract_properties_em(output):
                 properties['beam_energy'] = float(line.split(":")[-1].strip())
             elif "Spread:" in line:
                 properties['beam_spread'] = float(line.split(":")[-1].strip())
+            elif "Beam Radius:" in line:
+                properties['beam_radius'] = float(line.split(":")[-1].strip())  
             
             
 
@@ -82,7 +90,7 @@ def get_properties_em(data_dir,save_num,species):
     Run em.py with given parameters and return the extracted properties.
     """
     cmd = [
-        "python", r'Data_processing\Parameters\em.py',  # Call the em.py script
+        "python", r'em.py',  # Call the em.py script
         data_dir,           # Directory argument
         str(save_num),      # Save number argument
         str(species)        # Species argument
@@ -105,7 +113,7 @@ def get_properties_em(data_dir,save_num,species):
 
 
 run_no=10 #change to run number of interest usually last number in scan -1
-data_directory=r"Data_processing\Parameters\emittance_scan" #change to directory within cluster where scan is
+data_directory=r"emittance_scan" #change to directory within cluster where scan is
 species=2
 # suffix=np.array([str(1), 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 
 # 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 
@@ -131,6 +139,7 @@ mean_theta_list=[]
 crit_energy_list=[]
 beam_energy_list=[]
 beam_spread_list=[]
+beam_radius_list=[]
 
 
 for index, subfolder in enumerate(sub_folders):
@@ -160,6 +169,7 @@ for index, subfolder in enumerate(sub_folders):
         emittance_list.append(properties_em.get('geometric_emittance', None))
         beam_energy_list.append(properties_em.get('beam_energy', None))
         beam_spread_list.append(properties_em.get('beam_spread', None))
+        beam_radius_list.append(properties_em.get('beam_radius', None))
 
     else:
         print(f"Directory {subfolder}: Failed to retrieve final em properties.")
@@ -180,9 +190,10 @@ mean_theta_array=np.array(mean_theta_list)
 crit_energy_array=np.array(crit_energy_list)
 beam_energy_array=np.array(beam_energy_list)
 beam_spread_array=np.array(beam_spread_list)
+beam_radius_array=np.array(beam_radius_list)
 # Create a DataFrame from the two arrays
-df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array})
+df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array})
 
 # Save to CSV
-df.to_csv(r'Data_processing\Parameters\output.csv', index=False)
+df.to_csv(r'output.csv', index=False)
 

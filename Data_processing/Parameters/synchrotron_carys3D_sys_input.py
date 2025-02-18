@@ -11,6 +11,12 @@ from scipy import signal
 import numpy as np
 import argparse
 
+# Get the directory where the current script is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Change the current working directory to the script directory
+os.chdir(script_dir)
+
 
 def sum_over_theta_and_phi(synchrotron_array):
     photons_per_crit_energy = np.sum(synchrotron_array, axis=(0,1))
@@ -111,7 +117,7 @@ full_phi_array=[]
 full_theta_array=[]
 full_synchrotron_array=[]
 for file_number in file_numbers:
-    filename=f"Data_processing/Parameters/h5files/v3d_synchrotron_{file_number}.h5"
+    filename=f"h5files/v3d_synchrotron_{file_number}.h5"
     file=h5py.File(filename, 'r')
     full_energy_array.append(file["Energy"][:])
     full_phi_array.append(file["Phi"][:])
@@ -145,7 +151,7 @@ for E_c_val in E_c: #E_c_val is the critical energy from an array E_c of critica
 # Convert the list of arrays into a 2D NumPy array
 matrix = np.array(matrix)
 
-matrix_file_name=f'Data_processing/Parameters/matrices/S_matrix_{emittance_no}_{run_no}.npy'
+matrix_file_name=f'matrices/S_matrix_{emittance_no}_{run_no}.npy'
 
 # # Initialize an empty matrix to store the results of the integral
 

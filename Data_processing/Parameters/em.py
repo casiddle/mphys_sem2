@@ -192,6 +192,7 @@ else:
     print(f"Geometric Emittance: {(em_y*em_z)**0.5}")
     print(f"Y Emittance:{em_y}")
     print(f"Z Emittance:{em_z}")
+    print(f"Beam Radius:{0.5*(stdev_y+stdev_z)}")
 
 
   

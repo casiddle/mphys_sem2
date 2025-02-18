@@ -104,7 +104,7 @@ for file_number in file_numbers:
     full_synchrotron_array.append(file["Synchrotron3D"][:])
     file.close()
 
-for i in range(0, 11):
+for i in range(10, 11):
     run_no=i
     E_c=full_energy_array[run_no]
     E=full_energy_array[run_no]
@@ -130,7 +130,7 @@ for i in range(0, 11):
     # Convert the list of arrays into a 2D NumPy array
     matrix = np.array(matrix)
 
-    matrix_file_name=r'Data_processing\Parameters\matrices\S_matrix_'+str(run_no)+'.npy'
+    matrix_file_name=r'Data_processing\Parameters\matrices\S_matrix_10.npy'
 
     # # Initialize an empty matrix to store the results of the integral
     start_time = time.time()
@@ -166,6 +166,7 @@ for i in range(0, 11):
 
 
     photons_per_theta_per_phi=np.sum(full_synchrotron_array[run_no],axis=2)
+    print("photons per theta per phi shape:",photons_per_theta_per_phi.shape)
 
 
     phi=full_phi_array[run_no]
