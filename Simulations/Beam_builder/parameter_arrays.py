@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.constants import e, m_e, epsilon_0, c
+import pandas as pd
 
 def sigma_ic(e_n,gamma,kp):
   e_n_m=e_n*1e-6
@@ -76,3 +77,23 @@ results_array = np.array(results)
 print("\nEmittance and corresponding radii values:")
 for row in results:
     print(f"[{row[0]:.5f}, {row[1]:.5f}]")
+
+#Initialize a list to store the results in the desired format
+results = []
+
+# Now, retrieve the beam radii from the dictionary without recalculating
+for emittance in log_spaced_values:
+    # Use the pre-calculated beam radius values from the dictionary
+    beam_radius_um_values = beam_radii_dict[emittance]
+    
+    # Create a list of tuples: [(emittance, fraction * beam_radius) for each fraction]
+    for fraction, radius in beam_radius_um_values.items():
+        results.append([emittance, radius])
+
+# Convert results to a pandas DataFrame
+df = pd.DataFrame(results, columns=["Emittance (um)", "Beam Radius (um)"])
+
+
+
+# Optionally, save the DataFrame to a CSV file
+df.to_csv(r"Simulations\Beam_builder\emittance_and_beam_radius.csv", index=False)
