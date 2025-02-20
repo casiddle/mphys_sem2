@@ -58,26 +58,6 @@ for emittance, radii in beam_radii_dict.items():
 
 
 
-# Initialize a list to store the results in the desired format
-results = []
-
-# Now, retrieve the beam radii from the dictionary without recalculating
-for emittance in log_spaced_values:
-    # Use the pre-calculated beam radius values from the dictionary
-    beam_radius_um_values = beam_radii_dict[emittance]
-    
-    # Create a list of tuples: [(emittance, fraction * beam_radius) for each fraction]
-    for fraction, radius in beam_radius_um_values.items():
-        results.append([emittance, radius])
-
-# Convert results to a NumPy array for easy manipulation (optional)
-results_array = np.array(results)
-
-# Print the 2D array of results in the desired format
-print("\nEmittance and corresponding radii values:")
-for row in results:
-    print(f"[{row[0]:.5f}, {row[1]:.5f}]")
-
 #Initialize a list to store the results in the desired format
 results = []
 
@@ -89,6 +69,8 @@ for emittance in log_spaced_values:
     # Create a list of tuples: [(emittance, fraction * beam_radius) for each fraction]
     for fraction, radius in beam_radius_um_values.items():
         results.append([emittance, radius])
+
+print("Number of results:", len(results))
 
 # Convert results to a pandas DataFrame
 df = pd.DataFrame(results, columns=["Emittance (um)", "Beam Radius (um)"])
