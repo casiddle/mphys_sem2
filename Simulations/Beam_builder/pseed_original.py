@@ -9,18 +9,18 @@
 import numpy as np
 import sys
 
-L=float(sys.argv[1]) #bunch length - um (AWAKE: 60)
-Q=float(sys.argv[2]) #bunch charge - pC (AWAKE: 120)
-D=float(sys.argv[3]) #plasma density - 1/ccm (AWAKE: 7e14)
-R=float(sys.argv[4]) #bunch radius - um (AWAKE: 5.75)
-E=float(sys.argv[5]) #bunch emittance - um (AWAKE: 2.0)
-N=int(float(sys.argv[6])) #number of macroparticles 
+L=float(sys.argv[1]) #bunch length - um
+Q=float(sys.argv[2]) #bunch charge - pC
+D=float(sys.argv[3]) #plasma density - 1/ccm
+R=float(sys.argv[4]) #bunch radius - um
+E=float(sys.argv[5]) #bunch emittance - um
+N=int(float(sys.argv[6])) #number of macroparticles
 
 print("#L=%.1f Q=%.1f D=%.2e R=%.1f E=%.1f, N=%d" % (L,Q,D,R,E,N))
 
 ne=Q*1e-12/1.60217646e-19/N #physical number of charges per macroparticle
 
-mpx=300  #mean longitundinal momentum - 1/mc (~150 MeV)
+mpx=2000  #mean longitundinal momentum - 1/mc (~1 GeV)
 spx=1e-4*mpx #lontudinal momentum spread (0.1%)
 
 #sigma_{x,y,z} (cm)
