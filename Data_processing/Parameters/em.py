@@ -173,7 +173,10 @@ if(args.outputformat[0] != "t"):
     sys.stdout.write('%g %g %g %g %g %g %g %g %g %g %g %g %g %d %g\n' % (phase, wmy, wmz, wmpy, wmpz, stdev_y, stdev_z, stdev_py, stdev_pz, em_y, em_z, wmg, stdev_g, N, W) )
 else:
     # Calculation of energy
-    energy = wmg * 938.08e6  # Convert gamma to energy (MeV)
+    if species == 1:
+      energy = wmg * 938.08e6  # Convert gamma to energy (MeV)
+    else:
+      energy = wmg * 0.511e6 # Convert gamma to energy (MeV)
     if energy < 1e3:
         energy_string = "%g eV" % energy
     elif energy < 1e6:
@@ -186,10 +189,10 @@ else:
         energy_string = "%g TeV" % (energy / 1e12)
 
     # New output for energy, gamma, and spread
-    print(f"Energy: {energy} ")  # Prints the energy in a human-readable format
+    print(f"Energy: {energy_string} ")  # Prints the energy in a human-readable format
     print(f"Gamma: {wmg}")  # Prints the gamma value formatted to 2 decimal places
     spread_percentage = 100 * stdev_g / wmg if wmg != 0 else 0  # Calculate the spread in percentage
-    print(f"Spread: {spread_percentage:.2f}")  # Prints the spread formatted to 2 decimal places with a percentage sign
+    print(f"Spread: {spread_percentage:.2f}%")  # Prints the spread formatted to 2 decimal places with a percentage sign
     print(f"Geometric Emittance: {(em_y*em_z)**0.5}")
     print(f"Y Emittance:{em_y}")
     print(f"Z Emittance:{em_z}")
