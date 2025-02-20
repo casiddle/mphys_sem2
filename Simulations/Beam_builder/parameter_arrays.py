@@ -79,3 +79,13 @@ df = pd.DataFrame(results, columns=["Emittance (um)", "Beam Radius (um)"])
 
 # Optionally, save the DataFrame to a CSV file
 df.to_csv(r"Simulations\Beam_builder\emittance_and_beam_radius.csv", index=False)
+
+df_1 = pd.read_csv(r"Simulations\Beam_builder\emittance_and_beam_radius.csv")
+
+# Extract columns into separate NumPy arrays
+column1 = df_1.iloc[:, 0].to_numpy()  # First column
+column2 = df_1.iloc[:, 1].to_numpy()  # Second column
+
+# Print or use the arrays
+print("Column 1:", column1)
+print("Column 2:", column2)
