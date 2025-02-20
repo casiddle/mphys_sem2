@@ -72,6 +72,7 @@ def extract_properties_em(output):
                 properties['geometric_emittance'] = float(line.split(":")[-1].strip())
             elif "Energy:" in line:
                 properties['beam_energy'] = float(line.split(":")[-1].strip())
+                print(line)
             elif "Spread:" in line:
                 properties['beam_spread'] = float(line.split(":")[-1].strip())
             elif "Beam Radius:" in line:
@@ -120,11 +121,9 @@ sub_folders= [f"emittance-{num}" for num in suffix] #change depending on scan
 #print(sub_folders)
 
 # Lists to hold the extracted properties
-#ratio_list = []
+
 
 #initial_emittance_list=[]
-#mean_theta_list=[]
-#crit_energy_list=[]
 
 
 
@@ -133,21 +132,37 @@ for index, subfolder in enumerate(sub_folders):
     beam_energy_list=[]
     beam_spread_list=[]
     beam_radius_list=[]
+    mean_theta_list=[]
+    crit_energy_list=[]
+    ratio_list = []
+
     full_path = os.path.join(data_directory, subfolder)
 
     data_dir=full_path
 
     # Check if the CSV file already exists before processing
-    output_file = f'output_{subfolder}.csv'
-    if os.path.exists(output_file):
-        print(f"File {output_file} already exists. Skipping this subfolder...")
+    output_file1 = f'output_{subfolder}_em.csv'
+    output_file2 = f'output_{subfolder}_sync.csv'
+    if os.path.exists(output_file1) and os.path.exists(output_file2):
+        print(f"File {output_file1} and {output_file2} already exists. Skipping this subfolder...")
         continue  # Skip this subfolder if the CSV file already exists
 
     for i in range(1,run_no+1):
         print(f"Processing save {i} in directory {subfolder}...")
         properties_em=get_properties_em(data_dir,i,species)
-        #properties_sync=get_properties_sync(run_no-1,str(suffix[index]))
+        properties_sync=get_properties_sync(run_no-1,str(suffix[index]))
+    
+    if properties_sync is not None:
+        print(f"Directory {subfolder}: Properties = {properties_sync}")
+        #save properties to relevant list
+        ratio_list.append(properties_sync.get('ratio', None))
+        mean_theta_list.append(properties_sync.get('mean_theta', None))
+        crit_energy_list.append(properties_sync.get('crit_energy', None))
 
+
+
+    else:
+        print(f"Directory {subfolder}: Failed to retrieve sync properties.")
         if properties_em is not None:
             print(f"Directory {subfolder}: Properties =  {properties_em}")
             #save properties to relevant list
@@ -169,20 +184,25 @@ for index, subfolder in enumerate(sub_folders):
     beam_spread_array=np.array(beam_spread_list)
     beam_radius_array=np.array(beam_radius_list)
     # Create a DataFrame from the two arrays
-    df = pd.DataFrame()
-    df = pd.DataFrame({'Emittance': emittance_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array})
-
+    df_em = pd.DataFrame()
+    df_em = pd.DataFrame({'Emittance': emittance_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array})
+    df_sync = pd.DataFrame()
+    df_sync = pd.DataFrame({'Uv/X-ray': ratio_list,'Mean Theta':mean_theta_list, 'Critical Energy':crit_energy_list})
     # Save to CSV
-    df.to_csv(fr'output_{subfolder}.csv', index=False)
+    df_em.to_csv(fr'output_{subfolder}_em.csv', index=False)
+    df_sync.to_csv(fr'output_{subfolder}_sync.csv', index=False)
 
 
 
 # Read the first CSV into DataFrame
-df1 = pd.read_csv('output_emittance-no_CB.csv')
-
+df1 = pd.read_csv('output_emittance-no_CB_em.csv')
 # Read the second CSV into DataFrame
-df2 = pd.read_csv('output_emittance-CB.csv')
+df2 = pd.read_csv('output_emittance-CB_em.csv')
 
+df3=pd.read_csv('output_sync-no_CB_sync.csv')
+df4=pd.read_csv('output_sync-CB_sync.csv')
+
+#em features-------------------------------------------------------------------
 # Create a figure and axis with multiple subplots
 fig, ax1 = plt.subplots(figsize=(10, 6))
 
@@ -218,7 +238,7 @@ ax4.plot(df2.index, df2['Beam Radius'], color='m', label='Beam Radius (CB)', lin
 # Set axis labels
 ax1.set_xlabel('Distance')
 ax1.set_ylabel('Emittance', color='b')
-ax2.set_ylabel('Beam Energy', color='g')
+ax2.set_ylabel('Beam Energy (GeV)', color='g')
 ax3.set_ylabel('Beam Spread', color='r')
 ax4.set_ylabel('Beam Radius', color='m')
 
@@ -228,15 +248,72 @@ ax2.tick_params(axis='y', labelcolor='g')
 ax3.tick_params(axis='y', labelcolor='r')
 ax4.tick_params(axis='y', labelcolor='m')
 
-ax1.legend(loc='upper left')
-ax2.legend(loc='upper right') 
-ax3.legend(loc='lower left')
-ax4.legend(loc='lower right')
+# Add legends to the plot with smaller font size
+ax1.legend(loc='upper left', bbox_to_anchor=(0.0, -0.1), borderaxespad=0., ncol=1, fontsize=10)
+ax2.legend(loc='upper left', bbox_to_anchor=(0.3, -0.1), borderaxespad=0., ncol=1, fontsize=10)
+ax3.legend(loc='upper left', bbox_to_anchor=(0.6, -0.1), borderaxespad=0., ncol=1, fontsize=10)
+ax4.legend(loc='upper left', bbox_to_anchor=(0.9, -0.1), borderaxespad=0., ncol=1, fontsize=10)
+
 
 # Add title and grid
-fig.suptitle('Comparison of Emittance, Beam Energy, Beam Spread, and Beam Radius (Files 1 vs 2)')
+fig.suptitle('Comparison of Emittance, Beam Energy, Beam Spread, and Beam Radius (no CB vs CB)')
 fig.tight_layout()  # Adjust layout to avoid overlapping labels
 
 # Show the plot
 plt.show()
+#Sync features--------------------------------------------------------
+# Create a figure and axis with multiple subplots
+fig2, ax1 = plt.subplots(figsize=(10, 6))
+
+# Create additional axes for the other plots
+ax2 = ax1.twinx()  # Create another y-axis that shares the x-axis
+ax3 = ax1.twinx()  # Create another y-axis that shares the x-axis
+ax4 = ax1.twinx()  # Create a fourth y-axis that shares the x-axis
+
+# Offset the additional axes to prevent overlap
+ax3.spines['right'].set_position(('outward', 60))
+
+
+# Plot Emittance vs Distance for the first file on ax1 (solid line)
+ax1.plot(df1.index, df1['Uv/X-ray'], color='b', label='UV:Xray (no CB)', linestyle='-', marker='o')
+# Plot Emittance vs Distance for the second file on ax1 (dashed line)
+ax1.plot(df2.index, df2['Uv/X-ray '], color='b', label='UV:Xray  (CB)', linestyle='--', marker='x')
+
+# Plot Beam Energy vs Distance for the first file on ax2 (solid line)
+ax2.plot(df1.index, df1['Mean Theta'], color='g', label='Mean Theta (no CB)', linestyle='-', marker='x')
+# Plot Beam Energy vs Distance for the second file on ax2 (dashed line)
+ax2.plot(df2.index, df2['Mean Theta'], color='g', label='Mean Theta (CB)', linestyle='--', marker='^')
+
+# Plot Beam Spread vs Distance for the first file on ax3 (solid line)
+ax3.plot(df1.index, df1['Critical Energy'], color='r', label='Critical Energy (no CB)', linestyle='-', marker='^')
+# Plot Beam Spread vs Distance for the second file on ax3 (dashed line)
+ax3.plot(df2.index, df2['Critical Energy'], color='r', label='Critical Energy (CB)', linestyle='--', marker='s')
+
+# Set axis labels
+ax1.set_xlabel('Distance')
+ax1.set_ylabel('X-ray/UV', color='b')
+ax2.set_ylabel('Mean Theta', color='g')
+ax3.set_ylabel('Critical energy', color='r')
+
+
+# Set tick colors
+ax1.tick_params(axis='y', labelcolor='b')
+ax2.tick_params(axis='y', labelcolor='g')
+ax3.tick_params(axis='y', labelcolor='r')
+
+
+# Add legends to the plot with smaller font size
+ax1.legend(loc='upper left', bbox_to_anchor=(0.0, -0.1), borderaxespad=0., ncol=1, fontsize=10)
+ax2.legend(loc='upper left', bbox_to_anchor=(0.3, -0.1), borderaxespad=0., ncol=1, fontsize=10)
+ax3.legend(loc='upper left', bbox_to_anchor=(0.6, -0.1), borderaxespad=0., ncol=1, fontsize=10)
+
+
+
+# Add title and grid
+fig.suptitle('Comparison of X-ray:UV, mean theta and critical energy (no CB vs CB)')
+fig.tight_layout()  # Adjust layout to avoid overlapping labels
+
+# Show the plot
+plt.show()
+
 
