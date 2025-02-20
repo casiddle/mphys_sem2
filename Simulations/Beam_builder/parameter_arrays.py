@@ -41,12 +41,23 @@ fractions = [0.5,1,2,4,5]  # Fraction/multiple of the beam radius
 beam_radii_dict = {}
 
 # For each emittance value, calculate the corresponding beam match radii for each fraction/multiple
-for emittance in log_spaced_values:
-    beam_radius = sigma_ic(emittance, gamma, kp)  # Calculate beam radius for given emittance in m
-    beam_radius_um = beam_radius * 1e6  # Convert to micrometers
+# for emittance in log_spaced_values:
+#     beam_radius = sigma_ic(emittance, gamma, kp)  # Calculate beam radius for given emittance in m
+#     beam_radius_um = beam_radius * 1e6  # Convert to micrometers
     
+#     # Calculate radii for each fraction/multiple and store in dictionary
+#     beam_radii_dict[emittance] = {fraction: fraction * beam_radius_um for fraction in fractions}
+
+# Loop over each emittance value
+for emittance in log_spaced_values:
+    beam_radius = sigma_ic(emittance, gamma, kp)  # Calculate beam radius in meters
+    beam_radius_um = beam_radius * 1e6  # Convert to micrometers
+    emittance=round(emittance,4)
     # Calculate radii for each fraction/multiple and store in dictionary
-    beam_radii_dict[emittance] = {fraction: fraction * beam_radius_um for fraction in fractions}
+    beam_radii_dict[emittance] = {
+        fraction: round(fraction * beam_radius_um, 4) for fraction in fractions
+    }
+
 
 # Print the results
 print("Emittance values:", log_spaced_values)
@@ -64,6 +75,7 @@ results = []
 # Now, retrieve the beam radii from the dictionary without recalculating
 for emittance in log_spaced_values:
     # Use the pre-calculated beam radius values from the dictionary
+    emittance = round(emittance, 4)
     beam_radius_um_values = beam_radii_dict[emittance]
     
     # Create a list of tuples: [(emittance, fraction * beam_radius) for each fraction]
