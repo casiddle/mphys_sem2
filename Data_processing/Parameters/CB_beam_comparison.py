@@ -197,7 +197,7 @@ for index, subfolder in enumerate(sub_folders):
 # Read the first CSV into DataFrame
 df1 = pd.read_csv('output_emittance-no_CB_em.csv')
 # Read the second CSV into DataFrame
-df2 = pd.read_csv('output_emittance-CB_csv.csv')
+df2 = pd.read_csv('output_emittance-CB_em.csv')
 
 df3=pd.read_csv('output_sync-no_CB_sync.csv')
 df4=pd.read_csv('output_sync-CB_sync.csv')
