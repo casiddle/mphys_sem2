@@ -1,6 +1,7 @@
 #!/bin/bash --login
 #$ -cwd                 # Job will run in the current directory (where you ran qsub)
-#$ -l short     # Sets job time limit
+#$ -pe amd.pe 32        # Choose a PE name from the tables below and a number of cores
+#$ -l s_rt=01:00:00     # Sets job time limit
 #$ -N qv3d              # Set the job's name
 
 # Load any required modulefiles
@@ -23,4 +24,4 @@ export PATH=$HOME/.local/bin:$PATH
 python pseedpar.py 60 120 7e14 5.75 2.0 2e5 > wit.dat
 
 # For MPI applications (small jobs on a single node or larger jobs across multiple compute nodes)
-mpirun -n $NSLOTS qv3dMPIX.e v_CB_witness_fix.ini
+mpirun -n $NSLOTS qv3dMPIX.e v_wf_no_CB.ini
