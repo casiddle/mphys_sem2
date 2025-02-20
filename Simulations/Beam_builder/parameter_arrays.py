@@ -35,7 +35,7 @@ log_spaced_values = np.exp(np.linspace(np.log(emittance_min), np.log(emittance_m
 print("Logarithmically spaced values (base e):", log_spaced_values)
 
 # List of fractions/multiples to compute
-fractions = [0.5,1,2,3,4,5]  # You can easily add more values to this list
+fractions = [0.5,1,2,4,5]  # Fraction/multiple of the beam radius
 
 # Dictionary to store results, where key is the fraction/multiple, and value is the corresponding beam radii
 beam_radii_dict = {}
