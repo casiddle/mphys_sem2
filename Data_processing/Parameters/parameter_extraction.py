@@ -126,7 +126,7 @@ species=2
 # 13.9, 14.0, 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7, 14.8, 14.9, 15.0, 15.1, 
 # 15.2, 15.3, 15.4, 15.5, 15.6, 15.7, 15.8, 15.9, 16.0])
 #suffix=np.array([1.9,2.0])
-suffix=np.array([str(1),1.1])
+suffix=np.array(["no_CB","CB"])
 #print(suffix)
 sub_folders= [f"emittance-{num}" for num in suffix] #change depending on scan
 #print(sub_folders)
