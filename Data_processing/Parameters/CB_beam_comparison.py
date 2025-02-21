@@ -113,10 +113,10 @@ def get_properties_em(data_dir,save_num,species):
 
 
 
-run_no=11 #change to run number of interest usually last number in scan -1
+run_no=40 #change to run number of interest usually last number in scan -1
 data_directory=r"emittance_scan" #change to directory within cluster where scan is
 species=2
-suffix=np.array(["no_CB","CB"])
+suffix=np.array(["fix_no_CB","fix_CB"])
 sub_folders= [f"emittance-{num}" for num in suffix] #change depending on scan
 #print(sub_folders)
 
@@ -152,27 +152,25 @@ for index, subfolder in enumerate(sub_folders):
         properties_em=get_properties_em(data_dir,i,species)
         properties_sync=get_properties_sync(run_no-1,str(suffix[index]))
     
-    if properties_sync is not None:
-        print(f"Directory {subfolder}: Properties = {properties_sync}")
-        #save properties to relevant list
-        ratio_list.append(properties_sync.get('ratio', None))
-        mean_theta_list.append(properties_sync.get('mean_theta', None))
-        crit_energy_list.append(properties_sync.get('crit_energy', None))
-
-
-
-    else:
-        print(f"Directory {subfolder}: Failed to retrieve sync properties.")
-        if properties_em is not None:
-            print(f"Directory {subfolder}: Properties =  {properties_em}")
+        if properties_sync is not None:
+            print(f"Directory {subfolder}: Properties = {properties_sync}")
             #save properties to relevant list
-            emittance_list.append(properties_em.get('geometric_emittance', None))
-            beam_energy_list.append(properties_em.get('beam_energy', None))
-            beam_spread_list.append(properties_em.get('beam_spread', None))
-            beam_radius_list.append(properties_em.get('beam_radius', None))
+            ratio_list.append(properties_sync.get('ratio', None))
+            mean_theta_list.append(properties_sync.get('mean_theta', None))
+            crit_energy_list.append(properties_sync.get('crit_energy', None))
 
         else:
-            print(f"Directory {subfolder}: Failed to retrieve  em properties.")
+            print(f"Directory {subfolder}: Failed to retrieve sync properties.")
+            if properties_em is not None:
+                print(f"Directory {subfolder}: Properties =  {properties_em}")
+                #save properties to relevant list
+                emittance_list.append(properties_em.get('geometric_emittance', None))
+                beam_energy_list.append(properties_em.get('beam_energy', None))
+                beam_spread_list.append(properties_em.get('beam_spread', None))
+                beam_radius_list.append(properties_em.get('beam_radius', None))
+
+            else:
+                print(f"Directory {subfolder}: Failed to retrieve  em properties.")
 
 
     #ratio_array=np.array(ratio_list)
@@ -195,12 +193,12 @@ for index, subfolder in enumerate(sub_folders):
 
 
 # Read the first CSV into DataFrame
-df1 = pd.read_csv('output_emittance-no_CB_em.csv')
+df1 = pd.read_csv('output_emittance-fix_no_CB_em.csv')
 # Read the second CSV into DataFrame
-df2 = pd.read_csv('output_emittance-CB_em.csv')
+df2 = pd.read_csv('output_emittance-fix_CB_em.csv')
 
-df3=pd.read_csv('output_sync-no_CB_sync.csv')
-df4=pd.read_csv('output_sync-CB_sync.csv')
+# df3=pd.read_csv('output_sync-no_CB_sync.csv')
+# df4=pd.read_csv('output_sync-CB_sync.csv')
 
 #em features-------------------------------------------------------------------
 # Create a figure and axis with multiple subplots
@@ -216,24 +214,24 @@ ax3.spines['right'].set_position(('outward', 60))
 ax4.spines['right'].set_position(('outward', 120))
 
 # Plot Emittance vs Distance for the first file on ax1 (solid line)
-ax1.plot(df1.index, df1['Emittance'], color='b', label='Emittance (no CB)', linestyle='-', marker='o')
+ax1.plot(df1.index/4, df1['Emittance'], color='b', label='Emittance (no CB)', linestyle='-', marker='o')
 # Plot Emittance vs Distance for the second file on ax1 (dashed line)
-ax1.plot(df2.index, df2['Emittance'], color='b', label='Emittance (CB)', linestyle='--', marker='x')
+ax1.plot(df2.index/4, df2['Emittance'], color='b', label='Emittance (CB)', linestyle='--', marker='x')
 
 # Plot Beam Energy vs Distance for the first file on ax2 (solid line)
-ax2.plot(df1.index, df1['Beam Energy'], color='g', label='Beam Energy (no CB)', linestyle='-', marker='x')
+ax2.plot(df1.index/4, df1['Beam Energy'], color='g', label='Beam Energy (no CB)', linestyle='-', marker='x')
 # Plot Beam Energy vs Distance for the second file on ax2 (dashed line)
-ax2.plot(df2.index, df2['Beam Energy'], color='g', label='Beam Energy (CB)', linestyle='--', marker='^')
+ax2.plot(df2.index/4, df2['Beam Energy'], color='g', label='Beam Energy (CB)', linestyle='--', marker='^')
 
 # Plot Beam Spread vs Distance for the first file on ax3 (solid line)
-ax3.plot(df1.index, df1['Beam Spread'], color='r', label='Beam Spread (no CB)', linestyle='-', marker='^')
+ax3.plot(df1.index/4, df1['Beam Spread'], color='r', label='Beam Spread (no CB)', linestyle='-', marker='^')
 # Plot Beam Spread vs Distance for the second file on ax3 (dashed line)
-ax3.plot(df2.index, df2['Beam Spread'], color='r', label='Beam Spread (CB)', linestyle='--', marker='s')
+ax3.plot(df2.index/4, df2['Beam Spread'], color='r', label='Beam Spread (CB)', linestyle='--', marker='s')
 
 # Plot Beam Radius vs Distance for the first file on ax4 (solid line)
-ax4.plot(df1.index, df1['Beam Radius'], color='m', label='Beam Radius (no CB)', linestyle='-', marker='s')
+ax4.plot(df1.index/4, df1['Beam Radius'], color='m', label='Beam Radius (no CB)', linestyle='-', marker='s')
 # Plot Beam Radius vs Distance for the second file on ax4 (dashed line)
-ax4.plot(df2.index, df2['Beam Radius'], color='m', label='Beam Radius (CB)', linestyle='--', marker='D')
+ax4.plot(df2.index/4, df2['Beam Radius'], color='m', label='Beam Radius (CB)', linestyle='--', marker='D')
 
 # Set axis labels
 ax1.set_xlabel('Distance')
