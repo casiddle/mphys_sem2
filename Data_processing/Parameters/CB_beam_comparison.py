@@ -181,6 +181,7 @@ for index, subfolder in enumerate(sub_folders):
     beam_energy_array=np.array(beam_energy_list)
     beam_spread_array=np.array(beam_spread_list)
     beam_radius_array=np.array(beam_radius_list)
+    print(beam_energy_array)
     # Create a DataFrame from the two arrays
     df_em = pd.DataFrame()
     df_em = pd.DataFrame({'Emittance': emittance_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array})
