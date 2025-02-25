@@ -118,7 +118,7 @@ data_directory=r"emittance_scan" #change to directory within cluster where scan 
 species=2
 suffix=np.array(["fix_no_CB","fix_CB"])
 sub_folders= [f"emittance-{num}" for num in suffix] #change depending on scan
-#print(sub_folders)
+print("sub folder:",sub_folders)
 
 # Lists to hold the extracted properties
 
@@ -137,6 +137,7 @@ for index, subfolder in enumerate(sub_folders):
     ratio_list = []
 
     full_path = os.path.join(data_directory, subfolder)
+    print("file path:",full_path)
 
     data_dir=full_path
 
@@ -161,16 +162,16 @@ for index, subfolder in enumerate(sub_folders):
 
         else:
             print(f"Directory {subfolder}: Failed to retrieve sync properties.")
-            if properties_em is not None:
-                print(f"Directory {subfolder}: Properties =  {properties_em}")
-                #save properties to relevant list
-                emittance_list.append(properties_em.get('geometric_emittance', None))
-                beam_energy_list.append(properties_em.get('beam_energy', None))
-                beam_spread_list.append(properties_em.get('beam_spread', None))
-                beam_radius_list.append(properties_em.get('beam_radius', None))
+        if properties_em is not None:
+            print(f"Directory {subfolder}: Properties =  {properties_em}")
+            #save properties to relevant list
+            emittance_list.append(properties_em.get('geometric_emittance', None))
+            beam_energy_list.append(properties_em.get('beam_energy', None))
+            beam_spread_list.append(properties_em.get('beam_spread', None))
+            beam_radius_list.append(properties_em.get('beam_radius', None))
 
-            else:
-                print(f"Directory {subfolder}: Failed to retrieve  em properties.")
+        else:
+            print(f"Directory {subfolder}: Failed to retrieve  em properties.")
 
 
     #ratio_array=np.array(ratio_list)
