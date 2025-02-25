@@ -36,10 +36,10 @@ def extract_properties_sync(output):
 
 def get_properties_sync(save_num,emittance_num):
     """
-    Run synchrotron_carys3D_sys_input.py  with given parameters and return the extracted properties.
+    Run synchrotron_carys3D_sys_input_compare.py  with given parameters and return the extracted properties.
     """
     cmd = [
-        "python",  r"synchrotron_carys3D_sys_input.py",  # Call the synchrotron_carys3D_sys_input.py script         
+        "python",  r"synchrotron_carys3D_sys_input_compare.py",  # Call the synchrotron_carys3D_sys_input.py script         
         "--run_no", str(save_num),"--emittance",(emittance_num)     # Save number argument, emittance argument
 
     ]
@@ -199,8 +199,10 @@ df1 = pd.read_csv('output_emittance-fix_no_CB_em.csv')
 # Read the second CSV into DataFrame
 df2 = pd.read_csv('output_emittance-fix_CB_em.csv')
 
-df3=pd.read_csv('output_sync-fix_no_CB_sync.csv')
-df4=pd.read_csv('output_sync-fix_CB_sync.csv')
+df3=pd.read_csv('output_emittance-fix_no_CB_sync.csv')
+df4=pd.read_csv('output_emittance-fix_CB_sync.csv')
+print(df4.columns)
+
 
 #em features-------------------------------------------------------------------
 # Create a figure and axis with multiple subplots
@@ -275,19 +277,19 @@ ax3.spines['right'].set_position(('outward', 60))
 
 
 # Plot Emittance vs Distance for the first file on ax1 (solid line)
-ax1.plot(df1.index, df3['Uv/X-ray'], color='b', label='UV:Xray (no CB)', linestyle='-', marker='o')
+ax1.plot(df3.index, df3['Uv/X-ray'], color='b', label='UV:Xray (no CB)', linestyle='-', marker='o')
 # Plot Emittance vs Distance for the second file on ax1 (dashed line)
-ax1.plot(df2.index, df4['Uv/X-ray '], color='b', label='UV:Xray  (CB)', linestyle='--', marker='x')
+ax1.plot(df4.index, df4['Uv/X-ray'], color='b', label='UV:Xray  (CB)', linestyle='--', marker='x')
 
 # Plot Beam Energy vs Distance for the first file on ax2 (solid line)
-ax2.plot(df1.index, df3['Mean Theta'], color='g', label='Mean Theta (no CB)', linestyle='-', marker='x')
+ax2.plot(df3.index, df3['Mean Theta'], color='g', label='Mean Theta (no CB)', linestyle='-', marker='x')
 # Plot Beam Energy vs Distance for the second file on ax2 (dashed line)
-ax2.plot(df2.index, df4['Mean Theta'], color='g', label='Mean Theta (CB)', linestyle='--', marker='^')
+ax2.plot(df4.index, df4['Mean Theta'], color='g', label='Mean Theta (CB)', linestyle='--', marker='^')
 
 # Plot Beam Spread vs Distance for the first file on ax3 (solid line)
-ax3.plot(df1.index, df3['Critical Energy'], color='r', label='Critical Energy (no CB)', linestyle='-', marker='^')
+ax3.plot(df3.index, df3['Critical Energy'], color='r', label='Critical Energy (no CB)', linestyle='-', marker='^')
 # Plot Beam Spread vs Distance for the second file on ax3 (dashed line)
-ax3.plot(df2.index, df4['Critical Energy'], color='r', label='Critical Energy (CB)', linestyle='--', marker='s')
+ax3.plot(df4.index, df4['Critical Energy'], color='r', label='Critical Energy (CB)', linestyle='--', marker='s')
 
 # Set axis labels
 ax1.set_xlabel('Distance')
