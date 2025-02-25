@@ -40,7 +40,7 @@ def get_properties_sync(save_num,emittance_num):
     """
     cmd = [
         "python",  r"synchrotron_carys3D_sys_input.py",  # Call the synchrotron_carys3D_sys_input.py script         
-        "--run_no", str(save_num),"--emittance",str(emittance_num)     # Save number argument, emittance argument
+        "--run_no", str(save_num),"--emittance",(emittance_num)     # Save number argument, emittance argument
 
     ]
     
@@ -148,9 +148,9 @@ for index, subfolder in enumerate(sub_folders):
         print(f"File {output_file1} and {output_file2} already exists. Skipping this subfolder...")
         continue  # Skip this subfolder if the CSV file already exists
 
-    for i in range(1,run_no+1):
+    for i in range(0,run_no+1):
         print(f"Processing save {i} in directory {subfolder}...")
-        properties_em=get_properties_em(data_dir,i,species)
+        properties_em=get_properties_em(data_dir,i+1,species)
         properties_sync=get_properties_sync(run_no-1,str(suffix[index]))
     
         if properties_sync is not None:
