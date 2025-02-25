@@ -47,7 +47,7 @@ full_phi_array=[]
 full_theta_array=[]
 full_synchrotron_array=[]
 no_xray_photons=np.empty(0)
-no_uv_photons=np.empty(0)
+no_middle_x_ray_photons=np.empty(0)
 no_other_photons=np.empty(0)
 sum_array=np.empty(0)
 for file_number in file_numbers:
@@ -86,7 +86,7 @@ for i in range(0, 11):
     # Convert the list of arrays into a 2D NumPy array
     matrix = np.array(matrix)
 
-    matrix_file_name=r'Data_processing\Single_run\matrices\S_matrix_'+str(run_no)+'.npy'
+    matrix_file_name=r'Data_processing\Parameters\matrices\S_matrix_10.npy'
 
     # # Initialize an empty matrix to store the results of the integral
 
@@ -136,8 +136,8 @@ for i in range(0, 11):
     mask = (e >= middle_min) & (e <= middle_max)
     energies_integration = e[mask]
     photons_integration = photons_per_energy[mask]
-    uv_photons=integrate.simpson(photons_integration,x=energies_integration)
-    no_uv_photons=np.append(no_uv_photons,uv_photons)   
+    middle_x_ray_photons=integrate.simpson(photons_integration,x=energies_integration)
+    no_middle_x_ray_photons=np.append(no_middle_x_ray_photons,middle_x_ray_photons)   
 
     #integrate to get no. of other photons
     # Mask the data to include only the range of interest
@@ -147,7 +147,7 @@ for i in range(0, 11):
     other_photons=integrate.simpson(photons_integration,x=energies_integration)
     no_other_photons=np.append(no_other_photons,other_photons)  
 
-    integral_sum=x_ray_photons+uv_photons+other_photons
+    integral_sum=x_ray_photons+middle_x_ray_photons+other_photons
     sum_array=np.append(sum_array,integral_sum) 
 
 
@@ -155,51 +155,51 @@ for i in range(0, 11):
 distances=[0,1,2,3,4,5,6,7,8,9,10]
 plt.figure(figsize=(10, 6))
 plt.plot(distances,no_xray_photons,marker='o',color='red',label=f'{middle_max}< X-ray Photons < {xray_max} eV')
-plt.plot(distances,no_uv_photons,marker='o',color='blue',label=f'{middle_min}< X-ray Photons < {middle_max} eV')
+plt.plot(distances,no_middle_x_ray_photons,marker='o',color='blue',label=f'{middle_min}< X-ray Photons < {middle_max} eV')
 plt.plot(distances,no_other_photons,marker='o',color='green',label=f'{min}< X-ray Photons < {middle_min} eV')
 plt.xlabel("Distance (m)")
 plt.ylabel("Integrated No. X-ray Photons")
 plt.title("Integrated No. X-ray Photons against Distance")
 plt.legend()
-plt.savefig("Data_processing/Single_run/plots/carys_synchrotron/x_ray_integrated_no_photons.png", dpi=300, bbox_inches='tight')
+plt.savefig("Data_processing/Parameters/plots/carys_synchrotron/x_ray_integrated_no_photons.png", dpi=300, bbox_inches='tight')
 plt.show()
 
 #Plot the number of x-ray photons against distance
 non_int_no_xray_photons=np.array([no_xray_photons[0]])
-non_int_no_uv_photons=np.array([no_uv_photons[0]])
+non_int_no_middle_x_ray_photons=np.array([no_middle_x_ray_photons[0]])
 non_int_no_other_photons=np.array([no_other_photons[0]])
 non_int_sum_array=np.array([sum_array[0]])
 for i in range (1,11):
     non_int_no_xray_photons=np.append(non_int_no_xray_photons,no_xray_photons[i]-no_xray_photons[i-1])  
-    non_int_no_uv_photons=np.append(non_int_no_uv_photons,no_uv_photons[i]-no_uv_photons[i-1])
+    non_int_no_middle_x_ray_photons=np.append(non_int_no_middle_x_ray_photons,no_middle_x_ray_photons[i]-no_middle_x_ray_photons[i-1])
     non_int_no_other_photons=np.append(non_int_no_other_photons,no_other_photons[i]-no_other_photons[i-1])
     non_int_sum_array=np.append(non_int_sum_array,sum_array[i]-sum_array[i-1])
 
 
 plt.figure(figsize=(10, 6))
 plt.plot(distances,non_int_no_xray_photons, marker='o',color='red',label=f'{middle_max}< X-ray Photons < {xray_max} eV')    
-plt.plot(distances,non_int_no_uv_photons, marker='o',color='blue',label=f'{middle_min}< X-ray Photons < {middle_max} eV')
+plt.plot(distances,non_int_no_middle_x_ray_photons, marker='o',color='blue',label=f'{middle_min}< X-ray Photons < {middle_max} eV')
 plt.plot(distances,non_int_no_other_photons, marker='o',color='green',label=f'{min}< X-ray Photons < {middle_min} eV')
 plt.xlabel("Distance (m)")
 plt.ylabel("No. X-ray Photons")
 plt.title("No. X-ray Photons against Distance")
 plt.legend()
-plt.savefig("Data_processing/Single_run/plots/carys_synchrotron/x_ray_no_photons.png", dpi=200, bbox_inches='tight')
+plt.savefig("Data_processing/Parameters/plots/carys_synchrotron/x_ray_no_photons.png", dpi=200, bbox_inches='tight')
 plt.show()
 
 percentage_xray_photons=non_int_no_xray_photons/non_int_sum_array
-percentage_uv_photons=non_int_no_uv_photons/non_int_sum_array
+percentage_middle_x_ray_photons=non_int_no_middle_x_ray_photons/non_int_sum_array
 percentage_other_photons=non_int_no_other_photons/non_int_sum_array
 
 
 plt.figure(figsize=(10, 6))
 plt.plot(distances,percentage_xray_photons, marker='o',color='red',label=f'{middle_max}< X-ray Photons < {xray_max} eV')
-plt.plot(distances,percentage_uv_photons, marker='o',color='blue',label=f'{middle_min}< X-ray Photons < {middle_max} eV')
+plt.plot(distances,percentage_middle_x_ray_photons, marker='o',color='blue',label=f'{middle_min}< X-ray Photons < {middle_max} eV')
 plt.plot(distances,percentage_other_photons, marker='o',color='green',label=f'{middle_min}< X-ray Photons < {min} eV')
 plt.xlabel("Distance (m)")
 plt.ylabel("Percentage X-ray Photons")
 plt.title("Percentage X-ray Photons against Distance")
 plt.legend()
-plt.savefig("Data_processing/Single_run/plots/carys_synchrotron/x_ray_percentage_photons.png", dpi=200, bbox_inches='tight')
+plt.savefig("Data_processing/Parameters/plots/carys_synchrotron/x_ray_percentage_photons.png", dpi=200, bbox_inches='tight')
 plt.show()
 

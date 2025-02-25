@@ -97,6 +97,11 @@ uv_max=124 #eV
 uv_min=3.1 #eV
 xray_max=124e3 #eV
 
+middle_max=1000 #eV
+middle_min=500#eV
+xray_max=124e1 #eV
+min=124 #eV
+
 parser = argparse.ArgumentParser(description='Process synchrotron data and generate plots.')
 parser.add_argument('--run_no', type=int, default=run_no, help='Run number to process')
 parser.add_argument('--emittance',type=float, default=emittance_no, help='emittance data file number')
