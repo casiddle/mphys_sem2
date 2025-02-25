@@ -10,7 +10,7 @@ for em in 1 2 3; do
   cd ${dir}
   
   # Submit the job
-  sbatch jobscript.sh  
+  qsub jobscript.sh 
   
   cd ../..  # Move back to the original directory
 done
