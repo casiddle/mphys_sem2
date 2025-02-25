@@ -159,20 +159,19 @@ for index, subfolder in enumerate(sub_folders):
         mean_theta_list.append(properties_sync.get('mean_theta', None))
         crit_energy_list.append(properties_sync.get('crit_energy', None))
 
-
-
     else:
         print(f"Directory {subfolder}: Failed to retrieve sync properties.")
-        if properties_em is not None:
-            print(f"Directory {subfolder}: Properties =  {properties_em}")
-            #save properties to relevant list
-            emittance_list.append(properties_em.get('geometric_emittance', None))
-            beam_energy_list.append(properties_em.get('beam_energy', None))
-            beam_spread_list.append(properties_em.get('beam_spread', None))
-            beam_radius_list.append(properties_em.get('beam_radius', None))
+        
+    if properties_em is not None:
+        print(f"Directory {subfolder}: Properties =  {properties_em}")
+        #save properties to relevant list
+        emittance_list.append(properties_em.get('geometric_emittance', None))
+        beam_energy_list.append(properties_em.get('beam_energy', None))
+        beam_spread_list.append(properties_em.get('beam_spread', None))
+        beam_radius_list.append(properties_em.get('beam_radius', None))
 
-        else:
-            print(f"Directory {subfolder}: Failed to retrieve  em properties.")
+    else:
+        print(f"Directory {subfolder}: Failed to retrieve  em properties.")
 
 
     #ratio_array=np.array(ratio_list)
@@ -183,6 +182,7 @@ for index, subfolder in enumerate(sub_folders):
     beam_energy_array=np.array(beam_energy_list)
     beam_spread_array=np.array(beam_spread_list)
     beam_radius_array=np.array(beam_radius_list)
+    print(beam_energy_array)
     # Create a DataFrame from the two arrays
     df_em = pd.DataFrame()
     df_em = pd.DataFrame({'Emittance': emittance_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array})
@@ -196,6 +196,7 @@ for index, subfolder in enumerate(sub_folders):
 
 # Read the first CSV into DataFrame
 df1 = pd.read_csv('output_emittance-no_CB_em.csv')
+
 # Read the second CSV into DataFrame
 df2 = pd.read_csv('output_emittance-CB_em.csv')
 
