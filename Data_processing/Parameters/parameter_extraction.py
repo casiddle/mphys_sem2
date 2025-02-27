@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import pandas as pd
+import re
 
 # Get the directory where the current script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -27,6 +28,10 @@ def extract_properties_sync(output):
                 properties['mean_theta'] = float(line.split(":")[-1].strip())
             elif "Critical Energy:" in line:
                 properties['crit_energy'] = float(line.split(":")[-1].strip())
+            elif "X-ray percentage:" in line:
+                properties['x_ray_percentage'] = float(line.split(":")[-1].strip())
+            elif "Critical Energy X-ray photons:" in line:
+                properties['x_ray_crit_energy'] = float(line.split(":")[-1].strip())
 
         except ValueError:
             print(f"Could not convert the line to float: '{line}'")
@@ -47,6 +52,7 @@ def get_properties_sync(save_num,emittance_num):
     try:
         # Run the command and capture the output
         result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        print(result.stdout)
         
         # Return the extracted properties from the output
         return extract_properties_sync(result.stdout)
@@ -110,22 +116,44 @@ def get_properties_em(data_dir,save_num,species):
         return None
 
 
+def find_largest_file_number(parent_dir):
+    """
+    Given a parent directory path, this function finds the largest number
+    at the end of filenames that follow the pattern 'filename_XXXXX.h5', 
+    where 'XXXXX' is a number (e.g., v3d_synchrotron_00001.h5, v3d_synchrotron_00011.h5, ...).
+    
+    :param parent_dir: str, path to the parent directory where the files are located.
+    :return: int, the largest number found in the filenames.
+    """
+    # Get the list of all files in the directory
+    files = os.listdir(parent_dir)
+
+    # Initialize a variable to keep track of the largest number
+    largest_number = -1
+
+    # Regex pattern to match the numerical part just before '.h5' (e.g., _00001)
+    pattern = r'_(\d+)\.h5$'
+
+    # Iterate over the files
+    for file in files:
+        # Try to match the pattern at the end of the filename
+        match = re.search(pattern, file)
+        if match:
+            # Extract the number from the match
+            number = int(match.group(1))
+            
+            # Update largest_number if this one is larger
+            if number > largest_number:
+                largest_number = number
+
+    # Return the largest number found, or -1 if no numbers were found
+    return largest_number
 
 
-run_no=10 #change to run number of interest usually last number in scan -1
+run_no=11 #change to run number of interest usually last number in scan 
 data_directory=r"emittance_scan" #change to directory within cluster where scan is
-species=2
-# suffix=np.array([str(1), 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 
-# 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 
-# 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 
-# 5.5, 5.6, 5.7, 5.8, 5.9, 6.0, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 
-# 7.0, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 9.0, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9, 
-# 10.0, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 11.0, 11.1, 11.2, 
-# 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 11.9, 12.0, 12.1, 12.2, 12.3, 12.4, 12.5, 
-# 12.6, 12.7, 12.8, 12.9, 13.0, 13.1, 13.2, 13.3, 13.4, 13.5, 13.6, 13.7, 13.8, 
-# 13.9, 14.0, 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7, 14.8, 14.9, 15.0, 15.1, 
-# 15.2, 15.3, 15.4, 15.5, 15.6, 15.7, 15.8, 15.9, 16.0])
-#suffix=np.array([1.9,2.0])
+species=2 #witness beam
+
 suffix=np.array([str(1),1.1])
 #print(suffix)
 sub_folders= [f"emittance-{num}" for num in suffix] #change depending on scan
@@ -140,15 +168,19 @@ crit_energy_list=[]
 beam_energy_list=[]
 beam_spread_list=[]
 beam_radius_list=[]
+x_ray_percentage_list=[]
+x_ray_crit_energy_list=[]
 
 
 for index, subfolder in enumerate(sub_folders):
     full_path = os.path.join(data_directory, subfolder)
+    run_no=find_largest_file_number(full_path)
+    #print("Largest file number:",run_no)
 
     data_dir=full_path
 
     properties_sync=get_properties_sync(run_no,str(suffix[index]))
-    properties_em=get_properties_em(data_dir,run_no+1,species)
+    properties_em=get_properties_em(data_dir,run_no,species)
     properties_em_initial=get_properties_em(data_dir,1,species)
 
     if properties_sync is not None:
@@ -157,6 +189,8 @@ for index, subfolder in enumerate(sub_folders):
         ratio_list.append(properties_sync.get('ratio', None))
         mean_theta_list.append(properties_sync.get('mean_theta', None))
         crit_energy_list.append(properties_sync.get('crit_energy', None))
+        x_ray_percentage_list.append(properties_sync.get('x_ray_percentage', None))
+        x_ray_crit_energy_list.append(properties_sync.get('x_ray_crit_energy', None))
 
 
 
@@ -191,8 +225,10 @@ crit_energy_array=np.array(crit_energy_list)
 beam_energy_array=np.array(beam_energy_list)
 beam_spread_array=np.array(beam_spread_list)
 beam_radius_array=np.array(beam_radius_list)
+x_ray_percentage_array=np.array(x_ray_percentage_list)
+x_ray_crit_energy_array=np.array(x_ray_crit_energy_list)
 # Create a DataFrame from the two arrays
-df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array})
+df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array, 'X-ray Percentage':x_ray_percentage_array, 'X-ray Critical Energy':x_ray_crit_energy_array})
 
 # Specify the file path
 file_path = 'output.csv'
