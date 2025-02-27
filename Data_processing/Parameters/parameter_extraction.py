@@ -194,6 +194,14 @@ beam_radius_array=np.array(beam_radius_list)
 # Create a DataFrame from the two arrays
 df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array})
 
-# Save to CSV
-df.to_csv(r'output.csv', index=False)
+# Specify the file path
+file_path = 'output.csv'
+
+# Check if the file already exists
+if os.path.exists(file_path):
+    # If the file exists, append to it (without including the header)
+    df.to_csv(file_path, mode='a', header=False, index=False)
+else:
+    # If the file does not exist, create the file and write the DataFrame with the header
+    df.to_csv(file_path, index=False)
 

@@ -208,13 +208,6 @@ result_matrix = np.einsum('ij,klj->kli', S_matrix, photons_per_crit_energy)
 normalised_result=result_matrix/np.sum(S_matrix,axis=1)
 
 
-
-
-normalised_result=result_matrix/np.sum(S_matrix,axis=1)
-
-
-
-
 photons_per_theta_per_phi=np.sum(full_synchrotron_array,axis=2)
 
 
