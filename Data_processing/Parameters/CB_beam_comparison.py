@@ -48,7 +48,6 @@ def get_properties_sync(save_num,emittance_num):
     try:
         # Run the command and capture the output
         result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        print("RESULT:",result.stdout)
         
         # Return the extracted properties from the output
         return extract_properties_sync(result.stdout)
