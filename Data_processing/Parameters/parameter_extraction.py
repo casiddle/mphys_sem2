@@ -188,6 +188,8 @@ beam_spread_list=[]
 beam_radius_list=[]
 x_ray_percentage_list=[]
 x_ray_crit_energy_list=[]
+set_emittance_list=[]
+set_radius_list=[]
 
 
 for index, subfolder in enumerate(sub_folders):
@@ -196,6 +198,8 @@ for index, subfolder in enumerate(sub_folders):
     em,rad=extract_numbers_from_subfolder(subfolder)
     print("EM:",em)
     print("RAD:",rad)
+    set_emittance_list.append(em)
+    set_radius_list.append(rad)
     #print("Largest file number:",run_no)
 
     data_dir=full_path
@@ -250,7 +254,10 @@ beam_radius_array=np.array(beam_radius_list)
 x_ray_percentage_array=np.array(x_ray_percentage_list)
 x_ray_crit_energy_array=np.array(x_ray_crit_energy_list)
 # Create a DataFrame from the two arrays
-df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array, 'X-ray Percentage':x_ray_percentage_array, 'X-ray Critical Energy':x_ray_crit_energy_array})
+df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,
+                   'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 
+                   'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array, 'X-ray Percentage':x_ray_percentage_array, 
+                   'X-ray Critical Energy':x_ray_crit_energy_array, 'Set Emittance':set_emittance_list, 'Set Radius':set_radius_list})
 
 # Specify the file path
 file_path = 'output.csv'
