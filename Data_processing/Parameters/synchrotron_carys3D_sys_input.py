@@ -11,12 +11,13 @@ from scipy import signal
 import numpy as np
 import argparse
 
-# # Get the directory where the current script is located
+# Get the directory where the current script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-# # Change the current working directory to the script directory
+# Change the current working directory to the script directory
 os.chdir(script_dir)
 
+script_dir=os.path.join(script_dir,"emittance_scan")
 
 def sum_over_theta_and_phi(synchrotron_array):
     photons_per_crit_energy = np.sum(synchrotron_array, axis=(0,1))
@@ -116,17 +117,11 @@ if emittance_no==1.0:
 print("Run:"+str(run_no))
 print("Emittance no.:"+str(emittance_no))
 
-file_numbers=["00001", "00002", "00003", "00004", "00005", "00006", "00007", "00008", "00009", "00010",  
- "00011", "00012", "00013", "00014", "00015", "00016", "00017", "00018", "00019", "00020",  
- "00021", "00022", "00023", "00024", "00025", "00026", "00027", "00028", "00029", "00030",  
- "00031", "00032", "00033", "00034", "00035", "00036", "00037", "00038", "00039", "00040",  
- "00041"]
-
+file_numbers=["00001", "00002", "00003", "00004", "00005", "00006", "00007", "00008", "00009", "00010", "00011"]
 full_energy_array=[]
 full_phi_array=[]
 full_theta_array=[]
 full_synchrotron_array=[]
-print("current directory sync:",script_dir)
 for file_number in file_numbers:
     filename=f"h5files/v3d_synchrotron_{file_number}.h5"
     file=h5py.File(filename, 'r')
