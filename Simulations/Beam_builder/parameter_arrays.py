@@ -35,7 +35,7 @@ log_spaced_values = np.exp(np.linspace(np.log(emittance_min), np.log(emittance_m
 print("Logarithmically spaced values (base e):", log_spaced_values)
 
 # List of fractions/multiples to compute
-fractions = [0.5,1,2,4,5]  # Fraction/multiple of the beam radius
+fractions = [0.5,1,4,5]  # Fraction/multiple of the beam radius
 
 # Dictionary to store results, where key is the fraction/multiple, and value is the corresponding beam radii
 beam_radii_dict = {}
@@ -90,14 +90,5 @@ df = pd.DataFrame(results, columns=["Emittance (um)", "Beam Radius (um)","Beam R
 
 
 # Optionally, save the DataFrame to a CSV file
-df.to_csv(r"Simulations\Beam_builder\emittance_and_beam_radius.csv", index=False)
+df.to_csv(r"Simulations\Beam_builder\short_array.csv", index=False)
 
-df_1 = pd.read_csv(r"Simulations\Beam_builder\emittance_and_beam_radius.csv")
-
-# Extract columns into separate NumPy arrays
-column1 = df_1.iloc[:, 0].to_numpy()  # First column
-column2 = df_1.iloc[:, 1].to_numpy()  # Second column
-
-# Print or use the arrays
-print("Column 1:", column1)
-print("Column 2:", column2)
