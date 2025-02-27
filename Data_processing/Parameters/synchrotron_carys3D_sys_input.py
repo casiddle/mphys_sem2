@@ -108,16 +108,19 @@ min=124 #eV
 parser = argparse.ArgumentParser(description='Process synchrotron data and generate plots.')
 parser.add_argument('--run_no', type=int, default=run_no, help='Run number to process')
 parser.add_argument('--emittance',type=str, default=emittance_no, help='emittance data file number')
+parser.add_argument('--radius_frac', type=float, default=1, help='Fraction or multiple of the critical radius')
 # Parse the command-line arguments
 args = parser.parse_args()
 
 run_no=args.run_no
 emittance_no=args.emittance
+radius_frac=args.radius_frac
 if emittance_no==1.0:
     emittance_no=str(1)
 
 print("Run:"+str(run_no))
 print("Emittance no.:"+str(emittance_no))
+print("Radius fraction:"+str(radius_frac))
 
 
 file_number=get_file_suffix(run_no)
@@ -126,7 +129,8 @@ full_energy_array=[]
 full_phi_array=[]
 full_theta_array=[]
 full_synchrotron_array=[]
-filename=rf"{script_dir}/emittance-{emittance_no}/v3d_synchrotron_{file_number}.h5"
+#filename=rf"{script_dir}/emittance-{emittance_no}/v3d_synchrotron_{file_number}.h5"
+filename=rf"{script_dir}/emittance-{emittance_no}_radius-{radius_frac}/v3d_synchrotron_{file_number}.h5"
 
 
 print("filename:"+str(filename))

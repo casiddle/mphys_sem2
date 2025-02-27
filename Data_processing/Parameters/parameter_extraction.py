@@ -7,7 +7,6 @@ import re
 
 # Get the directory where the current script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
-
 # Change the current working directory to the script directory
 os.chdir(script_dir)
 
@@ -39,13 +38,13 @@ def extract_properties_sync(output):
     return properties
 
 
-def get_properties_sync(save_num,emittance_num):
+def get_properties_sync(save_num,emittance_num,radius_frac):
     """
     Run synchrotron_carys3D_sys_input.py  with given parameters and return the extracted properties.
     """
     cmd = [
         "python",  r"synchrotron_carys3D_sys_input.py",  # Call the synchrotron_carys3D_sys_input.py script         
-        "--run_no", str(save_num),"--emittance",str(emittance_num)     # Save number argument, emittance argument
+        "--run_no", str(save_num),"--emittance",str(emittance_num), "--radius_frac",str(radius_frac)    # Save number argument, emittance argument
 
     ]
     
@@ -149,15 +148,34 @@ def find_largest_file_number(parent_dir):
     # Return the largest number found, or -1 if no numbers were found
     return largest_number
 
+# Function to extract numbers from the folder names
+def extract_numbers_from_subfolder(subfolder):
+    match = re.match(r"emittance-(\d+\.?\d*)_radius-(\d+)", subfolder)
+    if match:
+        emittance = float(match.group(1))  # Extract the emittance number (convert to float if needed)
+        radius = int(match.group(2))       # Extract the radius number (convert to int)
+        return emittance, radius
+    else:
+        return None, None  # Return None if no match found
+
 
 run_no=11 #change to run number of interest usually last number in scan 
 data_directory=r"emittance_scan" #change to directory within cluster where scan is
 species=2 #witness beam
 
-suffix=np.array([str(1),1.1])
-#print(suffix)
-sub_folders= [f"emittance-{num}" for num in suffix] #change depending on scan
-#print(sub_folders)
+suffix1=np.array([1.0,1.1])
+suffix2=np.array([1.0])
+
+# Initialize an empty list to store all the subfolders # code for when we are chnaging both radius and emittance
+sub_folders = []
+
+# Generate the subfolder names
+for num in suffix1:
+    for rad in suffix2:
+        sub_folders.append(f"emittance-{num}_radius-{rad}")
+
+# Print the result
+print(sub_folders)
 
 # Lists to hold the extracted properties
 ratio_list = []
@@ -175,11 +193,15 @@ x_ray_crit_energy_list=[]
 for index, subfolder in enumerate(sub_folders):
     full_path = os.path.join(data_directory, subfolder)
     run_no=find_largest_file_number(full_path)
+    em,rad=extract_numbers_from_subfolder(subfolder)
+    print("EM:",em)
+    print("RAD:",rad)
     #print("Largest file number:",run_no)
 
     data_dir=full_path
 
-    properties_sync=get_properties_sync(run_no,str(suffix[index]))
+    #properties_sync=get_properties_sync(run_no,str(suffix1[index]),1)
+    properties_sync=get_properties_sync(run_no,str(em),str(rad))
     properties_em=get_properties_em(data_dir,run_no,species)
     properties_em_initial=get_properties_em(data_dir,1,species)
 
