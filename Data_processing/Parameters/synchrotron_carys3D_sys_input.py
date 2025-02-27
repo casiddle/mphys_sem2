@@ -1,3 +1,7 @@
+"""
+This is my two headed cow
+"""
+
 import sys
 import h5py
 import os
@@ -26,17 +30,8 @@ def sum_over_theta_and_phi(synchrotron_array):
 def integrand(x):
     return kv(nu, x)
 
-def S_integral(E, E_c, upper_bound):
-    ratio = E / E_c
-    array=np.linspace(ratio,upper_bound)
-    integrand_array=integrand(array)
-    # Perform integration for each scalar value of ratio
-    #integral_result = integrate.simpson(integrand_array, x=array)
-    integral_result, _ = quad(integrand, ratio, upper_bound)
-    result = ratio * integral_result  # Multiply by ratio
-    return result
 
-def S_integral2(E, E_c, upper_bound):
+def S_integral(E, E_c, upper_bound):
     """
     Calculate the integral of the function S(E, E_c) = E/E_c * K_v(E/E_c) from E/E_c to upper_bound,
     where upper bound is some large number (in practice this should be inifinity) and E is energy and E_c is
@@ -61,13 +56,7 @@ def S_integral2(E, E_c, upper_bound):
 
 def calculate_critical_energy(energy_array, photons_per_energy_array):
     mean_energy_array=np.empty(0)
-    print("Energy array:"+str(energy_array))
-    print("Energy array shape:"+str(energy_array.shape))   
-    print("Photons per energy array:"+str(photons_per_energy_array))
-    print("Photons per energy array shape:"+str(photons_per_energy_array.shape))
     energy_photons=energy_array*photons_per_energy_array
-    print("Energy photons:"+str(energy_photons))
-    print("Energy photons shape:"+str(energy_photons.shape))
     mean_energy = np.sum((energy_photons))/np.sum(photons_per_energy_array)
     mean_energy_array=np.append(mean_energy_array,mean_energy)
     critical_energy_array = mean_energy_array/(8/(15*np.sqrt(3)))
@@ -97,16 +86,15 @@ def std_from_frequency(theta_array, photons_per_theta_array):
 
     return std_dev
 
-def generate_file_numbers(num_files):
-    """Generate a list of zero-padded file numbers."""
-    return [f"{i:05d}" for i in range(1, num_files + 1)]
-
 def get_file_suffix(run_no):
     """Convert a run number to a zero-padded 5-digit file suffix."""
     return f"{run_no:05d}"
 
+#default values in case of no arguments
 run_no=10
-emittance_no=2.0
+emittance_no=1.1
+
+
 nu = 5/3  # order of the Bessel function
 uv_max=124 #eV
 uv_min=3.1 #eV
@@ -189,7 +177,7 @@ except FileNotFoundError:
     upper_bound_matrix = (E[:, None] / E_c) * 100  # Broadcasting to create a matrix of shape (i, j)
 
     # Use np.vectorize  to apply the integral to each element of the matrix
-    S_matrix = np.vectorize(S_integral2)(E[:, None], E_c, upper_bound_matrix)
+    S_matrix = np.vectorize(S_integral)(E[:, None], E_c, upper_bound_matrix)
     np.save(matrix_file_name, S_matrix)
     S_matrix=np.load(matrix_file_name)
 
@@ -259,13 +247,13 @@ mean_theta_array = calculate_mean_theta(full_theta_array, photons_per_theta_arra
 std_dev=std_from_frequency(full_theta_array,photons_per_theta_array)
 
 print("UV/Xray ratio:"+str(uv_photons/x_ray_photons))
+print("X-ray percentage:"+str(x_ray_percentage))
 
 
 print("Mean Theta:"+str(mean_theta_array[0])) 
 print("Critical Energy:"+str(critical_energy_array[0])) 
 
-E=full_energy_array
-theta=full_theta_array
+
  
 # Mask the data to include only the X-ray energy range
 xray_mask = (E >= uv_max) & (E <= xray_max)  # Mask for energies in the X-ray range
@@ -278,25 +266,21 @@ xray_photons_per_energy = photons_per_energy[xray_mask]
 xray_critical_energy = calculate_critical_energy(xray_energies, xray_photons_per_energy)
 
 # Debugging: Print the calculated critical energy
-print("Critical Energy for X-ray photons:", xray_critical_energy)
+print("Critical Energy X-ray photons:", str(xray_critical_energy[0]))
 
-print(full_theta_array[10].shape)
-print(full_phi_array[10].shape)
-print(full_energy_array[10].shape)
 
-print(full_synchrotron_array[10].shape)
 
+
+#ATTEMPT to find mean theta of x-ray photons
 # Define your energy threshold (e.g., uv_max or some other value)
 energy_threshold = uv_max  # Replace with your specific threshold
 
-# Get the energy values for the current run (full_energy_array[10])
-energy_values = full_energy_array[10]  # Shape: (300,)
-
 # Find the indices where the energy is above the threshold
-valid_energy_indices = energy_values >= energy_threshold  # This gives a boolean array
+valid_energy_indices = full_energy_array >= energy_threshold  # This gives a boolean array
+
+
 
 # Create a new synchrotron array that excludes energies below the threshold
-new_synchrotron_array = full_synchrotron_array[10][:, :, valid_energy_indices]
+new_synchrotron_array = full_synchrotron_array[:, :, valid_energy_indices]
+new_theta_array =new_synchrotron_array[1]
 
-# Now, new_synchrotron_array will have shape (100, 100, n), where n is the number of energy values above the threshold
-print(f"New synchrotron array shape (excluding low-energy photons): {new_synchrotron_array.shape}")
