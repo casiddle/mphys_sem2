@@ -10,17 +10,18 @@ from scipy import integrate
 from scipy import signal
 import numpy as np
 import argparse
+from scipy.signal import convolve2d
 
 # Get the directory where the current script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Change the current working directory to the script directory
 os.chdir(script_dir)
-print("script directory sync:"+str(script_dir))
+#print("script directory sync:"+str(script_dir))
 
 script_dir=os.path.join(script_dir,"emittance_scan")
 
-print("script directory sync:"+str(script_dir))
+#print("script directory sync:"+str(script_dir))
 
 def sum_over_theta_and_phi(synchrotron_array):
     photons_per_crit_energy = np.sum(synchrotron_array, axis=(0,1))
@@ -94,8 +95,16 @@ def std_from_frequency(theta_array, photons_per_theta_array):
     #print("std:",std_dev)
     return std_dev
 
+def generate_file_numbers(num_files):
+    """Generate a list of zero-padded file numbers."""
+    return [f"{i:05d}" for i in range(1, num_files + 1)]
+
+def get_file_suffix(run_no):
+    """Convert a run number to a zero-padded 5-digit file suffix."""
+    return f"{run_no:05d}"
+
 run_no=10
-emittance_no=2.0
+emittance_no='fix_no_CB'
 nu = 5/3  # order of the Bessel function
 uv_max=124 #eV
 uv_min=3.1 #eV
@@ -114,43 +123,47 @@ args = parser.parse_args()
 
 run_no=args.run_no
 emittance_no=args.emittance
-print("emittance")
+
 if emittance_no==1.0:
     emittance_no=str(1)
 
-print("Run:"+str(run_no))
-print("Emittance no.:"+str(emittance_no))
+print("-----------------Run-------------------------:"+str(run_no))
 
-file_numbers=["00001", "00002", "00003", "00004", "00005", "00006", "00007", "00008", "00009", "00010", 
- "00011", "00012", "00013", "00014", "00015", "00016", "00017", "00018", "00019", "00020",
- "00021", "00022", "00023", "00024", "00025", "00026", "00027", "00028", "00029", "00030", 
- "00031", "00032", "00033", "00034", "00035", "00036", "00037", "00038", "00039", "00040"]
+
+
+file_number=get_file_suffix(run_no)
+
 full_energy_array=[]
 full_phi_array=[]
 full_theta_array=[]
 full_synchrotron_array=[]
-filename_base=rf"{script_dir}\emittance-{emittance_no}\h5files\v3d_synchrotron"
-print("filename_base:"+str(filename_base))  
-for file_number in file_numbers:
-    filename=rf"{filename_base}_{file_number}.h5"
-    file=h5py.File(filename, 'r')
-    full_energy_array.append(file["Energy"][:])
-    full_phi_array.append(file["Phi"][:])
-    full_theta_array.append(file["Theta"][:])
-    full_synchrotron_array.append(file["Synchrotron3D"][:])
-    file.close()
+filename=rf"{script_dir}\emittance-{emittance_no}\h5files\v3d_synchrotron_{file_number}.h5"
+
+
+print("filename:"+str(filename))
+file=h5py.File(filename, 'r')
+full_energy_array.append(file["Energy"][:])
+full_phi_array.append(file["Phi"][:])
+full_theta_array.append(file["Theta"][:])
+full_synchrotron_array.append(file["Synchrotron3D"][:])
+file.close()
+
+# Convert the lists to NumPy arrays and squeeze them to remove any singleton dimensions
+full_energy_array = np.squeeze(np.array(full_energy_array))
+full_phi_array = np.squeeze(np.array(full_phi_array))
+full_theta_array = np.squeeze(np.array(full_theta_array))
+full_synchrotron_array = np.squeeze(np.array(full_synchrotron_array))
+
+E_c=full_energy_array
+E=full_energy_array
 
 
 
-E_c=full_energy_array[run_no]
-E=full_energy_array[run_no]
+#full_synchrotron_array = np.array(full_synchrotron_array)
+#full_synchrotron_array = np.squeeze(full_synchrotron_array)
+photons_per_crit_energy=full_synchrotron_array
 
-#print("E_c sum:",str(np.sum(e_c)))
-#print("E sum:",str(np.sum(e)))
-#print(e)
 
-photons_per_crit_energy=full_synchrotron_array[run_no]
-#print("Photons per critical energy sum:",str(np.sum(photons_per_crit_energy)))
 
 # Initialize an empty list to store the result arrays
 matrix = []
@@ -189,37 +202,37 @@ except FileNotFoundError:
 
 
 # Perform matrix multiplication
-
+print('photons_per_crit_energy:',photons_per_crit_energy.shape)
+print('S_matrix:',S_matrix.shape)
 result_matrix = np.einsum('ij,klj->kli', S_matrix, photons_per_crit_energy)
 normalised_result=result_matrix/np.sum(S_matrix,axis=1)
-#print("normalised result:",normalised_result)
 
 
 
-#print("Photons per energy sum:",str(np.sum(normalised_result)))
+
+normalised_result=result_matrix/np.sum(S_matrix,axis=1)
 
 
 
-photons_per_theta_per_phi=np.sum(full_synchrotron_array[run_no],axis=2)
 
-#print("photons_per_theta_per_phi shape:",photons_per_theta_per_phi.shape)
-phi=full_phi_array[run_no]
-theta=full_theta_array[run_no]*1e3
+photons_per_theta_per_phi=np.sum(full_synchrotron_array,axis=2)
+
+
+phi=full_phi_array
+theta_array = full_theta_array  # Extract the array from the list
+# Now you can multiply the array by 1e3
+theta = theta_array * 1e3
 mean_theta=np.mean(theta)
 
 photons_per_energy=sum_over_theta_and_phi(normalised_result)
 
 
-#print("e array:"+str(e))
-#print("photon energies array:"+str(photons_per_energy))
-#print("photons_per_energy sum:"+str(np.sum(photons_per_energy)))
 #integrate to get no. of x-ray photons
 # Mask the data to include only the range of interest
 mask = (E >= uv_max) 
 energies_integration = E[mask]
 photons_integration = photons_per_energy[mask]
 x_ray_photons=integrate.simpson(photons_integration,x=energies_integration)
-#print("x-ray photons:"+str(x_ray_photons))
 
 #integrate to get no. of UV photons
 # Mask the data to include only the range of interest
@@ -227,7 +240,6 @@ mask = (E >= uv_min) & (E <= uv_max)
 energies_integration = E[mask]
 photons_integration = photons_per_energy[mask]
 uv_photons=integrate.simpson(photons_integration,x=energies_integration)
-#print("UV photons:"+str(uv_photons))
 
 #integrate to get no. of other photons
 # Mask the data to include only the range of interest
@@ -236,35 +248,35 @@ mask = (E <= uv_min)
 energies_integration = E[mask]
 photons_integration = photons_per_energy[mask]
 other_photons=integrate.simpson(photons_integration,x=energies_integration)
-#print("other photons:"+str(other_photons))
+
 
 integral_sum=x_ray_photons+uv_photons+other_photons
-#print("SUM:"+str(integral_sum))
+
 x_ray_percentage=x_ray_photons/integral_sum
 uv_percentage=uv_photons/integral_sum
-#print("X-ray percentage:"+str(x_ray_photons/integral_sum))
+
 
 photons_per_energy_array=np.array(photons_per_energy)
-critical_energy_array = calculate_critical_energy(full_energy_array[0], photons_per_energy_array)
+critical_energy_array = calculate_critical_energy(full_energy_array, photons_per_energy_array)
 
 
 photons_per_theta = sum_over_energy_and_phi(normalised_result)
 photons_per_theta_array=np.array(photons_per_theta)
-print(photons_per_theta_array)
-mean_theta_array = calculate_mean_theta(full_theta_array[0], photons_per_theta_array)
+#print(photons_per_theta_array)
+mean_theta_array = calculate_mean_theta(full_theta_array, photons_per_theta_array)
 
-std_dev=std_from_frequency(full_theta_array[0],photons_per_theta_array)
-
-print("UV/Xray ratio:"+str(uv_photons/x_ray_photons))
+std_dev=std_from_frequency(full_theta_array,photons_per_theta_array)
+print('-'*50)
+print("UV/Xray ratio:"+str(x_ray_photons/uv_photons))
 #print("UV/Xray percentage ratio:"+str(uv_percentage/x_ray_percentage)) --same value as above
 
 print("Mean Theta:"+str(mean_theta_array[0])) 
 print("Critical Energy:"+str(critical_energy_array[0])) 
+print('-'*50)
 
-E=full_energy_array[10]
-theta=full_theta_array[10]
-print("E shape:",E.shape)
-print("theta shape:",theta.shape)   
+E=full_energy_array
+theta=full_theta_array
+
 # Mask the data to include only the X-ray energy range
 xray_mask = (E >= uv_max) & (E <= xray_max)  # Mask for energies in the X-ray range
 
@@ -278,11 +290,7 @@ xray_critical_energy = calculate_critical_energy(xray_energies, xray_photons_per
 # Debugging: Print the calculated critical energy
 print("Critical Energy for X-ray photons:", xray_critical_energy)
 
-print(full_theta_array[10].shape)
-print(full_phi_array[10].shape)
-print(full_energy_array[10].shape)
 
-print(full_synchrotron_array[10].shape)
 
 # Define your energy threshold (e.g., uv_max or some other value)
 energy_threshold = uv_max  # Replace with your specific threshold
@@ -296,5 +304,4 @@ valid_energy_indices = energy_values >= energy_threshold  # This gives a boolean
 # Create a new synchrotron array that excludes energies below the threshold
 new_synchrotron_array = full_synchrotron_array[10][:, :, valid_energy_indices]
 
-# Now, new_synchrotron_array will have shape (100, 100, n), where n is the number of energy values above the threshold
-print(f"New synchrotron array shape (excluding low-energy photons): {new_synchrotron_array.shape}")
+
