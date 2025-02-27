@@ -26,8 +26,8 @@ print('kp:',kp)
 print("gamma:",gamma)
 
 
-emittance_min=2
-emittance_max=30
+emittance_min=2 # Minimum emittance value in um
+emittance_max=30 # Maximum emittance value in um
 
 # Create logarithmically spaced values between 2 and 30 using the natural logarithm
 log_spaced_values = np.exp(np.linspace(np.log(emittance_min), np.log(emittance_max), num=6))
@@ -78,19 +78,19 @@ for emittance in log_spaced_values:
     emittance = round(emittance, 4)
     beam_radius_um_values = beam_radii_dict[emittance]
     
-    # Create a list of tuples: [(emittance, fraction * beam_radius) for each fraction]
+    # Create a list of tuples: [(emittance, fraction * beam_radius, fraction) for each fraction]
     for fraction, radius in beam_radius_um_values.items():
-        results.append([emittance, radius])
+        results.append([emittance, radius, fraction])
 
 print("Number of results:", len(results))
 
 # Convert results to a pandas DataFrame
-df = pd.DataFrame(results, columns=["Emittance (um)", "Beam Radius (um)"])
+df = pd.DataFrame(results, columns=["Emittance (um)", "Beam Radius (um)","Beam Radius Fraction"])
 
 
 
 # Optionally, save the DataFrame to a CSV file
-df.to_csv(r"Simulations\Beam_builder\short_parameter_array.csv", index=False)
+df.to_csv(r"Simulations\Beam_builder\emittance_and_beam_radius.csv", index=False)
 
 df_1 = pd.read_csv(r"Simulations\Beam_builder\emittance_and_beam_radius.csv")
 
