@@ -131,7 +131,7 @@ def find_largest_file_number(parent_dir):
     largest_number = -1
 
     # Regex pattern to match the numerical part just before '.h5' (e.g., _00001)
-    pattern = r'_(\d+)\.h5$'
+    pattern = r'v3d_synchrotron_(\d+)\.h5$'
 
     # Iterate over the files
     for file in files:
@@ -175,6 +175,7 @@ with open(suffix_file, "r") as file:
     lines = file.readlines()[1:]  # Skip the header row
 
     for line in lines:
+        print("line:", line)
         values = line.strip().split(",")  # Split by comma
         emittance.append(float(values[0]))
         beam_radius.append(float(values[1]))
@@ -188,18 +189,19 @@ print("Beam Radius Fraction:", beam_radius_fraction)
 
 suffix1=emittance #np.array([1.0,1.1])
 suffix2=beam_radius_fraction#np.array([1.0])
+print("suffix 1:",suffix1)
+print("suffix 2:",suffix2)
 
 # Initialize an empty list to store all the subfolders # code for when we are chnaging both radius and emittance
 sub_folders = []
 
 # Generate the subfolder names
-for num in suffix1:
-    for rad in suffix2:
-        sub_folders.append(f"emittance-{num}_radius-{rad}")
+for num,rad in zip(suffix1, suffix2):
+    sub_folders.append(f"emittance-{num}_radius-{rad}")
 
 # Print the result
 print(sub_folders)
-
+#check=input("press enter")
 # Lists to hold the extracted properties
 ratio_list = []
 emittance_list = []
