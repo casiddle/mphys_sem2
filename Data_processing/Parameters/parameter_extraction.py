@@ -163,7 +163,7 @@ run_no=11 #change to run number of interest usually last number in scan
 data_directory=r"emittance_scan" #change to directory within cluster where scan is
 species=2 #witness beam
 
-suffix_file=r'..\..\Simulations\Beam_builder\short_array.csv'
+suffix_file=r'..\..\Simulations\Beam_builder\test_array.csv'
 
 # Initialize lists for each column
 emittance = []
@@ -186,8 +186,8 @@ print("Beam Radius:", beam_radius)
 print("Beam Radius Fraction:", beam_radius_fraction)
 
 
-suffix1=np.array([1.0,1.1])
-suffix2=np.array([1.0])
+suffix1=emittance #np.array([1.0,1.1])
+suffix2=beam_radius_fraction#np.array([1.0])
 
 # Initialize an empty list to store all the subfolders # code for when we are chnaging both radius and emittance
 sub_folders = []
@@ -283,7 +283,7 @@ df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initia
                    'X-ray Critical Energy':x_ray_crit_energy_array, 'Set Emittance':set_emittance_list, 'Set Radius':set_radius_list})
 
 # Specify the file path
-file_path = 'output.csv'
+file_path = 'output_test.csv'
 
 # Check if the file already exists
 if os.path.exists(file_path):
