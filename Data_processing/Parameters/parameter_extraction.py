@@ -163,6 +163,29 @@ run_no=11 #change to run number of interest usually last number in scan
 data_directory=r"emittance_scan" #change to directory within cluster where scan is
 species=2 #witness beam
 
+suffix_file=r'..\..\Simulations\Beam_builder\short_array.csv'
+
+# Initialize lists for each column
+emittance = []
+beam_radius = []
+beam_radius_fraction = []
+
+# Read the CSV file manually
+with open(suffix_file, "r") as file:
+    lines = file.readlines()[1:]  # Skip the header row
+
+    for line in lines:
+        values = line.strip().split(",")  # Split by comma
+        emittance.append(float(values[0]))
+        beam_radius.append(float(values[1]))
+        beam_radius_fraction.append(float(values[2]))
+
+# Output the lists
+print("Emittance:", emittance)
+print("Beam Radius:", beam_radius)
+print("Beam Radius Fraction:", beam_radius_fraction)
+
+
 suffix1=np.array([1.0,1.1])
 suffix2=np.array([1.0])
 
