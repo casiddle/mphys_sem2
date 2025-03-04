@@ -150,8 +150,6 @@ full_synchrotron_array = np.squeeze(np.array(full_synchrotron_array))
 
 E_c=full_energy_array
 E=full_energy_array
-
-
 photons_per_crit_energy=full_synchrotron_array
 
 

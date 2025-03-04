@@ -131,7 +131,7 @@ def find_largest_file_number(parent_dir):
     largest_number = -1
 
     # Regex pattern to match the numerical part just before '.h5' (e.g., _00001)
-    pattern = r'_(\d+)\.h5$'
+    pattern = r'v3d_synchrotron_(\d+)\.h5$'
 
     # Iterate over the files
     for file in files:
@@ -163,20 +163,45 @@ run_no=11 #change to run number of interest usually last number in scan
 data_directory=r"emittance_scan" #change to directory within cluster where scan is
 species=2 #witness beam
 
-suffix1=np.array([1.0,1.1])
-suffix2=np.array([1.0])
+suffix_file=r'..\..\Simulations\Beam_builder\test_array.csv'
+
+# Initialize lists for each column
+emittance = []
+beam_radius = []
+beam_radius_fraction = []
+
+# Read the CSV file manually
+with open(suffix_file, "r") as file:
+    lines = file.readlines()[1:]  # Skip the header row
+
+    for line in lines:
+        print("line:", line)
+        values = line.strip().split(",")  # Split by comma
+        emittance.append(float(values[0]))
+        beam_radius.append(float(values[1]))
+        beam_radius_fraction.append(float(values[2]))
+
+# Output the lists
+print("Emittance:", emittance)
+print("Beam Radius:", beam_radius)
+print("Beam Radius Fraction:", beam_radius_fraction)
+
+
+suffix1=emittance #np.array([1.0,1.1])
+suffix2=beam_radius_fraction#np.array([1.0])
+print("suffix 1:",suffix1)
+print("suffix 2:",suffix2)
 
 # Initialize an empty list to store all the subfolders # code for when we are chnaging both radius and emittance
 sub_folders = []
 
 # Generate the subfolder names
-for num in suffix1:
-    for rad in suffix2:
-        sub_folders.append(f"emittance-{num}_radius-{rad}")
+for num,rad in zip(suffix1, suffix2):
+    sub_folders.append(f"emittance-{num}_radius-{rad}")
 
 # Print the result
 print(sub_folders)
-
+#check=input("press enter")
 # Lists to hold the extracted properties
 ratio_list = []
 emittance_list = []
@@ -260,7 +285,7 @@ df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initia
                    'X-ray Critical Energy':x_ray_crit_energy_array, 'Set Emittance':set_emittance_list, 'Set Radius':set_radius_list})
 
 # Specify the file path
-file_path = 'output.csv'
+file_path = 'output_test.csv'
 
 # Check if the file already exists
 if os.path.exists(file_path):
