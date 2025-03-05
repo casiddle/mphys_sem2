@@ -45,3 +45,5 @@ correlation_long = correlation_long.drop_duplicates(subset=['Sorted Pair']).drop
 correlation_long = correlation_long.reindex(correlation_long['Correlation'].abs().sort_values(ascending=False).index)
 # Display the ranked correlation pairs
 print(correlation_long)
+# Save the ranked correlation pairs to a CSV file
+correlation_long.to_csv('correlation_matrix_ranked.csv', index=False)
