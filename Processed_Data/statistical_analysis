@@ -23,10 +23,25 @@ print(df.describe(include='all'))
 # # Your dataframe and correlation matrix
 X = df[['Set Radius','Set Emittance','Emittance','Beam Spread','Beam Radius', 'X-ray Percentage',
         'X-ray Critical Energy','X-ray/UV','Beam Energy','R']]
-correlation_matrix = X.corr()
+correlation_matrix = df.corr()
 
 # Plot correlation matrix
 plt.figure(figsize=(12, 10))
 sns.heatmap(correlation_matrix, annot=True, cmap="bwr", fmt=".2f", linewidths=0.5)
 plt.title("Correlation Matrix for Selected Features")
 plt.show()
+
+#Rank correlations
+# Convert the correlation matrix into a long format
+correlation_long = correlation_matrix.unstack().reset_index()
+# Rename columns for clarity
+correlation_long.columns = ['Feature 1', 'Feature 2', 'Correlation']
+# Remove self-correlations (where Feature 1 == Feature 2)
+correlation_long = correlation_long[correlation_long['Feature 1'] != correlation_long['Feature 2']]
+# Drop duplicate pairs (each correlation appears twice in a symmetric matrix)
+correlation_long['Sorted Pair'] = correlation_long.apply(lambda x: tuple(sorted([x['Feature 1'], x['Feature 2']])), axis=1)
+correlation_long = correlation_long.drop_duplicates(subset=['Sorted Pair']).drop(columns=['Sorted Pair'])
+# Sort by absolute correlation value (strongest relationships first)
+correlation_long = correlation_long.reindex(correlation_long['Correlation'].abs().sort_values(ascending=False).index)
+# Display the ranked correlation pairs
+print(correlation_long)
