@@ -18,7 +18,7 @@ def theta_to_r(theta, distance):
 data_set=r"data_sets\output_test.csv"
 df = pd.read_csv(data_set)
 df = df.drop(columns=['Initial emittance'])
-df = df.rename(columns={'Uv/X-ray': 'X-ray/UV'})
+
 
 # Apply the function to the column
 df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
