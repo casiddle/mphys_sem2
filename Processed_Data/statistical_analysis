@@ -12,6 +12,8 @@ def theta_to_r(theta, distance):
 data_set=r"Processed_Data\data_sets\output_test.csv"
 df = pd.read_csv(data_set)
 df = df.drop(columns=['Initial emittance'])
+df = df.rename(columns={'Uv/X-ray': 'X-ray/UV'})
+
 # Apply the function to the column
 df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
 
@@ -19,11 +21,12 @@ print(df.columns)
 print(df.describe(include='all'))
 
 # # Your dataframe and correlation matrix
-X = df[['Set Radius','Set Emittance','Emittance','Beam Spread','Beam Radius']]
+X = df[['Set Radius','Set Emittance','Emittance','Beam Spread','Beam Radius', 'X-ray Percentage',
+        'X-ray Critical Energy','X-ray/UV','Beam Energy','R']]
 correlation_matrix = X.corr()
 
 # Plot correlation matrix
-plt.figure(figsize=(6, 5))
-sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", fmt=".2f", linewidths=0.5)
+plt.figure(figsize=(12, 10))
+sns.heatmap(correlation_matrix, annot=True, cmap="bwr", fmt=".2f", linewidths=0.5)
 plt.title("Correlation Matrix for Selected Features")
 plt.show()
