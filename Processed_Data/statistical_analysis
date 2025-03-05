@@ -3,13 +3,19 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from matplotlib.colors import Normalize
+import os
+
+# Get the directory where the current script is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# Change the current working directory to the script directory
+os.chdir(script_dir)
 
 def theta_to_r(theta, distance):
     r=distance*np.tan(theta)
     return r
 
 
-data_set=r"Processed_Data\data_sets\output_test.csv"
+data_set=r"data_sets\output_test.csv"
 df = pd.read_csv(data_set)
 df = df.drop(columns=['Initial emittance'])
 df = df.rename(columns={'Uv/X-ray': 'X-ray/UV'})
