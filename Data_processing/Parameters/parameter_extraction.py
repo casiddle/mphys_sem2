@@ -279,7 +279,7 @@ beam_radius_array=np.array(beam_radius_list)
 x_ray_percentage_array=np.array(x_ray_percentage_list)
 x_ray_crit_energy_array=np.array(x_ray_crit_energy_list)
 # Create a DataFrame from the two arrays
-df = pd.DataFrame({'Emittance': emittance_array, 'Uv/X-ray': ratio_array,'Initial emittance':initial_emittance_array,
+df = pd.DataFrame({'Emittance': emittance_array, 'X-ray/UV': ratio_array,'Initial emittance':initial_emittance_array,
                    'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 
                    'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array, 'X-ray Percentage':x_ray_percentage_array, 
                    'X-ray Critical Energy':x_ray_crit_energy_array, 'Set Emittance':set_emittance_list, 'Set Radius':set_radius_list})
