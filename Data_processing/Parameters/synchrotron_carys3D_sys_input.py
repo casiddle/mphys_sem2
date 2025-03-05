@@ -248,7 +248,7 @@ mean_theta_array = calculate_mean_theta(full_theta_array, photons_per_theta_arra
 
 std_dev=std_from_frequency(full_theta_array,photons_per_theta_array)
 
-print("UV/Xray ratio:"+str(uv_photons/x_ray_photons))
+print("Xray/UV ratio:"+str(x_ray_photons/uv_photons))
 print("X-ray percentage:"+str(x_ray_percentage))
 
 

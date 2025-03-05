@@ -21,7 +21,7 @@ def extract_properties_sync(output):
     for line in lines:
         try:
             # Adjust based on actual output format
-            if "UV/Xray ratio:" in line:
+            if "Xray/UV ratio:" in line:
                 properties['ratio'] = float(line.split(":")[-1].strip().split()[0])  # Extract the first part after ':'
             elif "Mean Theta:" in line:
                 properties['mean_theta'] = float(line.split(":")[-1].strip())
