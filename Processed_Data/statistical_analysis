@@ -1,0 +1,29 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+from matplotlib.colors import Normalize
+
+def theta_to_r(theta, distance):
+    r=distance*np.tan(theta)
+    return r
+
+
+data_set=r"Processed_Data\data_sets\output_test.csv"
+df = pd.read_csv(data_set)
+df = df.drop(columns=['Initial emittance'])
+# Apply the function to the column
+df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
+
+print(df.columns)
+print(df.describe(include='all'))
+
+# # Your dataframe and correlation matrix
+X = df[['Set Radius','Set Emittance','Emittance','Beam Spread','Beam Radius']]
+correlation_matrix = X.corr()
+
+# Plot correlation matrix
+plt.figure(figsize=(6, 5))
+sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", fmt=".2f", linewidths=0.5)
+plt.title("Correlation Matrix for Selected Features")
+plt.show()
