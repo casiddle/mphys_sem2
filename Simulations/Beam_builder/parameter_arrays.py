@@ -30,7 +30,7 @@ emittance_min=2 # Minimum emittance value in um
 emittance_max=30 # Maximum emittance value in um
 
 # Create logarithmically spaced values between 2 and 30 using the natural logarithm
-log_spaced_values = np.exp(np.linspace(np.log(emittance_min), np.log(emittance_max), num=16))
+log_spaced_values = np.exp(np.linspace(np.log(emittance_min), np.log(emittance_max), num=100))
 
 print("Logarithmically spaced values (base e):", log_spaced_values)
 
@@ -90,5 +90,5 @@ df = pd.DataFrame(results, columns=["Emittance (um)", "Beam Radius (um)","Beam R
 
 
 # Optionally, save the DataFrame to a CSV file
-df.to_csv(r"Simulations\Beam_builder\big_test_array.csv", index=False)
+df.to_csv(r"Simulations\Beam_builder\big_scan_array.csv", index=False)
 
