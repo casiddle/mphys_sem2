@@ -137,7 +137,7 @@ full_energy_array=[]
 full_phi_array=[]
 full_theta_array=[]
 full_synchrotron_array=[]
-filename=rf"{script_dir}\emittance-{emittance_no}\h5files\v3d_synchrotron_{file_number}.h5"
+filename=rf"{script_dir}\emittance-{emittance_no}\v3d_synchrotron_{file_number}.h5"
 
 
 print("filename:"+str(filename))
