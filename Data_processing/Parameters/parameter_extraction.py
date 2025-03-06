@@ -31,6 +31,18 @@ def extract_properties_sync(output):
                 properties['x_ray_percentage'] = float(line.split(":")[-1].strip())
             elif "Critical Energy X-ray photons:" in line:
                 properties['x_ray_crit_energy'] = float(line.split(":")[-1].strip())
+            elif "No. X-ray photons:" in line:
+                properties['no_x_ray_photons'] = float(line.split(":")[-1].strip())
+            elif "No. UV photons:" in line:
+                properties['no_uv_photons'] = float(line.split(":")[-1].strip())
+            elif "No. Other photons:" in line:
+                properties['no_other_photons'] = float(line.split(":")[-1].strip())
+            elif "Total no. photons:" in line:
+                properties['total_no_photons'] = float(line.split(":")[-1].strip())
+            
+            
+            
+            
 
         except ValueError:
             print(f"Could not convert the line to float: '{line}'")
@@ -215,6 +227,10 @@ x_ray_percentage_list=[]
 x_ray_crit_energy_list=[]
 set_emittance_list=[]
 set_radius_list=[]
+no_x_ray_photons_list=[]
+no_uv_photons_list=[]
+no_other_photons_list=[]
+total_no_photons_list=[]
 
 
 for index, subfolder in enumerate(sub_folders):
@@ -242,6 +258,10 @@ for index, subfolder in enumerate(sub_folders):
         crit_energy_list.append(properties_sync.get('crit_energy', None))
         x_ray_percentage_list.append(properties_sync.get('x_ray_percentage', None))
         x_ray_crit_energy_list.append(properties_sync.get('x_ray_crit_energy', None))
+        no_x_ray_photons_list.append(properties_sync.get('no_x_ray_photons', None))
+        no_uv_photons_list.append(properties_sync.get('no_uv_photons', None))
+        no_other_photons_list.append(properties_sync.get('no_other_photons', None))
+        total_no_photons_list.append(properties_sync.get('total_no_photons', None))
 
 
 
@@ -278,11 +298,19 @@ beam_spread_array=np.array(beam_spread_list)
 beam_radius_array=np.array(beam_radius_list)
 x_ray_percentage_array=np.array(x_ray_percentage_list)
 x_ray_crit_energy_array=np.array(x_ray_crit_energy_list)
+no_x_ray_photons_array=np.array(no_x_ray_photons_list)
+no_uv_photons_array=np.array(no_uv_photons_list)
+no_other_photons_array=np.array(no_other_photons_list)
+total_no_photons_array=np.array(total_no_photons_list)
+
 # Create a DataFrame from the two arrays
 df = pd.DataFrame({'Emittance': emittance_array, 'X-ray/UV': ratio_array,'Initial emittance':initial_emittance_array,
                    'Mean Theta':mean_theta_array, 'Critical Energy':crit_energy_array, 'Beam Energy':beam_energy_array, 
                    'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array, 'X-ray Percentage':x_ray_percentage_array, 
-                   'X-ray Critical Energy':x_ray_crit_energy_array, 'Set Emittance':set_emittance_list, 'Set Radius':set_radius_list})
+                   'X-ray Critical Energy':x_ray_crit_energy_array,'No. X-ray Photons':no_x_ray_photons_array,
+                   'No. UV Photons':no_uv_photons_array,'No. Other Photons':no_other_photons_array,
+                   'Total no. Photons':total_no_photons_array ,'Set Emittance':set_emittance_list, 
+                   'Set Radius':set_radius_list})
 
 # Specify the file path
 file_path = 'output_test.csv'

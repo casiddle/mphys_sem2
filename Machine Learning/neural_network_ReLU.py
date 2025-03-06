@@ -16,7 +16,7 @@ import os
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_1_target.csv"
-data_file_path="Processed_Data/beam_energy_data_set.csv"
+data_file_path="Processed_Data/data_sets/output_test.csv"
 epochs = 250  # Number of epochs to train
 patience = 20  # number of epochs with no improvement before stopping
 batch_no=6 #batch size
@@ -96,7 +96,7 @@ def theta_to_r(theta, distance):
 df = pd.read_csv(data_file_path)
 df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
 # Separate features and target
-X = df[["UV/X-ray", "R", "Critical Energy"]].values # Features
+X = df[["Uv/X-ray", "R", "Critical Energy"]].values # Features
 y = df[predicted_feature].values # Target
 
 # Convert to PyTorch tensors
@@ -205,9 +205,9 @@ for epoch in range(epochs):
         break
     
     # Print loss for every epoch
-    print(f"Epoch [{epoch+1}/{epochs}], Loss: {running_loss/len(dataloader)}")
+    print(f"Epoch [{epoch+1}/{epochs}], Loss: {running_loss/len(train_dataloader)}")
     epoch_array=np.append(epoch_array,epoch)
-    loss_array=np.append(loss_array,running_loss/len(dataloader))
+    loss_array=np.append(loss_array,running_loss/len(train_dataloader))
 
 # End overall training timer
 total_end_time = time.time()
@@ -296,21 +296,22 @@ metrics = {
     'num_epochs_early_stopping': epoch+1,  # The epoch when early stopping was triggered
     'patience': patience,
     'loss_function': loss_fn,
-    'loss': average_loss,
-    'loss_error': loss_error,
+    'test_loss': average_loss,
+    'tets_loss_error': loss_error,
     'optimiser': type(optimizer).__name__,
     'learning_rate': learning_rate,
     'activation_function': activation_function,
     'no_hidden_layers': no_hidden_layers ,
     'batch_size': batch_no,
     'no_nodes': no_nodes,
-    'predicted_feature': predicted_feature   
+    'predicted_feature': predicted_feature,  
+    'training_loss': best_loss 
 }
 
 # Check if the CSV file exists (to decide whether to create or append)
 if save_metrics and not os.path.exists(csv_file_path):
     # If the file doesn't exist, we need to create a new one with column headers
-    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'loss', 'loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes','predicted_feature']
+    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'test_loss', 'test_loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes','predicted_feature','training_loss']
     # Initialize the CSV file with column names
     training_metrics = []
 else:
