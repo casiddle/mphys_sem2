@@ -117,7 +117,7 @@ def get_properties_em(data_dir,save_num,species):
 run_no=40 #change to run number of interest usually last number in scan -1
 data_directory=r"emittance_scan" #change to directory within cluster where scan is
 species=2
-suffix=np.array(["fix_no_CB","fix_CB"])
+suffix=np.array(["2.0_radius-1.0","2.0_radius-1.0"])
 sub_folders= [f"emittance-{num}" for num in suffix] #change depending on scan
 print("sub folder:",sub_folders)
 
@@ -199,12 +199,12 @@ for index, subfolder in enumerate(sub_folders):
 
 
 # Read the first CSV into DataFrame
-df1 = pd.read_csv('output_emittance-fix_no_CB_em.csv')
+df1 = pd.read_csv('output_emittance-2.0_radius-1.0_em.csv')
 # Read the second CSV into DataFrame
-df2 = pd.read_csv('output_emittance-fix_CB_em.csv')
+df2 = pd.read_csv('output_emittance-fix_no_CB_em.csv')
 
-df3=pd.read_csv('output_emittance-fix_no_CB_sync.csv')
-df4=pd.read_csv('output_emittance-fix_CB_sync.csv')
+df3=pd.read_csv('output_emittance-2.0_radius-1.0_sync.csv')
+df4=pd.read_csv('output_emittance-fix_no_CB_sync.csv')
 print(df4.columns)
 
 
@@ -222,24 +222,24 @@ ax3.spines['right'].set_position(('outward', 60))
 ax4.spines['right'].set_position(('outward', 120))
 
 # Plot Emittance vs Distance for the first file on ax1 (solid line)
-ax1.plot(df1.index/4, df1['Emittance'], color='b', label='Emittance (no CB)', linestyle='-', marker='o')
+ax1.plot(df1.index/4, df1['Emittance'], color='b', label='Emittance (job array)', linestyle='-', marker='o')
 # Plot Emittance vs Distance for the second file on ax1 (dashed line)
-ax1.plot(df2.index/4, df2['Emittance'], color='b', label='Emittance (CB)', linestyle='--', marker='x')
+ax1.plot(df2.index/4, df2['Emittance'], color='b', label='Emittance (single run)', linestyle='--', marker='x')
 
 # Plot Beam Energy vs Distance for the first file on ax2 (solid line)
-ax2.plot(df1.index/4, df1['Beam Energy'], color='g', label='Beam Energy (no CB)', linestyle='-', marker='x')
+ax2.plot(df1.index/4, df1['Beam Energy'], color='g', label='Beam Energy (job array)', linestyle='-', marker='x')
 # Plot Beam Energy vs Distance for the second file on ax2 (dashed line)
-ax2.plot(df2.index/4, df2['Beam Energy'], color='g', label='Beam Energy (CB)', linestyle='--', marker='^')
+ax2.plot(df2.index/4, df2['Beam Energy'], color='g', label='Beam Energy (single run)', linestyle='--', marker='^')
 
 # Plot Beam Spread vs Distance for the first file on ax3 (solid line)
-ax3.plot(df1.index/4, df1['Beam Spread'], color='r', label='Beam Spread (no CB)', linestyle='-', marker='^')
+ax3.plot(df1.index/4, df1['Beam Spread'], color='r', label='Beam Spread (job array)', linestyle='-', marker='^')
 # Plot Beam Spread vs Distance for the second file on ax3 (dashed line)
-ax3.plot(df2.index/4, df2['Beam Spread'], color='r', label='Beam Spread (CB)', linestyle='--', marker='s')
+ax3.plot(df2.index/4, df2['Beam Spread'], color='r', label='Beam Spread (single run)', linestyle='--', marker='s')
 
 # Plot Beam Radius vs Distance for the first file on ax4 (solid line)
-ax4.plot(df1.index/4, df1['Beam Radius'], color='m', label='Beam Radius (no CB)', linestyle='-', marker='s')
+ax4.plot(df1.index/4, df1['Beam Radius'], color='m', label='Beam Radius (job array)', linestyle='-', marker='s')
 # Plot Beam Radius vs Distance for the second file on ax4 (dashed line)
-ax4.plot(df2.index/4, df2['Beam Radius'], color='m', label='Beam Radius (CB)', linestyle='--', marker='D')
+ax4.plot(df2.index/4, df2['Beam Radius'], color='m', label='Beam Radius (single run)', linestyle='--', marker='D')
 
 # Set axis labels
 ax1.set_xlabel('Distance')
@@ -262,7 +262,7 @@ ax4.legend(loc='upper left', bbox_to_anchor=(0.9, -0.1), borderaxespad=0., ncol=
 
 
 # Add title and grid
-fig.suptitle('Comparison of Emittance, Beam Energy, Beam Spread, and Beam Radius (no CB vs CB)')
+fig.suptitle('Comparison of Emittance, Beam Energy, Beam Spread, and Beam Radius (job array vs single run)')
 fig.tight_layout()  # Adjust layout to avoid overlapping labels
 
 plt.savefig(r'plots\em_cb_comparison_plot.png')
@@ -281,19 +281,19 @@ ax4 = ax1.twinx()  # Create a fourth y-axis that shares the x-axis
 ax3.spines['right'].set_position(('outward', 60))
 
 # Plot Emittance vs Distance for the first file on ax1 (solid line)
-ax1.plot(df3.index, df3['Uv/X-ray'], color='b', label='UV:Xray (no CB)', linestyle='-', marker='o')
+ax1.plot(df3.index, df3['Uv/X-ray'], color='b', label='UV:Xray (job array)', linestyle='-', marker='o')
 # Plot Emittance vs Distance for the second file on ax1 (dashed line)
-ax1.plot(df4.index, df4['Uv/X-ray'], color='b', label='UV:Xray  (CB)', linestyle='--', marker='x')
+ax1.plot(df4.index, df4['Uv/X-ray'], color='b', label='UV:Xray  (single run)', linestyle='--', marker='x')
 
 # Plot Beam Energy vs Distance for the first file on ax2 (solid line)
-ax2.plot(df3.index, df3['Mean Theta'], color='g', label='Mean Theta (no CB)', linestyle='-', marker='x')
+ax2.plot(df3.index, df3['Mean Theta'], color='g', label='Mean Theta (job array)', linestyle='-', marker='x')
 # Plot Beam Energy vs Distance for the second file on ax2 (dashed line)
-ax2.plot(df4.index, df4['Mean Theta'], color='g', label='Mean Theta (CB)', linestyle='--', marker='^')
+ax2.plot(df4.index, df4['Mean Theta'], color='g', label='Mean Theta (single run)', linestyle='--', marker='^')
 
 # Plot Beam Spread vs Distance for the first file on ax3 (solid line)
-ax3.plot(df3.index, df3['Critical Energy'], color='r', label='Critical Energy (no CB)', linestyle='-', marker='^')
+ax3.plot(df3.index, df3['Critical Energy'], color='r', label='Critical Energy (job array)', linestyle='-', marker='^')
 # Plot Beam Spread vs Distance for the second file on ax3 (dashed line)
-ax3.plot(df4.index, df4['Critical Energy'], color='r', label='Critical Energy (CB)', linestyle='--', marker='s')
+ax3.plot(df4.index, df4['Critical Energy'], color='r', label='Critical Energy (single run)', linestyle='--', marker='s')
 
 # Set axis labels
 ax1.set_xlabel('Distance')
