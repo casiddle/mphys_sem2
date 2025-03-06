@@ -250,10 +250,13 @@ std_dev=std_from_frequency(full_theta_array,photons_per_theta_array)
 
 print("Xray/UV ratio:"+str(x_ray_photons/uv_photons))
 print("X-ray percentage:"+str(x_ray_percentage))
-
-
 print("Mean Theta:"+str(mean_theta_array[0])) 
 print("Critical Energy:"+str(critical_energy_array[0])) 
+
+print("No. X-ray photons:",x_ray_photons)
+print("No. UV photons:",uv_photons)
+print("No. Other photons:",other_photons)
+print("Total no. photons:",integral_sum)
 
 
  
