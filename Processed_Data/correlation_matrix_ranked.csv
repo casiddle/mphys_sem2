@@ -1,67 +1,67 @@
 Feature 1,Feature 2,Correlation
-Mean Theta,R,0.9999999999998295
-Critical Energy,X-ray Percentage,0.9939566768798338
-Emittance,Beam Radius,0.990202085811311
-Beam Radius,R,0.9837368624293565
-Mean Theta,Beam Radius,0.983736808274412
-X-ray Percentage,X-ray Critical Energy,0.9764544003085049
-Emittance,Beam Spread,0.9741661636249176
-Critical Energy,X-ray Critical Energy,0.9659484922588102
-Beam Spread,Beam Radius,0.9652244645646212
-Emittance,R,0.9633382515046801
-Emittance,Mean Theta,0.9633381189692244
-Uv/X-ray,X-ray Percentage,-0.9546935259308068
-Critical Energy,Beam Energy,0.9438523872192605
-Beam Energy,X-ray Percentage,0.9338204534714958
-Uv/X-ray,Critical Energy,-0.9304667303199875
-Beam Spread,R,0.9127654233462629
-Mean Theta,Beam Spread,0.9127652784606654
-Uv/X-ray,X-ray Critical Energy,-0.8929433124569464
-Beam Energy,X-ray Critical Energy,0.8917945729460383
-Uv/X-ray,Beam Energy,-0.8596868863752108
-Mean Theta,Set Emittance,0.8360810229935376
-Set Emittance,R,0.8360809872554722
-Beam Radius,Set Emittance,0.804184752163512
-Emittance,Set Emittance,0.7807564260256357
-Beam Spread,Set Emittance,0.708210251934888
-Beam Energy,R,-0.37385291464076637
-Mean Theta,Beam Energy,-0.37385275655979466
-Emittance,Beam Energy,-0.3693158073175411
-Beam Energy,Beam Radius,-0.34304109221352913
-X-ray Critical Energy,R,-0.33057620973003854
-Mean Theta,X-ray Critical Energy,-0.33057619022885754
-Uv/X-ray,Set Radius,-0.32785566850949105
-Beam Energy,Beam Spread,-0.3153215538062436
-Beam Radius,X-ray Critical Energy,-0.30400992378374037
-Emittance,X-ray Critical Energy,-0.29606981974619084
-X-ray Percentage,Set Radius,0.2494238135285795
-Beam Energy,Set Emittance,-0.24608152330399605
-X-ray Critical Energy,Set Emittance,-0.244552383225012
-Beam Spread,X-ray Critical Energy,-0.23363235628576853
-X-ray Percentage,R,-0.2260274572018893
-Mean Theta,X-ray Percentage,-0.22602734831153848
-Emittance,X-ray Percentage,-0.22436200885911642
-Beam Spread,Set Radius,-0.22204706575581015
-Critical Energy,Set Radius,0.21641742290045227
-Beam Radius,X-ray Percentage,-0.2086761778613557
-Beam Energy,Set Radius,0.20862735315266787
-Critical Energy,R,-0.20272873362430802
-Mean Theta,Critical Energy,-0.20272863155102738
-X-ray Critical Energy,Set Radius,0.20112212891034606
-Emittance,Critical Energy,-0.19581060422488658
-Critical Energy,Beam Radius,-0.1805657579936586
-Beam Spread,X-ray Percentage,-0.163234429833306
-Emittance,Uv/X-ray,0.15361106963744
-X-ray Percentage,Set Emittance,-0.14448196654047948
-Critical Energy,Beam Spread,-0.1377827360821439
-Emittance,Set Radius,-0.1154842464722877
-Uv/X-ray,Beam Radius,0.10961697288279224
-Critical Energy,Set Emittance,-0.10903757805569578
-Beam Radius,Set Radius,-0.10040946196724441
-Uv/X-ray,R,0.09788844776042695
-Uv/X-ray,Mean Theta,0.09788822916302314
-Uv/X-ray,Beam Spread,0.09780330096060921
-Uv/X-ray,Set Emittance,0.0512401160250603
-Set Emittance,Set Radius,0.004827250359804382
-Mean Theta,Set Radius,0.0003160260687884777
-Set Radius,R,0.00031586245605745155
+Emittance,Beam Radius,1.0
+Mean Theta,R,1.0
+Uv/X-ray,X-ray Percentage,-1.0
+Critical Energy,X-ray Percentage,0.9340659340659341
+Uv/X-ray,Critical Energy,-0.9340659340659341
+Beam Spread,Beam Radius,0.9340659340659341
+Emittance,Beam Spread,0.9340659340659341
+Mean Theta,Beam Radius,0.9120879120879122
+Emittance,Mean Theta,0.9120879120879122
+Beam Radius,R,0.9120879120879122
+Emittance,R,0.9120879120879122
+Uv/X-ray,X-ray Critical Energy,-0.8681318681318682
+X-ray Percentage,X-ray Critical Energy,0.8681318681318682
+Beam Spread,R,0.8461538461538461
+Mean Theta,Beam Spread,0.8461538461538461
+Critical Energy,X-ray Critical Energy,0.8021978021978022
+Mean Theta,Set Emittance,0.759647261351837
+Set Emittance,R,0.759647261351837
+Critical Energy,Beam Energy,0.7362637362637363
+Beam Spread,Set Emittance,0.7359082844345922
+Emittance,Set Emittance,0.7359082844345922
+Beam Radius,Set Emittance,0.7359082844345922
+Beam Energy,X-ray Percentage,0.6703296703296704
+Uv/X-ray,Beam Energy,-0.6703296703296704
+Beam Energy,X-ray Critical Energy,0.5824175824175825
+Uv/X-ray,Set Radius,-0.28613959986039156
+X-ray Percentage,Set Radius,0.28613959986039156
+X-ray Critical Energy,R,-0.27472527472527475
+Mean Theta,X-ray Critical Energy,-0.27472527472527475
+Critical Energy,Set Radius,0.2363761911890191
+X-ray Critical Energy,Set Radius,0.2363761911890191
+Beam Energy,Set Radius,0.21149448685333289
+Beam Radius,X-ray Critical Energy,-0.18681318681318684
+Mean Theta,X-ray Percentage,-0.18681318681318684
+Emittance,X-ray Critical Energy,-0.18681318681318684
+Uv/X-ray,R,0.18681318681318684
+X-ray Percentage,R,-0.18681318681318684
+Uv/X-ray,Mean Theta,0.18681318681318684
+Critical Energy,R,-0.1208791208791209
+Beam Spread,X-ray Critical Energy,-0.1208791208791209
+Mean Theta,Critical Energy,-0.1208791208791209
+X-ray Critical Energy,Set Emittance,-0.11869488458622454
+Beam Radius,X-ray Percentage,-0.09890109890109891
+Emittance,Uv/X-ray,0.09890109890109891
+Emittance,X-ray Percentage,-0.09890109890109891
+Uv/X-ray,Beam Radius,0.09890109890109891
+Beam Spread,Set Radius,-0.08708596517490177
+Beam Energy,R,-0.07692307692307693
+Mean Theta,Beam Energy,-0.07692307692307693
+Beam Energy,Beam Spread,0.07692307692307693
+Beam Energy,Set Emittance,0.07121693075173473
+Uv/X-ray,Set Emittance,0.07121693075173473
+X-ray Percentage,Set Emittance,-0.07121693075173473
+Mean Theta,Set Radius,-0.062204260839215555
+Beam Radius,Set Radius,-0.062204260839215555
+Emittance,Set Radius,-0.062204260839215555
+Set Radius,R,-0.06220426083921555
+Set Emittance,Set Radius,0.053750624644677655
+Critical Energy,Beam Spread,0.03296703296703297
+Critical Energy,Beam Radius,-0.03296703296703297
+Uv/X-ray,Beam Spread,0.03296703296703297
+Beam Spread,X-ray Percentage,-0.03296703296703297
+Emittance,Critical Energy,-0.03296703296703297
+Beam Energy,Beam Radius,0.01098901098901099
+Emittance,Beam Energy,0.01098901098901099
+Critical Energy,Set Emittance,0.0
