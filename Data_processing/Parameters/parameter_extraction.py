@@ -92,7 +92,9 @@ def extract_properties_em(output):
             elif "Spread:" in line:
                 properties['beam_spread'] = float(line.split(":")[-1].strip())
             elif "Beam Radius:" in line:
-                properties['beam_radius'] = float(line.split(":")[-1].strip())  
+                properties['beam_radius'] = float(line.split(":")[-1].strip())
+            elif "Total Charge:" in line:
+                properties['total_charge'] = float(line.split(":")[-1].strip())   
             
             
 
@@ -231,6 +233,7 @@ no_x_ray_photons_list=[]
 no_uv_photons_list=[]
 no_other_photons_list=[]
 total_no_photons_list=[]
+total_charge_list=[]
 
 
 for index, subfolder in enumerate(sub_folders):
@@ -275,6 +278,7 @@ for index, subfolder in enumerate(sub_folders):
         beam_energy_list.append(properties_em.get('beam_energy', None))
         beam_spread_list.append(properties_em.get('beam_spread', None))
         beam_radius_list.append(properties_em.get('beam_radius', None))
+        total_charge_list.append(properties_em.get('total_charge', None))
 
     else:
         print(f"Directory {subfolder}: Failed to retrieve final em properties.")
@@ -302,6 +306,7 @@ no_x_ray_photons_array=np.array(no_x_ray_photons_list)
 no_uv_photons_array=np.array(no_uv_photons_list)
 no_other_photons_array=np.array(no_other_photons_list)
 total_no_photons_array=np.array(total_no_photons_list)
+total_charge_array=np.array(total_charge_list)
 
 # Create a DataFrame from the two arrays
 df = pd.DataFrame({'Emittance': emittance_array, 'X-ray/UV': ratio_array,'Initial emittance':initial_emittance_array,
@@ -309,7 +314,7 @@ df = pd.DataFrame({'Emittance': emittance_array, 'X-ray/UV': ratio_array,'Initia
                    'Beam Spread':beam_spread_array, 'Beam Radius':beam_radius_array, 'X-ray Percentage':x_ray_percentage_array, 
                    'X-ray Critical Energy':x_ray_crit_energy_array,'No. X-ray Photons':no_x_ray_photons_array,
                    'No. UV Photons':no_uv_photons_array,'No. Other Photons':no_other_photons_array,
-                   'Total no. Photons':total_no_photons_array ,'Set Emittance':set_emittance_list, 
+                   'Total no. Photons':total_no_photons_array,'Total Charge':total_charge_array ,'Set Emittance':set_emittance_list, 
                    'Set Radius':set_radius_list})
 
 # Specify the file path

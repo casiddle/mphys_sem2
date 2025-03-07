@@ -198,6 +198,7 @@ else:
     print(f"Y Emittance:{em_y}")
     print(f"Z Emittance:{em_z}")
     print(f"Beam Radius:{0.5*(stdev_y+stdev_z)}")
+    print(f"Total Charge:{charge}")
 
 
   
