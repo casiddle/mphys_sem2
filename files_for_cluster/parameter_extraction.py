@@ -167,7 +167,8 @@ def extract_numbers_from_subfolder(subfolder):
     match = re.match(r"emittance-(\d+\.?\d*)_radius-(\d+\.?\d*)", subfolder)
     if match:
         emittance = float(match.group(1))  # Extract the emittance number (convert to float if needed)
-        radius = float(match.group(2))       # Extract the radius number (convert to int)
+        radius = float(match.group(2))
+        print("RADIUS__________________",radius)       
         return emittance, radius
     else:
         return None, None  # Return None if no match found
