@@ -17,12 +17,12 @@ import os
 save_metrics = True  # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
 data_file_path="Processed_Data/data_sets/output_test_96.csv"
-epochs = 250  # Number of epochs to train
-patience = 20  # number of epochs with no improvement before stopping
-batch_no=6 #batch size
-no_hidden_layers=20 #number of hidden layers 
-learning_rate=0.01 #learning rate
-no_nodes=10 #number of nodes in each hidden layer
+epochs = 420  # Number of epochs to train
+patience = 50  # number of epochs with no improvement before stopping
+batch_no=10 #batch size
+no_hidden_layers=10 #number of hidden layers 
+learning_rate=0.001 #learning rate
+no_nodes=6 #number of nodes in each hidden layer
 input_size=6 #number of input features
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 
@@ -112,7 +112,7 @@ dataset = EmittanceDataset(X, y)
 dataloader = DataLoader(dataset, batch_size=2, shuffle=True)  # Batch size = 2
 
 # Split data into training and test sets (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Initialize a scaler
 scaler = StandardScaler()
@@ -290,6 +290,12 @@ loss_error=np.std(loss_array)
 print(f"Test Set Loss: {average_loss:.4f}")
 mse=average_loss
 
+if average_loss>best_loss:
+    overfitting='Overfitting'
+elif average_loss<best_loss:
+    overfitting='Underfitting'
+else:
+    overfitting='Just right'
 #Save necessary metrics
 metrics = {
     'avg_epoch_time': avg_epoch_time,
@@ -307,13 +313,14 @@ metrics = {
     'batch_size': batch_no,
     'no_nodes': no_nodes,
     'predicted_feature': predicted_feature,  
-    'training_loss': best_loss 
+    'training_loss': best_loss,
+    'overfitting':overfitting 
 }
 
 # Check if the CSV file exists (to decide whether to create or append)
 if save_metrics and not os.path.exists(csv_file_path):
     # If the file doesn't exist, we need to create a new one with column headers
-    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'test_loss', 'test_loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes','predicted_feature','training_loss']
+    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'test_loss', 'test_loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes','predicted_feature','training_loss','overfitting']
     # Initialize the CSV file with column names
     training_metrics = []
 else:
@@ -401,7 +408,7 @@ ax1.tick_params(axis='both', labelsize=12)
 
 # Residuals plot (in units of sigma)
 ax2 = fig.add_subplot(gs[1, 0])
-ax2.errorbar(test_targets, residuals, color='tab:blue', alpha=0.7, fmt='o',label="Residuals")
+ax2.errorbar(test_targets, residuals/np.sqrt(mse), color='tab:blue', alpha=0.7, fmt='o',label="Residuals")
 
 ax2.axhline(0, color='k', linestyle='--', linewidth=1)
 ax2.axhline(-1,color='r',linestyle='--',linewidth=1)
@@ -410,8 +417,8 @@ ax2.set_ylabel(r"Residuals ($\sigma$)", fontsize=14)
 ax2.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
 ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*residuals/np.sqrt(mse)))))
 
-#plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU',dpi=250)
-#plt.show()
+plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU_3_targets',dpi=250)
+plt.show()
 
 
 grad_norms = [p.grad.norm().item() for p in model.parameters()]
