@@ -25,6 +25,10 @@ df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
 df['UV percentage']=df['No. UV Photons']/df['Total no. Photons']
 df['Other percentage']=df['No. Other Photons']/df['Total no. Photons']
 
+
+df = df.drop(columns=['No. UV Photons','No. Other Photons','Total no. Photons','No. X-ray Photons'])
+
+
 print(df.columns)
 print(df.describe(include='all'))
 
