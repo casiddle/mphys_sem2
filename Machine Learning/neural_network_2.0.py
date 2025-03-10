@@ -11,22 +11,28 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import time
 import os
-
+import random
 
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
 data_file_path="Processed_Data/data_sets/output_test_96.csv"
+
 epochs = 420  # Number of epochs to train
-patience = 50  # number of epochs with no improvement before stopping
-batch_no=10 #batch size
-no_hidden_layers=10 #number of hidden layers 
+patience = 20  # number of epochs with no improvement before stopping
+batch_no=13 #batch size
+no_hidden_layers=13 #number of hidden layers 
 learning_rate=0.001 #learning rate
-no_nodes=6 #number of nodes in each hidden layer
+no_nodes=8 #number of nodes in each hidden layer
+test_size_val=0.5 #proportion of data that is tested, 1-test_size= train_size
+
 input_size=6 #number of input features
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
-
 activation_function="ReLU" #activation function- note this string needs to be changed manually
+
+#train_test_seed=42
+train_test_seed=random.randint(1,100)
+print("Train-test split seed:",train_test_seed)
 
 # Define the neural network class and relative loss and optimiser functions
 class NeuralNetwork(nn.Module):  # Define custom neural network
@@ -112,7 +118,7 @@ dataset = EmittanceDataset(X, y)
 dataloader = DataLoader(dataset, batch_size=2, shuffle=True)  # Batch size = 2
 
 # Split data into training and test sets (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size_val, random_state=train_test_seed)
 
 # Initialize a scaler
 scaler = StandardScaler()
@@ -143,10 +149,10 @@ train_dataloader = DataLoader(train_dataset, batch_size=batch_no, shuffle=True)
 test_dataset = EmittanceDataset(X_test_tensor, y_test)
 test_dataloader = DataLoader(test_dataset, batch_size=batch_no, shuffle=False)
 
-for batch_features, batch_targets in train_dataloader:
-    print("Features:", batch_features)
-    print("Targets:", batch_targets)
-    break  # Check one batch
+# for batch_features, batch_targets in train_dataloader:
+#     print("Features:", batch_features)
+#     print("Targets:", batch_targets)
+#     break  # Check one batch
 
 
 
@@ -202,7 +208,7 @@ for epoch in range(epochs):
     else:
         epochs_since_improvement += 1
 
-    if epochs_since_improvement >= patience:
+    if epochs_since_improvement >= patience and epoch>epochs/2:
         print("Early stopping triggered!")
         break
     
@@ -324,7 +330,7 @@ mse=average_loss
 if average_loss>average_loss_train:
     overfitting='Overfitting'
 elif average_loss<average_loss_train:
-    overfitting='Underfitting'
+    overfitting='Test was better??'
 else:
     overfitting='Just right'
 #Save necessary metrics
@@ -345,13 +351,14 @@ metrics = {
     'no_nodes': no_nodes,
     'predicted_feature': predicted_feature,  
     'training_loss': average_loss_train,
-    'overfitting':overfitting 
+    'overfitting':overfitting,
+    'test_size':test_size_val 
 }
 
 # Check if the CSV file exists (to decide whether to create or append)
 if save_metrics and not os.path.exists(csv_file_path):
     # If the file doesn't exist, we need to create a new one with column headers
-    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'test_loss', 'test_loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes','predicted_feature','training_loss','overfitting']
+    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'test_loss', 'test_loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes','predicted_feature','training_loss','overfitting','test_size']
     # Initialize the CSV file with column names
     training_metrics = []
 else:
@@ -415,8 +422,6 @@ y_lower = x - np.sqrt(mse)
 
 x_error=np.linspace(mse,mse,len(test_predictions))
 
-print("Shape of test_predictions:", test_predictions.shape)
-print("Shape of test_targets:", test_targets.shape)
 
 # Calculate residuals
 residuals =test_predictions-test_targets

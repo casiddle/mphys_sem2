@@ -1,4 +1,14 @@
-avg_epoch_time,total_training_time,total_num_epochs,num_epochs_early_stopping,patience,loss_function,test_loss,tets_loss_error,optimiser,learning_rate,activation_function,no_hidden_layers,batch_size,no_nodes,predicted_feature,training_loss,overfitting
-0.017189781296820868,12.75864839553833,420,420,50,MSELoss(),18.671640396118164,2.744659423828125,Adam,0.001,ReLU,10,10,6,"['Emittance', 'Beam Energy', 'Beam Spread']",79.3470196723938,Underfitting
-0.020591650193645842,15.349369525909424,420,420,50,MSELoss(),14.824820518493652,0.08984661102294922,Adam,0.001,ReLU,10,10,6,"['Emittance', 'Beam Energy', 'Beam Spread']",80.14864015579224,Underfitting
-0.01716441128935133,12.973496437072754,420,420,50,MSELoss(),14.123554706573486,3.423544236252989,Adam,0.001,ReLU,10,10,6,"['Emittance', 'Beam Energy', 'Beam Spread']",9.740891073879443,Overfitting
+avg_epoch_time,total_training_time,total_num_epochs,num_epochs_early_stopping,patience,loss_function,test_loss,tets_loss_error,optimiser,learning_rate,activation_function,no_hidden_layers,batch_size,no_nodes,predicted_feature,training_loss,overfitting,test_size
+0.007358454167842865,0.8667960166931152,420,96,50,MSELoss(),859.0097339184254,650.09491294918,Adam,0.001,ReLU,9,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",262.58157027395146,Overfitting,0.8
+0.014638267906885298,9.717466115951538,420,420,50,MSELoss(),17.23024787902832,2.714948791374197,Adam,0.001,ReLU,9,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",8.998152588543139,Overfitting,0.2
+0.008106447685332526,4.29478120803833,420,420,50,MSELoss(),156.62373070902638,151.56729014789568,Adam,0.001,ReLU,9,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",11.887221587331672,Overfitting,0.8
+0.006387290216627575,3.308291435241699,420,420,50,MSELoss(),113.95836866056764,108.82232707216778,Adam,0.001,ReLU,9,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",7.762180002112138,Overfitting,0.8
+0.013207670904341199,7.113201379776001,420,420,50,MSELoss(),13.035674075285593,4.542669540991169,Adam,0.001,ReLU,9,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",14.925642738739649,Underfitting,0.5
+0.014000073501041958,8.599226236343384,420,420,50,MSELoss(),9.674417128165564,4.373811556667129,Adam,0.001,ReLU,13,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",6.683499425649643,Overfitting,0.5
+0.013881859183311463,8.537822246551514,420,420,50,MSELoss(),14.045941372712454,4.077562617225192,Adam,0.001,ReLU,13,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",12.809769004583359,Overfitting,0.5
+0.01378304333913894,8.303929090499878,420,420,50,MSELoss(),71.8662310441335,68.80875247829995,Adam,0.001,ReLU,13,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",7.400145262479782,Overfitting,0.5
+0.015055523700072985,2.6121084690093994,420,119,50,MSELoss(),223.5831422805786,436.1134643538644,Adam,0.001,ReLU,13,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",691.986767133077,Test was better??,0.5
+0.012825569794291542,8.016413450241089,420,420,50,MSELoss(),11.497323532899221,3.740491773730815,Adam,0.001,ReLU,13,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",5.9402230978012085,Overfitting,0.5
+0.016391944175674803,11.137038469314575,420,420,50,MSELoss(),30.96548569202423,19.60455212199536,Adam,0.001,ReLU,13,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",12.469715903202692,Overfitting,0.5
+0.01348165871654349,6.164198398590088,420,307,20,MSELoss(),170.04864160219827,100.69301148060819,Adam,0.001,ReLU,13,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",7.736155728499095,Overfitting,0.5
+0.014217079248068467,4.523597002029419,420,212,10,MSELoss(),623.4915135701498,484.15343842292845,Adam,0.001,ReLU,13,13,8,"['Emittance', 'Beam Energy', 'Beam Spread']",302.1952149073283,Overfitting,0.5
