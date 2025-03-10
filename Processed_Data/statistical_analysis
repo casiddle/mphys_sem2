@@ -26,7 +26,7 @@ df['UV percentage']=df['No. UV Photons']/df['Total no. Photons']
 df['Other percentage']=df['No. Other Photons']/df['Total no. Photons']
 
 
-df = df.drop(columns=['No. UV Photons','No. Other Photons','Total no. Photons','No. X-ray Photons'])
+df = df.drop(columns=['No. UV Photons','No. Other Photons','No. X-ray Photons'])
 
 
 print(df.columns)
