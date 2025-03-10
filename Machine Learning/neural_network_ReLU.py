@@ -16,11 +16,11 @@ import os
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_1_target.csv"
-data_file_path="Processed_Data/data_sets/output_test.csv"
+data_file_path="Processed_Data/data_sets/output_test_96.csv"
 epochs = 250  # Number of epochs to train
 patience = 20  # number of epochs with no improvement before stopping
 batch_no=6 #batch size
-no_hidden_layers=6 #number of hidden layers 
+no_hidden_layers=20 #number of hidden layers 
 learning_rate=0.01 #learning rate
 no_nodes=10 #number of nodes in each hidden layer
 input_size=3 #number of input features
@@ -96,7 +96,7 @@ def theta_to_r(theta, distance):
 df = pd.read_csv(data_file_path)
 df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
 # Separate features and target
-X = df[["Uv/X-ray", "R", "Critical Energy"]].values # Features
+X = df[["X-ray/UV", "R", "Critical Energy"]].values # Features
 y = df[predicted_feature].values # Target
 
 # Convert to PyTorch tensors
