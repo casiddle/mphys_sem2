@@ -1,2 +1,4 @@
 avg_epoch_time,total_training_time,total_num_epochs,num_epochs_early_stopping,patience,loss_function,test_loss,tets_loss_error,optimiser,learning_rate,activation_function,no_hidden_layers,batch_size,no_nodes,predicted_feature,training_loss,overfitting
 0.017189781296820868,12.75864839553833,420,420,50,MSELoss(),18.671640396118164,2.744659423828125,Adam,0.001,ReLU,10,10,6,"['Emittance', 'Beam Energy', 'Beam Spread']",79.3470196723938,Underfitting
+0.020591650193645842,15.349369525909424,420,420,50,MSELoss(),14.824820518493652,0.08984661102294922,Adam,0.001,ReLU,10,10,6,"['Emittance', 'Beam Energy', 'Beam Spread']",80.14864015579224,Underfitting
+0.01716441128935133,12.973496437072754,420,420,50,MSELoss(),14.123554706573486,3.423544236252989,Adam,0.001,ReLU,10,10,6,"['Emittance', 'Beam Energy', 'Beam Spread']",9.740891073879443,Overfitting

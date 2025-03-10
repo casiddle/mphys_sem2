@@ -219,6 +219,7 @@ avg_epoch_time = np.mean(epoch_times)
 print(f"Average time per epoch: {avg_epoch_time:.2f} sec")
 print(f"Total training time: {total_training_time:.2f} sec")
 
+
 # After training is done, plot the results
 plt.figure(figsize=(10, 6))
 plt.plot(epoch_array, loss_array, label='Training Loss', color='tab:blue', marker='o')
@@ -290,9 +291,39 @@ loss_error=np.std(loss_array)
 print(f"Test Set Loss: {average_loss:.4f}")
 mse=average_loss
 
-if average_loss>best_loss:
+# Initialize variables to keep track of the total loss and number of samples
+total_loss_train = 0.0
+num_samples_train = 0
+loss_array_train=np.empty(0)
+
+# No need to calculate gradients during evaluation, so we use torch.no_grad()
+with torch.no_grad():
+    for batch_features, batch_targets in train_dataloader:
+        # Move the data to the appropriate device (CPU or GPU)
+        batch_features, batch_targets = batch_features.to(device), batch_targets.to(device)
+        
+        # Make predictions
+        predictions = model(batch_features)
+        
+        # Calculate the loss (using the same loss function as in training)
+        loss = loss_fn(predictions, batch_targets)
+        #print(f"Test Loss: {loss.item():.4f}")
+        loss_array_train=np.append(loss_array,loss.item())
+        
+        # Accumulate the loss and number of samples
+        total_loss_train += loss.item() * batch_features.size(0)  # Multiply by batch size
+        num_samples_train += batch_features.size(0)
+
+        
+# Calculate average loss
+average_loss_train = total_loss_train / num_samples_train
+loss_error=np.std(loss_array_train)
+print(f"Train Set Loss: {average_loss_train:.4f}")
+mse=average_loss
+
+if average_loss>average_loss_train:
     overfitting='Overfitting'
-elif average_loss<best_loss:
+elif average_loss<average_loss_train:
     overfitting='Underfitting'
 else:
     overfitting='Just right'
@@ -313,7 +344,7 @@ metrics = {
     'batch_size': batch_no,
     'no_nodes': no_nodes,
     'predicted_feature': predicted_feature,  
-    'training_loss': best_loss,
+    'training_loss': average_loss_train,
     'overfitting':overfitting 
 }
 
@@ -417,8 +448,8 @@ ax2.set_ylabel(r"Residuals ($\sigma$)", fontsize=14)
 ax2.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
 ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*residuals/np.sqrt(mse)))))
 
-plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU_3_targets',dpi=250)
-plt.show()
+#plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU_3_targets',dpi=250)
+#plt.show()
 
 
 grad_norms = [p.grad.norm().item() for p in model.parameters()]
