@@ -15,7 +15,7 @@ import os
 
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
-csv_file_path = "Machine Learning/training_metrics_1_target.csv"
+csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
 data_file_path="Processed_Data/data_sets/output_test_96.csv"
 epochs = 250  # Number of epochs to train
 patience = 20  # number of epochs with no improvement before stopping
@@ -23,14 +23,14 @@ batch_no=6 #batch size
 no_hidden_layers=20 #number of hidden layers 
 learning_rate=0.01 #learning rate
 no_nodes=10 #number of nodes in each hidden layer
-input_size=3 #number of input features
-predicted_feature="Emittance" #name of the feature to be predicted
+input_size=6 #number of input features
+predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 
 activation_function="ReLU" #activation function- note this string needs to be changed manually
 
 # Define the neural network class and relative loss and optimiser functions
 class NeuralNetwork(nn.Module):  # Define custom neural network
-    def __init__(self, input_size=3, hidden_size=10, num_hidden_layers=3, num_ouputs=1):
+    def __init__(self, input_size=3, hidden_size=10, num_hidden_layers=3, num_outputs=len(predicted_feature)):
         super().__init__()
         
         # Initialize an empty list to hold layers
@@ -46,7 +46,7 @@ class NeuralNetwork(nn.Module):  # Define custom neural network
             layers.append(nn.ReLU())  # ReLU activation for each hidden layer
         
         # Output layer
-        layers.append(nn.Linear(hidden_size, num_ouputs))  # Output layer (single output)
+        layers.append(nn.Linear(hidden_size, num_outputs))  # Output layer (single output)
         
         # Use Sequential to combine layers
         self.linear_relu_stack = nn.Sequential(*layers)
@@ -95,15 +95,15 @@ def theta_to_r(theta, distance):
 # MAIN-------------------------------------------------------------------
 df = pd.read_csv(data_file_path)
 df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
-df['UV percentage']=df['No. UV Photons']/df['Total no. Photons']
-df['Other percentage']=df['No. Other Photons']/df['Total no. Photons']
+df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
+df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 # Separate features and target
-X = df[["X-ray/UV", "R", "Critical Energy"]].values # Features
+X = df[["R", "Critical Energy",'X-ray Critical Energy', 'X-ray Percentage','UV Percentage','Other Percentage']].values # Features
 y = df[predicted_feature].values # Target
 
 # Convert to PyTorch tensors
 X = torch.tensor(X, dtype=torch.float32)
-y = torch.tensor(y, dtype=torch.float32).view(-1, 1)  # Reshape to match model output
+y = torch.tensor(y, dtype=torch.float32).reshape(96, 3)  # Reshape to match model output
 
 
 
@@ -376,6 +376,9 @@ y_upper = x + np.sqrt(mse)
 y_lower = x - np.sqrt(mse)
 
 x_error=np.linspace(mse,mse,len(test_predictions))
+
+print("Shape of test_predictions:", test_predictions.shape)
+print("Shape of test_targets:", test_targets.shape)
 
 # Calculate residuals
 residuals =test_predictions-test_targets

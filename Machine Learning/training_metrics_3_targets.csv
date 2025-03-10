@@ -1,0 +1,2 @@
+avg_epoch_time,total_training_time,total_num_epochs,num_epochs_early_stopping,patience,loss_function,test_loss,tets_loss_error,optimiser,learning_rate,activation_function,no_hidden_layers,batch_size,no_nodes,predicted_feature,training_loss
+0.03036055602925889,2.453256368637085,250,47,20,MSELoss(),280.75541496276855,447.8567719957301,Adam,0.01,ReLU,20,6,10,"['Emittance', 'Beam Energy', 'Beam Spread']",4823.627128601074
