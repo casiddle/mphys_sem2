@@ -22,6 +22,8 @@ df = df.drop(columns=['Initial emittance'])
 
 # Apply the function to the column
 df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
+df['UV percentage']=df['No. UV Photons']/df['Total no. Photons']
+df['Other percentage']=df['No. Other Photons']/df['Total no. Photons']
 
 print(df.columns)
 print(df.describe(include='all'))
@@ -73,10 +75,10 @@ correlation_df=pd.read_csv('correlation_matrix_ranked.csv')
 
 # Filter rows where 'Feature 1' or 'Feature 2' contains 'Emittance'
 emittance_filtered_df = correlation_df[(correlation_df["Feature 1"]=="Emittance") | (correlation_df["Feature 2"]=="Emittance")]
-print(emittance_filtered_df)
+print(emittance_filtered_df.head(10))
 
 beam_spread_filtered_df = correlation_df[(correlation_df["Feature 1"]=="Beam Spread") | (correlation_df["Feature 2"]=="Beam Spread")]
-print(beam_spread_filtered_df)
+print(beam_spread_filtered_df.head(10))
 
 beam_energy_filtered_df = correlation_df[(correlation_df["Feature 1"]=="Beam Energy") | (correlation_df["Feature 2"]=="Beam Energy")]
-print(beam_energy_filtered_df)
+print(beam_energy_filtered_df.head(10))
