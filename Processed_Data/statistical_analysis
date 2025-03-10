@@ -15,7 +15,7 @@ def theta_to_r(theta, distance):
     return r
 
 
-data_set=r"data_sets\output_test.csv"
+data_set=r"data_sets\output_test_96.csv"
 df = pd.read_csv(data_set)
 df = df.drop(columns=['Initial emittance'])
 
@@ -28,7 +28,7 @@ print(df.describe(include='all'))
 
 # # Your dataframe and correlation matrix
 X = df[['Set Radius','Set Emittance','Emittance','Beam Spread','Beam Radius', 'X-ray Percentage',
-        'X-ray Critical Energy','Uv/X-ray','Beam Energy','R']]
+        'X-ray Critical Energy','X-ray/UV','Beam Energy','R']]
 # Calculate the correlation matrices for different methods
 correlation_pearson = df.corr(method='pearson')
 correlation_spearman = df.corr(method='spearman')
@@ -68,3 +68,15 @@ correlation_long = correlation_long.reindex(correlation_long['Correlation'].abs(
 print(correlation_long)
 # Save the ranked correlation pairs to a CSV file
 correlation_long.to_csv('correlation_matrix_ranked.csv', index=False)
+
+correlation_df=pd.read_csv('correlation_matrix_ranked.csv')
+
+# Filter rows where 'Feature 1' or 'Feature 2' contains 'Emittance'
+emittance_filtered_df = correlation_df[(correlation_df["Feature 1"]=="Emittance") | (correlation_df["Feature 2"]=="Emittance")]
+print(emittance_filtered_df)
+
+beam_spread_filtered_df = correlation_df[(correlation_df["Feature 1"]=="Beam Spread") | (correlation_df["Feature 2"]=="Beam Spread")]
+print(beam_spread_filtered_df)
+
+beam_energy_filtered_df = correlation_df[(correlation_df["Feature 1"]=="Beam Energy") | (correlation_df["Feature 2"]=="Beam Energy")]
+print(beam_energy_filtered_df)
