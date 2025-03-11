@@ -21,9 +21,9 @@ df = df.drop(columns=['Initial emittance'])
 
 
 # Apply the function to the column
-df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
-df['UV percentage']=df['No. UV Photons']/df['Total no. Photons']
-df['Other percentage']=df['No. Other Photons']/df['Total no. Photons']
+df['Mean Radiation Radius'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
+df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
+df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 
 
 df = df.drop(columns=['No. UV Photons','No. Other Photons','No. X-ray Photons'])
@@ -32,9 +32,7 @@ df = df.drop(columns=['No. UV Photons','No. Other Photons','No. X-ray Photons'])
 print(df.columns)
 print(df.describe(include='all'))
 
-# # Your dataframe and correlation matrix
-X = df[['Set Radius','Set Emittance','Emittance','Beam Spread','Beam Radius', 'X-ray Percentage',
-        'X-ray Critical Energy','X-ray/UV','Beam Energy','R']]
+
 # Calculate the correlation matrices for different methods
 correlation_pearson = df.corr(method='pearson')
 correlation_spearman = df.corr(method='spearman')
@@ -86,3 +84,16 @@ print(beam_spread_filtered_df.head(10))
 
 beam_energy_filtered_df = correlation_df[(correlation_df["Feature 1"]=="Beam Energy") | (correlation_df["Feature 2"]=="Beam Energy")]
 print(beam_energy_filtered_df.head(10))
+
+
+X = df[['Emittance','Beam Spread','Beam Energy', 'X-ray Percentage',
+        'X-ray Critical Energy','Mean Radiation Radius','UV Percentage','Other Percentage','Critical Energy']]
+
+correlation_matrix = X.corr(method='kendall')
+plt.figure(figsize=(14, 12))
+sns.heatmap(correlation_matrix, annot=True, cmap="bwr", fmt=".2f", linewidths=0.5)
+plt.title("Heatmap for Correlation Matrix")
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.savefig('Plots/correlation_heatmap.png')
+#plt.show()
