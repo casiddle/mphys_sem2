@@ -44,11 +44,13 @@ class NeuralNetwork(nn.Module):  # Define custom neural network
         
         # First hidden layer (input layer to the first hidden layer)
         layers.append(nn.Linear(input_size, hidden_size))
+        layers.append(nn.BatchNorm1d(hidden_size)) #Normalisation
         layers.append(nn.ReLU())  # ReLU activation function
         
         # Loop to add the hidden layers
         for _ in range(num_hidden_layers - 1):  # Subtract 1 since the first hidden layer is already added
             layers.append(nn.Linear(hidden_size, hidden_size))
+            layers.append(nn.BatchNorm1d(hidden_size)) 
             layers.append(nn.ReLU())  # ReLU activation for each hidden layer
         
         # Output layer
@@ -100,11 +102,11 @@ def theta_to_r(theta, distance):
 
 # MAIN-------------------------------------------------------------------
 df = pd.read_csv(data_file_path)
-df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
+df['Mean Radiation Radius'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
 df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
 df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 # Separate features and target
-X = df[["R", "Critical Energy",'X-ray Critical Energy', 'X-ray Percentage','UV Percentage','Other Percentage']].values # Features
+X = df[["Mean Radiation Radius", "Critical Energy",'X-ray Critical Energy', 'X-ray Percentage','UV Percentage','Other Percentage']].values # Features
 y = df[predicted_feature].values # Target
 
 # Convert to PyTorch tensors
@@ -120,16 +122,11 @@ dataloader = DataLoader(dataset, batch_size=2, shuffle=True)  # Batch size = 2
 # Split data into training and test sets (80% train, 20% test)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size_val, random_state=train_test_seed)
 
-# Initialize a scaler
-scaler = StandardScaler()
-# Fit the scaler on the training data and transform it
-X_train_scaled = scaler.fit_transform(X_train)
-# Use the same scaler (don't refit) to scale the test data
-X_test_scaled = scaler.transform(X_test)
 
-# Convert the scaled data into tensors
-X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32)
-X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
+
+# Convert the data into tensors
+X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
+X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
 
 #check if there is any overlap between training and test sets
 # Convert tensors to numpy for easy comparison
@@ -353,7 +350,7 @@ mean_individual_losses_train = individual_loss_array_train / num_samples
 # Display Results
 print(f"Overall Train Loss: {average_loss_train:.4f}")
 for i, feature in enumerate(predicted_feature):
-    print(f"{feature} Train Loss: {mean_individual_losses[i]:.4f}")
+    print(f"{feature} Train Loss: {mean_individual_losses_train[i]:.4f}")
 
 if average_loss>average_loss_train:
     overfitting='Overfitting'
@@ -388,20 +385,9 @@ for i, feature in enumerate(predicted_feature):
     metrics[f'{feature}_train_loss'] = mean_individual_losses_train[i]
     metrics[f'{feature}_test_loss'] = mean_individual_losses[i]
 
-# Optional: Print the full metrics dictionary for confirmation
-print("Metrics Dictionary:", metrics)
+# Print the full metrics dictionary 
+#print("Metrics Dictionary:", metrics)
 
-
-
-# # Check if the CSV file exists (to decide whether to create or append)
-# if save_metrics and not os.path.exists(csv_file_path):
-#     # If the file doesn't exist, create it with columns based on the keys of the metrics dictionary
-#     columns = list(metrics.keys())  # Use the keys from the metrics dictionary as column names
-#     # Initialize empty DataFrame with the columns from the metrics dictionary
-#     training_metrics = pd.DataFrame(columns=columns)
-# else:
-#     # If the file exists, we will just append new data
-#     training_metrics = pd.read_csv(csv_file_path)
 
 # Convert the metrics dictionary into a DataFrame
 metrics_df = pd.DataFrame([metrics])
