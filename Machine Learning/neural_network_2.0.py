@@ -18,12 +18,12 @@ save_metrics = True  # Change this to False if you don’t want to save for this
 csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
 data_file_path="Processed_Data/data_sets/output_test_96.csv"
 
-epochs = 700  # Number of epochs to train
+epochs = 800  # Number of epochs to train
 patience = epochs*0.1  # number of epochs with no improvement before stopping
-batch_no=20 #batch size
+batch_no=13 #batch size
 no_hidden_layers=15 #number of hidden layers 
 learning_rate=0.01 #learning rate
-no_nodes=6 #number of nodes in each hidden layer
+no_nodes=10 #number of nodes in each hidden layer
 test_size_val=0.5 #proportion of data that is tested, 1-test_size= train_size
 dropout=0.1
 
