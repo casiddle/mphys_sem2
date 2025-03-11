@@ -11,26 +11,33 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import time
 import os
-
+import random
 
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
-csv_file_path = "Machine Learning/training_metrics_1_target.csv"
+csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
 data_file_path="Processed_Data/data_sets/output_test_96.csv"
-epochs = 250  # Number of epochs to train
-patience = 20  # number of epochs with no improvement before stopping
-batch_no=6 #batch size
-no_hidden_layers=20 #number of hidden layers 
-learning_rate=0.01 #learning rate
-no_nodes=10 #number of nodes in each hidden layer
-input_size=3 #number of input features
-predicted_feature="Emittance" #name of the feature to be predicted
 
+epochs = 1000  # Number of epochs to train
+patience = epochs*0.1  # number of epochs with no improvement before stopping
+batch_no=13 #batch size
+no_hidden_layers=6 #number of hidden layers 
+learning_rate=0.001 #learning rate
+no_nodes=6 #number of nodes in each hidden layer
+test_size_val=0.5 #proportion of data that is tested, 1-test_size= train_size
+dropout=0.1
+
+input_size=6 #number of input features
+predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 activation_function="ReLU" #activation function- note this string needs to be changed manually
+
+train_test_seed=42
+#train_test_seed=random.randint(1,100)
+print("Train-test split seed:",train_test_seed)
 
 # Define the neural network class and relative loss and optimiser functions
 class NeuralNetwork(nn.Module):  # Define custom neural network
-    def __init__(self, input_size=3, hidden_size=10, num_hidden_layers=3, num_ouputs=1):
+    def __init__(self, input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature),dropout_rate=dropout):
         super().__init__()
         
         # Initialize an empty list to hold layers
@@ -38,15 +45,18 @@ class NeuralNetwork(nn.Module):  # Define custom neural network
         
         # First hidden layer (input layer to the first hidden layer)
         layers.append(nn.Linear(input_size, hidden_size))
+        layers.append(nn.BatchNorm1d(hidden_size)) #Normalisation
         layers.append(nn.ReLU())  # ReLU activation function
         
         # Loop to add the hidden layers
         for _ in range(num_hidden_layers - 1):  # Subtract 1 since the first hidden layer is already added
             layers.append(nn.Linear(hidden_size, hidden_size))
+            layers.append(nn.BatchNorm1d(hidden_size)) 
             layers.append(nn.ReLU())  # ReLU activation for each hidden layer
+            layers.append(nn.Dropout(dropout_rate))  # Dropout layer after activation
         
         # Output layer
-        layers.append(nn.Linear(hidden_size, num_ouputs))  # Output layer (single output)
+        layers.append(nn.Linear(hidden_size, num_outputs))  # Output layer (single output)
         
         # Use Sequential to combine layers
         self.linear_relu_stack = nn.Sequential(*layers)
@@ -61,7 +71,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Print the device being used
 print(f"Using {device} device")
 
-model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers).to(device)  # Initialize the model
+model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature), dropout_rate=dropout).to(device)  # Initialize the model
 print(model)
 loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
@@ -94,16 +104,16 @@ def theta_to_r(theta, distance):
 
 # MAIN-------------------------------------------------------------------
 df = pd.read_csv(data_file_path)
-df['R'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
-df['UV percentage']=df['No. UV Photons']/df['Total no. Photons']
-df['Other percentage']=df['No. Other Photons']/df['Total no. Photons']
+df['Mean Radiation Radius'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
+df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
+df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 # Separate features and target
-X = df[["X-ray/UV", "R", "Critical Energy"]].values # Features
+X = df[["Mean Radiation Radius", "Critical Energy",'X-ray Critical Energy', 'X-ray Percentage','UV Percentage','Other Percentage']].values # Features
 y = df[predicted_feature].values # Target
 
 # Convert to PyTorch tensors
 X = torch.tensor(X, dtype=torch.float32)
-y = torch.tensor(y, dtype=torch.float32).view(-1, 1)  # Reshape to match model output
+y = torch.tensor(y, dtype=torch.float32).reshape(96, 3)  # Reshape to match model output
 
 
 
@@ -112,18 +122,13 @@ dataset = EmittanceDataset(X, y)
 dataloader = DataLoader(dataset, batch_size=2, shuffle=True)  # Batch size = 2
 
 # Split data into training and test sets (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size_val, random_state=train_test_seed)
 
-# Initialize a scaler
-scaler = StandardScaler()
-# Fit the scaler on the training data and transform it
-X_train_scaled = scaler.fit_transform(X_train)
-# Use the same scaler (don't refit) to scale the test data
-X_test_scaled = scaler.transform(X_test)
 
-# Convert the scaled data into tensors
-X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32)
-X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
+
+# Convert the data into tensors
+X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
+X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
 
 #check if there is any overlap between training and test sets
 # Convert tensors to numpy for easy comparison
@@ -143,10 +148,10 @@ train_dataloader = DataLoader(train_dataset, batch_size=batch_no, shuffle=True)
 test_dataset = EmittanceDataset(X_test_tensor, y_test)
 test_dataloader = DataLoader(test_dataset, batch_size=batch_no, shuffle=False)
 
-for batch_features, batch_targets in train_dataloader:
-    print("Features:", batch_features)
-    print("Targets:", batch_targets)
-    break  # Check one batch
+# for batch_features, batch_targets in train_dataloader:
+#     print("Features:", batch_features)
+#     print("Targets:", batch_targets)
+#     break  # Check one batch
 
 
 
@@ -202,7 +207,7 @@ for epoch in range(epochs):
     else:
         epochs_since_improvement += 1
 
-    if epochs_since_improvement >= patience:
+    if epochs_since_improvement >= patience and epoch>epochs/2:
         print("Early stopping triggered!")
         break
     
@@ -218,6 +223,7 @@ total_training_time = total_end_time - total_start_time
 avg_epoch_time = np.mean(epoch_times)
 print(f"Average time per epoch: {avg_epoch_time:.2f} sec")
 print(f"Total training time: {total_training_time:.2f} sec")
+
 
 # After training is done, plot the results
 plt.figure(figsize=(10, 6))
@@ -265,6 +271,9 @@ total_loss = 0.0
 num_samples = 0
 loss_array=np.empty(0)
 
+# Array to store individual losses for each feature
+individual_loss_array = np.zeros(len(predicted_feature)) 
+
 # No need to calculate gradients during evaluation, so we use torch.no_grad()
 with torch.no_grad():
     for batch_features, batch_targets in test_dataloader:
@@ -273,6 +282,13 @@ with torch.no_grad():
         
         # Make predictions
         predictions = model(batch_features)
+
+        # Calculate individual losses for each output
+        individual_losses = [loss_fn(predictions[:, i], batch_targets[:, i]) for i in range(predictions.shape[1])]
+        
+        # Store individual losses
+        for i, loss in enumerate(individual_losses):
+            individual_loss_array[i] += loss.item() * batch_features.size(0)  # Scale by batch size
         
         # Calculate the loss (using the same loss function as in training)
         loss = loss_fn(predictions, batch_targets)
@@ -287,9 +303,63 @@ with torch.no_grad():
 # Calculate average loss
 average_loss = total_loss / num_samples
 loss_error=np.std(loss_array)
-print(f"Test Set Loss: {average_loss:.4f}")
 mse=average_loss
+mean_individual_losses = individual_loss_array / num_samples
 
+# Display Results
+print(f"Overall Test Loss: {average_loss:.4f}")
+for i, feature in enumerate(predicted_feature):
+    print(f"{feature} Test Loss: {mean_individual_losses[i]:.4f}")
+
+# Initialize variables to keep track of the total loss and number of samples
+total_loss_train = 0.0
+num_samples_train = 0
+loss_array_train=np.empty(0)
+
+# Array to store individual losses for each feature
+individual_loss_array_train = np.zeros(len(predicted_feature)) 
+
+# No need to calculate gradients during evaluation, so we use torch.no_grad()
+with torch.no_grad():
+    for batch_features, batch_targets in train_dataloader:
+        # Move the data to the appropriate device (CPU or GPU)
+        batch_features, batch_targets = batch_features.to(device), batch_targets.to(device)
+        
+        # Make predictions
+        predictions = model(batch_features)
+        # Calculate individual losses for each output
+        individual_losses_train = [loss_fn(predictions[:, i], batch_targets[:, i]) for i in range(predictions.shape[1])]
+        
+        # Store individual losses
+        for i, loss in enumerate(individual_losses_train):
+            individual_loss_array_train[i] += loss.item() * batch_features.size(0)  # Scale by batch size
+
+        # Calculate the loss (using the same loss function as in training)
+        loss = loss_fn(predictions, batch_targets)
+        #print(f"Test Loss: {loss.item():.4f}")
+        loss_array_train=np.append(loss_array,loss.item())
+        
+        # Accumulate the loss and number of samples
+        total_loss_train += loss.item() * batch_features.size(0)  # Multiply by batch size
+        num_samples_train += batch_features.size(0)
+
+        
+# Calculate average loss
+average_loss_train = total_loss_train / num_samples_train
+loss_error=np.std(loss_array_train)
+mse=average_loss
+mean_individual_losses_train = individual_loss_array_train / num_samples
+# Display Results
+print(f"Overall Train Loss: {average_loss_train:.4f}")
+for i, feature in enumerate(predicted_feature):
+    print(f"{feature} Train Loss: {mean_individual_losses_train[i]:.4f}")
+
+if average_loss>average_loss_train:
+    overfitting='Overfitting'
+elif average_loss<average_loss_train:
+    overfitting='Test was better??'
+else:
+    overfitting='Just right'
 #Save necessary metrics
 metrics = {
     'avg_epoch_time': avg_epoch_time,
@@ -299,7 +369,7 @@ metrics = {
     'patience': patience,
     'loss_function': loss_fn,
     'test_loss': average_loss,
-    'tets_loss_error': loss_error,
+    'test_loss_error': loss_error,
     'optimiser': type(optimizer).__name__,
     'learning_rate': learning_rate,
     'activation_function': activation_function,
@@ -307,18 +377,20 @@ metrics = {
     'batch_size': batch_no,
     'no_nodes': no_nodes,
     'predicted_feature': predicted_feature,  
-    'training_loss': best_loss 
+    'training_loss': average_loss_train,
+    'overfitting':overfitting,
+    'test_size':test_size_val,
+    'dropout_rate':dropout
 }
 
-# Check if the CSV file exists (to decide whether to create or append)
-if save_metrics and not os.path.exists(csv_file_path):
-    # If the file doesn't exist, we need to create a new one with column headers
-    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'test_loss', 'test_loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes','predicted_feature','training_loss']
-    # Initialize the CSV file with column names
-    training_metrics = []
-else:
-    # If the file exists, we will just append new data
-    training_metrics = pd.read_csv(csv_file_path)
+# Add individual feature losses
+for i, feature in enumerate(predicted_feature):
+    metrics[f'{feature}_train_loss'] = mean_individual_losses_train[i]
+    metrics[f'{feature}_test_loss'] = mean_individual_losses[i]
+
+# Print the full metrics dictionary 
+#print("Metrics Dictionary:", metrics)
+
 
 # Convert the metrics dictionary into a DataFrame
 metrics_df = pd.DataFrame([metrics])
@@ -377,6 +449,7 @@ y_lower = x - np.sqrt(mse)
 
 x_error=np.linspace(mse,mse,len(test_predictions))
 
+
 # Calculate residuals
 residuals =test_predictions-test_targets
 
@@ -398,7 +471,7 @@ ax1.tick_params(axis='both', labelsize=12)
 
 # Residuals plot (in units of sigma)
 ax2 = fig.add_subplot(gs[1, 0])
-ax2.errorbar(test_targets, residuals, color='tab:blue', alpha=0.7, fmt='o',label="Residuals")
+ax2.errorbar(test_targets, residuals/np.sqrt(mse), color='tab:blue', alpha=0.7, fmt='o',label="Residuals")
 
 ax2.axhline(0, color='k', linestyle='--', linewidth=1)
 ax2.axhline(-1,color='r',linestyle='--',linewidth=1)
@@ -407,12 +480,12 @@ ax2.set_ylabel(r"Residuals ($\sigma$)", fontsize=14)
 ax2.set_xlabel(r"QV3D data values for emittance ($\mu m$)", fontsize=14)
 ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*residuals/np.sqrt(mse)))))
 
-#plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU',dpi=250)
+#plt.savefig(r'Machine Learning\Plots\NN_plot_ReLU_3_targets',dpi=250)
 #plt.show()
 
 
 grad_norms = [p.grad.norm().item() for p in model.parameters()]
-print("Gradient Norms:", grad_norms)
+#print("Gradient Norms:", grad_norms)
 
 
 # Loop over the parameters and print them
