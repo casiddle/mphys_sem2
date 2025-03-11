@@ -18,13 +18,14 @@ save_metrics = True  # Change this to False if you don’t want to save for this
 csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
 data_file_path="Processed_Data/data_sets/output_test_96.csv"
 
-epochs = 700  # Number of epochs to train
-patience = 70  # number of epochs with no improvement before stopping
+epochs = 1000  # Number of epochs to train
+patience = epochs*0.1  # number of epochs with no improvement before stopping
 batch_no=13 #batch size
-no_hidden_layers=13 #number of hidden layers 
+no_hidden_layers=6 #number of hidden layers 
 learning_rate=0.001 #learning rate
-no_nodes=5 #number of nodes in each hidden layer
-test_size_val=0.8 #proportion of data that is tested, 1-test_size= train_size
+no_nodes=6 #number of nodes in each hidden layer
+test_size_val=0.5 #proportion of data that is tested, 1-test_size= train_size
+dropout=0.1
 
 input_size=6 #number of input features
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
@@ -36,7 +37,7 @@ print("Train-test split seed:",train_test_seed)
 
 # Define the neural network class and relative loss and optimiser functions
 class NeuralNetwork(nn.Module):  # Define custom neural network
-    def __init__(self, input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature)):
+    def __init__(self, input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature),dropout_rate=dropout):
         super().__init__()
         
         # Initialize an empty list to hold layers
@@ -52,6 +53,7 @@ class NeuralNetwork(nn.Module):  # Define custom neural network
             layers.append(nn.Linear(hidden_size, hidden_size))
             layers.append(nn.BatchNorm1d(hidden_size)) 
             layers.append(nn.ReLU())  # ReLU activation for each hidden layer
+            layers.append(nn.Dropout(dropout_rate))  # Dropout layer after activation
         
         # Output layer
         layers.append(nn.Linear(hidden_size, num_outputs))  # Output layer (single output)
@@ -69,7 +71,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Print the device being used
 print(f"Using {device} device")
 
-model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature)).to(device)  # Initialize the model
+model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature), dropout_rate=dropout).to(device)  # Initialize the model
 print(model)
 loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
@@ -377,7 +379,8 @@ metrics = {
     'predicted_feature': predicted_feature,  
     'training_loss': average_loss_train,
     'overfitting':overfitting,
-    'test_size':test_size_val
+    'test_size':test_size_val,
+    'dropout_rate':dropout
 }
 
 # Add individual feature losses
