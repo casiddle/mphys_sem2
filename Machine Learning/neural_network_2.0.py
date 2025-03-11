@@ -369,7 +369,7 @@ metrics = {
     'patience': patience,
     'loss_function': loss_fn,
     'test_loss': average_loss,
-    'tets_loss_error': loss_error,
+    'test_loss_error': loss_error,
     'optimiser': type(optimizer).__name__,
     'learning_rate': learning_rate,
     'activation_function': activation_function,
