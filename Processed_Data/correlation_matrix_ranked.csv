@@ -40,8 +40,8 @@ Beam Radius,Mean Radiation Radius,0.4807017543859648
 Mean Theta,Beam Radius,0.4807017543859648
 Beam Energy,X-ray Critical Energy,0.46184210526315783
 Beam Spread,Total no. Photons,0.45885974919909406
-Total Charge,Mean Radiation Radius,-0.4253200314899392
 Mean Theta,Total Charge,-0.4253200314899392
+Total Charge,Mean Radiation Radius,-0.4253200314899392
 Beam Spread,Other Percentage,-0.4023432991511118
 Emittance,UV Percentage,0.3999999999999999
 Mean Theta,X-ray Critical Energy,-0.3899122807017543
@@ -64,8 +64,8 @@ Beam Radius,UV Percentage,0.2521929824561403
 X-ray/UV,Beam Spread,0.25208130894417485
 Beam Radius,X-ray Critical Energy,-0.22850877192982452
 Beam Energy,Beam Radius,0.21754385964912276
-Mean Theta,Critical Energy,-0.21666666666666662
 Critical Energy,Mean Radiation Radius,-0.21666666666666662
+Mean Theta,Critical Energy,-0.21666666666666662
 Emittance,Total no. Photons,0.21184210526315786
 Beam Radius,Set Radius,0.2074300593746329
 Total Charge,Set Radius,-0.2009146279155346
@@ -79,15 +79,15 @@ X-ray/UV,Beam Radius,-0.168859649122807
 X-ray Percentage,UV Percentage,-0.16754385964912277
 X-ray Critical Energy,Set Emittance,-0.1671781867764247
 Beam Radius,X-ray Percentage,-0.16535087719298242
-Mean Theta,UV Percentage,0.16359649122807016
 Mean Radiation Radius,UV Percentage,0.16359649122807016
+Mean Theta,UV Percentage,0.16359649122807016
 X-ray Percentage,Total Charge,-0.15952274524844356
 X-ray/UV,Total Charge,-0.1559728649647508
 Emittance,Other Percentage,-0.15438596491228068
 Beam Energy,Set Emittance,0.15230788983943816
 Set Radius,UV Percentage,0.1448186820057921
-Mean Theta,Total no. Photons,-0.13684210526315788
 Total no. Photons,Mean Radiation Radius,-0.13684210526315788
+Mean Theta,Total no. Photons,-0.13684210526315788
 Emittance,Set Radius,0.13430379420339136
 Emittance,Critical Energy,0.12412280701754383
 Beam Spread,Set Radius,0.11633170569210903
@@ -102,20 +102,36 @@ X-ray Critical Energy,Set Radius,0.057831882913204104
 Emittance,X-ray Critical Energy,-0.04649122807017543
 Critical Energy,UV Percentage,-0.042543859649122794
 Total no. Photons,UV Percentage,0.03991228070175438
-Mean Theta,Set Radius,-0.038713905090657294
 Set Radius,Mean Radiation Radius,-0.038713905090657294
 X-ray/UV,Set Radius,0.038713905090657294
+Mean Theta,Set Radius,-0.038713905090657294
 X-ray Percentage,Set Radius,0.037280056753966284
 Set Radius,Other Percentage,-0.036802107308402617
 Total no. Photons,Set Radius,0.0353682589717116
 Critical Energy,Set Radius,0.033456461189456915
+UV Percentage,Total Percentage,-0.031286367744467414
 Beam Radius,Other Percentage,0.03114035087719298
 Beam Radius,Total no. Photons,0.029824561403508764
+Beam Energy,Total Percentage,0.023978603015832687
+Mean Radiation Radius,Total Percentage,0.019867985355975656
+Mean Theta,Total Percentage,0.019867985355975656
+X-ray Percentage,Total Percentage,-0.019411250060435987
 Set Emittance,Other Percentage,-0.01892583246525563
+X-ray/UV,Total Percentage,-0.017584308878277305
 Emittance,X-ray Percentage,0.016666666666666663
+Set Emittance,Total Percentage,-0.01571990543740162
+X-ray Critical Energy,Total Percentage,-0.015300632400578953
+Beam Radius,Total Percentage,-0.014387161809499614
 Emittance,X-ray/UV,0.013157894736842103
+Emittance,Total Percentage,-0.011190014740721921
 UV Percentage,Other Percentage,0.010526315789473682
 Critical Energy,Set Emittance,-0.009012301173931252
 Beam Energy,Mean Radiation Radius,-0.007017543859649122
 Mean Theta,Beam Energy,-0.007017543859649122
+Set Radius,Total Percentage,-0.00671916261556892
+Total Charge,Total Percentage,0.0034656476388248694
+Total no. Photons,Total Percentage,0.0029687794210078566
+Beam Spread,Total Percentage,-0.0025690138194015724
+Critical Energy,Total Percentage,-0.0006851029433095053
+Other Percentage,Total Percentage,-0.0006851029433095053
 Set Emittance,Set Radius,0.0
