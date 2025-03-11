@@ -36,7 +36,7 @@ print("Train-test split seed:",train_test_seed)
 
 # Define the neural network class and relative loss and optimiser functions
 class NeuralNetwork(nn.Module):  # Define custom neural network
-    def __init__(self, input_size=3, hidden_size=10, num_hidden_layers=3, num_outputs=len(predicted_feature)):
+    def __init__(self, input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature)):
         super().__init__()
         
         # Initialize an empty list to hold layers
@@ -67,7 +67,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Print the device being used
 print(f"Using {device} device")
 
-model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers).to(device)  # Initialize the model
+model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature)).to(device)  # Initialize the model
 print(model)
 loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
@@ -272,6 +272,9 @@ total_loss = 0.0
 num_samples = 0
 loss_array=np.empty(0)
 
+# Array to store individual losses for each feature
+individual_loss_array = np.zeros(len(predicted_feature)) 
+
 # No need to calculate gradients during evaluation, so we use torch.no_grad()
 with torch.no_grad():
     for batch_features, batch_targets in test_dataloader:
@@ -280,6 +283,13 @@ with torch.no_grad():
         
         # Make predictions
         predictions = model(batch_features)
+
+        # Calculate individual losses for each output
+        individual_losses = [loss_fn(predictions[:, i], batch_targets[:, i]) for i in range(predictions.shape[1])]
+        
+        # Store individual losses
+        for i, loss in enumerate(individual_losses):
+            individual_loss_array[i] += loss.item() * batch_features.size(0)  # Scale by batch size
         
         # Calculate the loss (using the same loss function as in training)
         loss = loss_fn(predictions, batch_targets)
@@ -294,13 +304,21 @@ with torch.no_grad():
 # Calculate average loss
 average_loss = total_loss / num_samples
 loss_error=np.std(loss_array)
-print(f"Test Set Loss: {average_loss:.4f}")
 mse=average_loss
+mean_individual_losses = individual_loss_array / num_samples
+
+# Display Results
+print(f"Overall Test Loss: {average_loss:.4f}")
+for i, feature in enumerate(predicted_feature):
+    print(f"{feature} Test Loss: {mean_individual_losses[i]:.4f}")
 
 # Initialize variables to keep track of the total loss and number of samples
 total_loss_train = 0.0
 num_samples_train = 0
 loss_array_train=np.empty(0)
+
+# Array to store individual losses for each feature
+individual_loss_array_train = np.zeros(len(predicted_feature)) 
 
 # No need to calculate gradients during evaluation, so we use torch.no_grad()
 with torch.no_grad():
@@ -310,7 +328,13 @@ with torch.no_grad():
         
         # Make predictions
         predictions = model(batch_features)
+        # Calculate individual losses for each output
+        individual_losses_train = [loss_fn(predictions[:, i], batch_targets[:, i]) for i in range(predictions.shape[1])]
         
+        # Store individual losses
+        for i, loss in enumerate(individual_losses_train):
+            individual_loss_array_train[i] += loss.item() * batch_features.size(0)  # Scale by batch size
+
         # Calculate the loss (using the same loss function as in training)
         loss = loss_fn(predictions, batch_targets)
         #print(f"Test Loss: {loss.item():.4f}")
@@ -324,8 +348,12 @@ with torch.no_grad():
 # Calculate average loss
 average_loss_train = total_loss_train / num_samples_train
 loss_error=np.std(loss_array_train)
-print(f"Train Set Loss: {average_loss_train:.4f}")
 mse=average_loss
+mean_individual_losses_train = individual_loss_array_train / num_samples
+# Display Results
+print(f"Overall Train Loss: {average_loss_train:.4f}")
+for i, feature in enumerate(predicted_feature):
+    print(f"{feature} Train Loss: {mean_individual_losses[i]:.4f}")
 
 if average_loss>average_loss_train:
     overfitting='Overfitting'
@@ -352,18 +380,28 @@ metrics = {
     'predicted_feature': predicted_feature,  
     'training_loss': average_loss_train,
     'overfitting':overfitting,
-    'test_size':test_size_val 
+    'test_size':test_size_val
 }
 
-# Check if the CSV file exists (to decide whether to create or append)
-if save_metrics and not os.path.exists(csv_file_path):
-    # If the file doesn't exist, we need to create a new one with column headers
-    columns = ['avg_epoch_time', 'total_training_time', 'total_num_epochs','num_epochs_early_stopping', 'patience', 'loss_function', 'test_loss', 'test_loss_error','optimiser', 'learning_rate', 'activation_function', 'no_hidden_layers','batch_size','no_nodes','predicted_feature','training_loss','overfitting','test_size']
-    # Initialize the CSV file with column names
-    training_metrics = []
-else:
-    # If the file exists, we will just append new data
-    training_metrics = pd.read_csv(csv_file_path)
+# Add individual feature losses
+for i, feature in enumerate(predicted_feature):
+    metrics[f'{feature}_train_loss'] = mean_individual_losses_train[i]
+    metrics[f'{feature}_test_loss'] = mean_individual_losses[i]
+
+# Optional: Print the full metrics dictionary for confirmation
+print("Metrics Dictionary:", metrics)
+
+
+
+# # Check if the CSV file exists (to decide whether to create or append)
+# if save_metrics and not os.path.exists(csv_file_path):
+#     # If the file doesn't exist, create it with columns based on the keys of the metrics dictionary
+#     columns = list(metrics.keys())  # Use the keys from the metrics dictionary as column names
+#     # Initialize empty DataFrame with the columns from the metrics dictionary
+#     training_metrics = pd.DataFrame(columns=columns)
+# else:
+#     # If the file exists, we will just append new data
+#     training_metrics = pd.read_csv(csv_file_path)
 
 # Convert the metrics dictionary into a DataFrame
 metrics_df = pd.DataFrame([metrics])
