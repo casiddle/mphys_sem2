@@ -18,11 +18,11 @@ save_metrics = True  # Change this to False if you don’t want to save for this
 csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
 data_file_path="Processed_Data/data_sets/output_test_96.csv"
 
-epochs = 1000  # Number of epochs to train
+epochs = 700  # Number of epochs to train
 patience = epochs*0.1  # number of epochs with no improvement before stopping
-batch_no=13 #batch size
-no_hidden_layers=6 #number of hidden layers 
-learning_rate=0.001 #learning rate
+batch_no=20 #batch size
+no_hidden_layers=15 #number of hidden layers 
+learning_rate=0.01 #learning rate
 no_nodes=6 #number of nodes in each hidden layer
 test_size_val=0.5 #proportion of data that is tested, 1-test_size= train_size
 dropout=0.1
@@ -30,9 +30,9 @@ dropout=0.1
 input_size=6 #number of input features
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 activation_function="ReLU" #activation function- note this string needs to be changed manually
-
-train_test_seed=42
-#train_test_seed=random.randint(1,100)
+threshold=0.1 #percentage threshold for which a prediction can be considerd accurate
+#train_test_seed=42
+train_test_seed=random.randint(1,100)
 print("Train-test split seed:",train_test_seed)
 
 # Define the neural network class and relative loss and optimiser functions
@@ -270,9 +270,12 @@ model.eval()
 total_loss = 0.0
 num_samples = 0
 loss_array=np.empty(0)
+correct_predictions=np.zeros(len(predicted_feature))  # One for each feature
+
 
 # Array to store individual losses for each feature
 individual_loss_array = np.zeros(len(predicted_feature)) 
+
 
 # No need to calculate gradients during evaluation, so we use torch.no_grad()
 with torch.no_grad():
@@ -282,6 +285,11 @@ with torch.no_grad():
         
         # Make predictions
         predictions = model(batch_features)
+
+        # For each feature, calculate the percentage error
+        for i in range(predictions.shape[1]):  # Loop over each feature (output)
+            percentage_error = torch.abs(predictions[:, i] - batch_targets[:, i]) / batch_targets[:, i]
+            correct_predictions[i] += (percentage_error <= threshold).sum().item()  # Count predictions within threshold
 
         # Calculate individual losses for each output
         individual_losses = [loss_fn(predictions[:, i], batch_targets[:, i]) for i in range(predictions.shape[1])]
@@ -298,6 +306,7 @@ with torch.no_grad():
         # Accumulate the loss and number of samples
         total_loss += loss.item() * batch_features.size(0)  # Multiply by batch size
         num_samples += batch_features.size(0)
+        
 
         
 # Calculate average loss
@@ -305,12 +314,20 @@ average_loss = total_loss / num_samples
 loss_error=np.std(loss_array)
 mse=average_loss
 mean_individual_losses = individual_loss_array / num_samples
+# Calculate accuracy
+# Calculate accuracy for each feature
+accuracy_per_feature = correct_predictions / num_samples
 
 # Display Results
+# Display accuracy for each feature
+for i, feature in enumerate(predicted_feature):
+    print(f"Accuracy for {feature} within {threshold*100:.2f}%: {accuracy_per_feature[i] * 100:.2f}%")
+
 print(f"Overall Test Loss: {average_loss:.4f}")
 for i, feature in enumerate(predicted_feature):
     print(f"{feature} Test Loss: {mean_individual_losses[i]:.4f}")
 
+#Evaluate how model performs on data it was trained on
 # Initialize variables to keep track of the total loss and number of samples
 total_loss_train = 0.0
 num_samples_train = 0
@@ -380,13 +397,15 @@ metrics = {
     'training_loss': average_loss_train,
     'overfitting':overfitting,
     'test_size':test_size_val,
-    'dropout_rate':dropout
+    'dropout_rate':dropout,
+    'accuracy_threshold':threshold
 }
 
 # Add individual feature losses
 for i, feature in enumerate(predicted_feature):
     metrics[f'{feature}_train_loss'] = mean_individual_losses_train[i]
     metrics[f'{feature}_test_loss'] = mean_individual_losses[i]
+    metrics[f'{feature}_test_accuracy']=accuracy_per_feature[i]
 
 # Print the full metrics dictionary 
 #print("Metrics Dictionary:", metrics)
@@ -407,7 +426,7 @@ if save_metrics:
 # Print the saved metrics DataFrame
 print(metrics_df)
 
-
+#______________________________________________________________________________________________________________________________________________________________________
 # Set model to evaluation mode (disables dropout and batch normalization layers)
 model.eval()
 
