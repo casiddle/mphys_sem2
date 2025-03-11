@@ -18,20 +18,20 @@ save_metrics = True  # Change this to False if you don’t want to save for this
 csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
 data_file_path="Processed_Data/data_sets/output_test_96.csv"
 
-epochs = 420  # Number of epochs to train
-patience = 20  # number of epochs with no improvement before stopping
+epochs = 700  # Number of epochs to train
+patience = 70  # number of epochs with no improvement before stopping
 batch_no=13 #batch size
 no_hidden_layers=13 #number of hidden layers 
 learning_rate=0.001 #learning rate
-no_nodes=8 #number of nodes in each hidden layer
-test_size_val=0.5 #proportion of data that is tested, 1-test_size= train_size
+no_nodes=5 #number of nodes in each hidden layer
+test_size_val=0.8 #proportion of data that is tested, 1-test_size= train_size
 
 input_size=6 #number of input features
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 activation_function="ReLU" #activation function- note this string needs to be changed manually
 
-#train_test_seed=42
-train_test_seed=random.randint(1,100)
+train_test_seed=42
+#train_test_seed=random.randint(1,100)
 print("Train-test split seed:",train_test_seed)
 
 # Define the neural network class and relative loss and optimiser functions
@@ -458,7 +458,7 @@ ax2.set_ylim(-np.max(np.abs(1.1*residuals/np.sqrt(mse))), np.max((np.abs(1.1*res
 
 
 grad_norms = [p.grad.norm().item() for p in model.parameters()]
-print("Gradient Norms:", grad_norms)
+#print("Gradient Norms:", grad_norms)
 
 
 # Loop over the parameters and print them
