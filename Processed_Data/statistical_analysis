@@ -4,6 +4,8 @@ import pandas as pd
 import seaborn as sns
 from matplotlib.colors import Normalize
 import os
+import dcor 
+from sklearn.feature_selection import mutual_info_regression
 
 # Get the directory where the current script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,6 +15,28 @@ os.chdir(script_dir)
 def theta_to_r(theta, distance):
     r=distance*np.tan(theta)
     return r
+
+def distance_correlation_calculator(df, targets):
+    correlation_list = []
+
+    for target in targets:
+        dist_corr = {
+            col: dcor.distance_correlation(df[col], df[target]) 
+            if df[col].nunique() > 1 else np.nan 
+            for col in df.columns
+        }
+
+        # Append results directly to the list with target included
+        correlation_list.extend([(target, feature, corr) for feature, corr in dist_corr.items()])
+
+    # Create DataFrame for sorted correlation list
+    correlation_df = pd.DataFrame(correlation_list, columns=['Target', 'Feature', 'Correlation'])
+    correlation_df_sorted = correlation_df.sort_values(by='Correlation', ascending=False)
+
+    # Create reshaped DataFrame for heatmap
+    reshaped_df = correlation_df.pivot(index='Feature', columns='Target', values='Correlation')
+
+    return reshaped_df, correlation_df_sorted
 
 
 data_set=r"data_sets\output_test_96.csv"
@@ -25,78 +49,58 @@ df['Mean Radiation Radius'] = df['Mean Theta'].apply(lambda theta: theta_to_r(th
 df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
 df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 df['Total Percentage']=df['UV Percentage']+df['X-ray Percentage']+df['Other Percentage']
-print(df.head())
+#print(df.head())
 df = df.drop(columns=['No. UV Photons','No. Other Photons','No. X-ray Photons','Total Percentage'])
 
-
-print(df.columns)
+#print(df.columns)
 print(df.describe(include='all'))
 
 
-# Calculate the correlation matrices for different methods
-correlation_pearson = df.corr(method='pearson')
-correlation_spearman = df.corr(method='spearman')
-correlation_kendall = df.corr(method='kendall')
+#Calculating distance correlation using distance correlation
+# List of multiple target variables
+targets = ['Emittance', 'Beam Spread', 'Beam Energy']
 
-# # Plot Pearson correlation matrix with bwr colormap
-# plt.figure(figsize=(12, 10))
-# sns.heatmap(correlation_pearson, annot=True, cmap="bwr", fmt=".2f", linewidths=0.5)
-# plt.title("Pearson Correlation Matrix")
-# #plt.show()
+reshaped_df,ranked_correlation=distance_correlation_calculator(df,targets)
+ranked_correlation.to_csv('correlation_matrix_ranked.csv')
 
-# # Plot Spearman correlation matrix with bwr colormap
-# plt.figure(figsize=(12, 10))
-# sns.heatmap(correlation_spearman, annot=True, cmap="bwr", fmt=".2f", linewidths=0.5)
-# plt.title("Spearman Correlation Matrix")
-# #plt.show()
+#print(ranked_correlation)
 
-# # Plot Kendall correlation matrix with bwr colormap
-# plt.figure(figsize=(12, 10))
-# sns.heatmap(correlation_kendall, annot=True, cmap="bwr", fmt=".2f", linewidths=0.5)
-# plt.title("Kendall Correlation Matrix")
-# #plt.show()
+plt.figure(figsize=(12, 8))
+sns.heatmap(reshaped_df, annot=True, cmap='rocket_r', fmt=".2f", cbar=True)
+plt.title("Distance Correlation Analysis Heatmap")
+plt.savefig('Plots/distance_correlation_heatmap.png')
+#plt.show()
 
-#Rank correlations
-# Convert the correlation matrix into a long format
-correlation_long = correlation_kendall.unstack().reset_index()
-# Rename columns for clarity
-correlation_long.columns = ['Feature 1', 'Feature 2', 'Correlation']
-# Remove self-correlations (where Feature 1 == Feature 2)
-correlation_long = correlation_long[correlation_long['Feature 1'] != correlation_long['Feature 2']]
-# Drop duplicate pairs (each correlation appears twice in a symmetric matrix)
-correlation_long['Sorted Pair'] = correlation_long.apply(lambda x: tuple(sorted([x['Feature 1'], x['Feature 2']])), axis=1)
-correlation_long = correlation_long.drop_duplicates(subset=['Sorted Pair']).drop(columns=['Sorted Pair'])
-# Sort by absolute correlation value (strongest relationships first)
-correlation_long = correlation_long.reindex(correlation_long['Correlation'].abs().sort_values(ascending=False).index)
-# Display the ranked correlation pairs
-print(correlation_long)
-# Save the ranked correlation pairs to a CSV file
-correlation_long.to_csv('correlation_matrix_ranked.csv', index=False)
+#___________________________________________________________________________________________________________________________
 
-correlation_df=pd.read_csv('correlation_matrix_ranked.csv')
+
+
 
 # Filter rows where 'Feature 1' or 'Feature 2' contains 'Emittance'
-emittance_filtered_df = correlation_df[(correlation_df["Feature 1"]=="Emittance") | (correlation_df["Feature 2"]=="Emittance")]
-print(emittance_filtered_df.head(10))
+emittance_filtered_df = ranked_correlation[(ranked_correlation["Target"]=="Emittance")]
+#print(emittance_filtered_df.head(10))
 
-beam_spread_filtered_df = correlation_df[(correlation_df["Feature 1"]=="Beam Spread") | (correlation_df["Feature 2"]=="Beam Spread")]
-print(beam_spread_filtered_df.head(10))
+beam_spread_filtered_df = ranked_correlation[(ranked_correlation["Target"]=="Beam Spread")]
+#print(beam_spread_filtered_df.head(10))
 
-beam_energy_filtered_df = correlation_df[(correlation_df["Feature 1"]=="Beam Energy") | (correlation_df["Feature 2"]=="Beam Energy")]
-print(beam_energy_filtered_df.head(10))
+beam_energy_filtered_df = ranked_correlation[(ranked_correlation["Target"]=="Beam Energy")]
+#print(beam_energy_filtered_df.head(10))
 
 
 X = df[['Emittance','Beam Spread','Beam Energy', 'X-ray Percentage',
         'X-ray Critical Energy','Mean Radiation Radius','UV Percentage','Other Percentage','Critical Energy']]
 
-# correlation_matrix = X.corr(method='kendall')
-# plt.figure(figsize=(14, 12))
-# sns.heatmap(correlation_matrix, annot=True, cmap="bwr", fmt=".2f", linewidths=0.5)
-# plt.title("Heatmap for Correlation Matrix")
-# plt.xticks(rotation=45, ha='right')
-# plt.tight_layout()
-# plt.savefig('Plots/correlation_heatmap.png')
-# #plt.show()
+matrix_df,rabked_correlation=distance_correlation_calculator(X,targets)
+#print(matrix_df.head(10))
+matrix_df=matrix_df.drop(matrix_df[matrix_df.index.isin(targets)].index)
+plt.figure(figsize=(12, 8))
+sns.heatmap(matrix_df, annot=True, cmap='rocket_r', fmt=".2f", cbar=True)
+plt.title("Distance Correlation Analysis Heatmap")
+plt.tight_layout()
+plt.savefig('Plots/distance_correlation_heatmap_reduced_parameters.png')
+#plt.show()
+
+
 
 set_radius=1
 emittance_check_df=df[['Emittance','X-ray Percentage',
