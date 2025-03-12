@@ -18,21 +18,21 @@ save_metrics = True  # Change this to False if you don’t want to save for this
 csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
 data_file_path="Processed_Data/data_sets/output_test_96.csv"
 
-epochs = 800  # Number of epochs to train
+epochs = 700  # Number of epochs to train
 patience = epochs*0.1  # number of epochs with no improvement before stopping
-batch_no=13 #batch size
-no_hidden_layers=15 #number of hidden layers 
+batch_no=10 #batch size
+no_hidden_layers=10 #number of hidden layers 
 learning_rate=0.01 #learning rate
-no_nodes=10 #number of nodes in each hidden layer
-test_size_val=0.5 #proportion of data that is tested, 1-test_size= train_size
+no_nodes=6 #number of nodes in each hidden layer
+test_size_val=0.2 #proportion of data that is tested, 1-test_size= train_size
 dropout=0.1
 
 input_size=6 #number of input features
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 activation_function="ReLU" #activation function- note this string needs to be changed manually
-threshold=0.1 #percentage threshold for which a prediction can be considerd accurate
-#train_test_seed=42
-train_test_seed=random.randint(1,100)
+threshold=0.05 #percentage threshold for which a prediction can be considerd accurate
+train_test_seed=42
+#train_test_seed=random.randint(1,100)
 print("Train-test split seed:",train_test_seed)
 
 # Define the neural network class and relative loss and optimiser functions
@@ -127,8 +127,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size_va
 
 
 # Convert the data into tensors
-X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
-X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
+X_train_tensor = X_train.clone().detach().float()
+X_test_tensor = X_test.clone().detach().float()
 
 #check if there is any overlap between training and test sets
 # Convert tensors to numpy for easy comparison
