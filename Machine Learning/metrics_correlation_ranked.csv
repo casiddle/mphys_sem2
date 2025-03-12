@@ -1,172 +1,254 @@
 Feature 1,Feature 2,Correlation
-training_loss,Emittance_train_loss,1.0
 test_loss,Emittance_test_loss,1.0
-no_hidden_layers,no_nodes,-1.0
-Emittance_train_loss,Beam Spread_train_loss,0.9047619047619049
-test_loss,tets_loss_error,0.9047619047619049
-tets_loss_error,Emittance_test_loss,0.9047619047619049
-training_loss,Beam Spread_train_loss,0.9047619047619049
-total_num_epochs,patience,0.8685990362153793
-total_num_epochs,Beam Spread_test_loss,-0.816496580927726
-tets_loss_error,Beam Spread_test_loss,0.8095238095238096
-num_epochs_early_stopping,Emittance_train_loss,-0.8095238095238096
-num_epochs_early_stopping,training_loss,-0.8095238095238096
-avg_epoch_time,dropout_rate,0.7559289460184545
-patience,dropout_rate,-0.7216878364870323
-num_epochs_early_stopping,Beam Spread_train_loss,-0.7142857142857143
-avg_epoch_time,Emittance_test_loss,0.7142857142857143
-avg_epoch_time,test_loss,0.7142857142857143
-Emittance_test_loss,Beam Spread_test_loss,0.7142857142857143
-test_loss,Beam Spread_test_loss,0.7142857142857143
-avg_epoch_time,total_num_epochs,-0.6998542122237652
-total_num_epochs,Emittance_test_loss,-0.6998542122237652
-total_num_epochs,test_loss,-0.6998542122237652
-total_num_epochs,tets_loss_error,-0.6998542122237652
-patience,Beam Spread_test_loss,-0.6546536707079772
-avg_epoch_time,patience,-0.6546536707079772
-dropout_rate,Emittance_test_loss,0.6299407883487121
-test_loss,dropout_rate,0.6299407883487121
-Beam Energy_train_loss,Beam Spread_train_loss,0.6190476190476191
-num_epochs_early_stopping,Beam Spread_test_loss,-0.6190476190476191
-avg_epoch_time,tets_loss_error,0.6190476190476191
-avg_epoch_time,Beam Spread_test_loss,0.6190476190476191
-total_num_epochs,dropout_rate,-0.6172133998483676
-patience,test_loss,-0.545544725589981
-patience,tets_loss_error,-0.545544725589981
-total_num_epochs,no_hidden_layers,-0.545544725589981
-patience,Emittance_test_loss,-0.545544725589981
-total_num_epochs,no_nodes,0.545544725589981
-tets_loss_error,no_hidden_layers,0.5345224838248489
-avg_epoch_time,no_nodes,-0.5345224838248489
-test_loss,no_nodes,-0.5345224838248489
-test_loss,no_hidden_layers,0.5345224838248489
-avg_epoch_time,no_hidden_layers,0.5345224838248489
-tets_loss_error,no_nodes,-0.5345224838248489
-no_nodes,Beam Spread_train_loss,0.5345224838248488
-no_nodes,Emittance_test_loss,-0.5345224838248488
-no_nodes,Beam Energy_train_loss,0.5345224838248488
-no_hidden_layers,Emittance_test_loss,0.5345224838248488
-no_nodes,Emittance_train_loss,0.5345224838248488
-no_hidden_layers,Emittance_train_loss,-0.5345224838248488
-no_nodes,training_loss,0.5345224838248488
+total_num_epochs,patience,0.9999999999999999
+avg_epoch_time,total_training_time,0.9047619047619049
+Beam Energy_train_loss,Beam Spread_train_loss,0.9047619047619049
+total_training_time,test_loss_error,0.9047619047619049
+avg_epoch_time,batch_size,-0.8510644963469901
+total_training_time,batch_size,-0.8510644963469901
+Beam Spread_test_loss,Beam Spread_test_accuracy,-0.8229511997978236
+total_num_epochs,num_epochs_early_stopping,0.8164965809277259
+num_epochs_early_stopping,patience,0.8164965809277259
+avg_epoch_time,test_loss_error,0.8095238095238096
+accuracy_threshold,Emittance_test_accuracy,0.7669649888473704
+test_loss_error,batch_size,-0.7509392614826382
+Beam Energy_test_accuracy,Beam Spread_test_accuracy,0.7200822998230957
+Beam Energy_test_loss,Beam Energy_test_accuracy,-0.7142857142857143
+accuracy_threshold,Beam Spread_train_loss,-0.6900655593423541
+accuracy_threshold,Emittance_train_loss,-0.6900655593423541
+accuracy_threshold,Beam Energy_train_loss,-0.6900655593423541
+batch_size,Beam Energy_test_loss,-0.6508140266182865
+no_hidden_layers,accuracy_threshold,0.6454972243679028
+patience,no_hidden_layers,0.6454972243679028
+total_num_epochs,no_hidden_layers,0.6454972243679028
+num_epochs_early_stopping,no_hidden_layers,0.632455532033676
+no_nodes,training_loss,0.6299407883487121
+num_epochs_early_stopping,Emittance_test_accuracy,0.6262242910851494
+Emittance_train_loss,Beam Spread_train_loss,0.6190476190476191
+test_loss,Beam Spread_test_loss,0.6190476190476191
+Beam Energy_test_accuracy,Beam Spread_test_loss,-0.6190476190476191
+Emittance_test_loss,Beam Spread_test_loss,0.6190476190476191
+Beam Energy_test_loss,Beam Spread_test_accuracy,-0.6172133998483678
+num_epochs_early_stopping,no_nodes,0.5962847939999439
+accuracy_threshold,Beam Energy_test_loss,-0.5520524474738834
+patience,Beam Spread_test_loss,0.5520524474738834
+total_num_epochs,Beam Spread_test_loss,0.5520524474738834
+patience,Beam Energy_test_accuracy,-0.5520524474738834
+total_num_epochs,Beam Energy_test_accuracy,-0.5520524474738834
+total_num_epochs,no_nodes,0.5477225575051661
+patience,no_nodes,0.5477225575051661
+no_nodes,Beam Spread_test_accuracy,-0.5443310539518175
 no_hidden_layers,Beam Spread_train_loss,-0.5345224838248488
 no_hidden_layers,Beam Energy_train_loss,-0.5345224838248488
-no_hidden_layers,training_loss,-0.5345224838248488
+no_hidden_layers,Emittance_train_loss,-0.5345224838248488
+training_loss,Emittance_train_loss,0.5238095238095238
 Emittance_train_loss,Beam Energy_train_loss,0.5238095238095238
-training_loss,Beam Energy_train_loss,0.5238095238095238
-Beam Spread_train_loss,Beam Spread_test_loss,0.5238095238095238
-num_epochs_early_stopping,Emittance_test_loss,-0.5238095238095238
-total_training_time,Beam Spread_train_loss,-0.5238095238095238
-num_epochs_early_stopping,test_loss,-0.5238095238095238
-patience,no_hidden_layers,-0.5103103630798288
-patience,no_nodes,0.5103103630798288
-tets_loss_error,dropout_rate,0.5039526306789697
-num_epochs_early_stopping,dropout_rate,-0.5039526306789697
-dropout_rate,Beam Spread_test_loss,0.5039526306789697
-total_num_epochs,num_epochs_early_stopping,0.4665694748158435
-total_training_time,num_epochs_early_stopping,0.4285714285714286
-total_training_time,Beam Spread_test_loss,-0.4285714285714286
-total_training_time,Emittance_train_loss,-0.4285714285714286
+avg_epoch_time,Beam Energy_test_loss,0.5238095238095238
+test_loss_error,training_loss,-0.5238095238095238
+Beam Energy_train_loss,Beam Energy_test_loss,0.5238095238095238
+Emittance_test_loss,Beam Spread_test_accuracy,-0.5143444998736398
+test_loss,Beam Spread_test_accuracy,-0.5143444998736398
+no_nodes,Beam Spread_test_loss,0.5039526306789697
+no_nodes,Beam Energy_test_accuracy,-0.5039526306789697
+no_hidden_layers,Emittance_test_accuracy,0.4950737714883372
+batch_size,training_loss,0.45056355688958294
+patience,Beam Spread_test_accuracy,-0.447213595499958
+total_num_epochs,Beam Spread_test_accuracy,-0.447213595499958
+test_loss_error,Beam Energy_test_accuracy,-0.4285714285714286
+test_loss_error,Emittance_test_loss,0.4285714285714286
+test_loss,Beam Energy_test_accuracy,-0.4285714285714286
+test_loss,test_loss_error,0.4285714285714286
+Emittance_test_loss,Beam Energy_test_accuracy,-0.4285714285714286
 total_training_time,training_loss,-0.4285714285714286
-Emittance_train_loss,Beam Spread_test_loss,0.4285714285714286
-Beam Energy_test_loss,Beam Spread_test_loss,0.4285714285714286
-num_epochs_early_stopping,tets_loss_error,-0.4285714285714286
-training_loss,Beam Spread_test_loss,0.4285714285714286
-avg_epoch_time,num_epochs_early_stopping,-0.4285714285714286
-no_nodes,Beam Energy_test_loss,-0.35634832254989923
-no_nodes,Beam Spread_test_loss,-0.35634832254989923
-no_hidden_layers,Beam Spread_test_loss,0.35634832254989923
-no_hidden_layers,Beam Energy_test_loss,0.35634832254989923
-no_nodes,dropout_rate,-0.35355339059327384
-no_hidden_layers,dropout_rate,0.35355339059327384
-total_num_epochs,Beam Energy_test_loss,-0.3499271061118826
-total_training_time,total_num_epochs,0.3499271061118826
-tets_loss_error,Beam Spread_train_loss,0.33333333333333337
-training_loss,Emittance_test_loss,0.33333333333333337
-Emittance_train_loss,Emittance_test_loss,0.33333333333333337
-num_epochs_early_stopping,Beam Energy_train_loss,-0.33333333333333337
-test_loss,Emittance_train_loss,0.33333333333333337
-Beam Energy_train_loss,Beam Energy_test_loss,0.33333333333333337
-test_loss,training_loss,0.33333333333333337
-num_epochs_early_stopping,patience,0.3273268353539886
-training_loss,dropout_rate,0.25197631533948484
-dropout_rate,Emittance_train_loss,0.25197631533948484
-total_training_time,Beam Energy_test_loss,-0.23809523809523814
-avg_epoch_time,Beam Energy_test_loss,0.23809523809523814
-Emittance_test_loss,Beam Spread_train_loss,0.23809523809523814
-total_training_time,tets_loss_error,-0.23809523809523814
-avg_epoch_time,Emittance_train_loss,0.23809523809523814
-test_loss,Beam Spread_train_loss,0.23809523809523814
-tets_loss_error,training_loss,0.23809523809523814
-avg_epoch_time,training_loss,0.23809523809523814
-tets_loss_error,Emittance_train_loss,0.23809523809523814
-tets_loss_error,Beam Energy_test_loss,0.23809523809523814
-total_num_epochs,Beam Energy_train_loss,0.23328473740792174
-total_num_epochs,Beam Spread_train_loss,-0.23328473740792174
-total_num_epochs,Emittance_train_loss,-0.23328473740792174
-total_num_epochs,training_loss,-0.23328473740792174
-patience,Beam Energy_test_loss,-0.2182178902359924
-patience,Beam Energy_train_loss,0.2182178902359924
-total_training_time,no_hidden_layers,0.17817416127494962
-num_epochs_early_stopping,no_nodes,-0.17817416127494962
-total_training_time,no_nodes,-0.17817416127494962
-num_epochs_early_stopping,no_hidden_layers,0.17817416127494962
-Beam Energy_train_loss,Beam Spread_test_loss,0.14285714285714288
-Emittance_test_loss,Beam Energy_test_loss,0.14285714285714288
-Emittance_train_loss,Beam Energy_test_loss,-0.14285714285714288
-total_training_time,Beam Energy_train_loss,-0.14285714285714288
+total_training_time,Beam Energy_test_loss,0.4285714285714286
+Beam Energy_test_loss,Beam Spread_train_loss,0.4285714285714286
+avg_epoch_time,test_loss,0.4285714285714286
+avg_epoch_time,Emittance_test_loss,0.4285714285714286
+Beam Energy_train_loss,Beam Energy_test_accuracy,-0.4285714285714286
+avg_epoch_time,Beam Energy_test_accuracy,-0.4285714285714286
+total_num_epochs,test_loss,0.4140393356054125
+total_num_epochs,Emittance_train_loss,-0.4140393356054125
+patience,Emittance_test_loss,0.4140393356054125
+patience,Emittance_train_loss,-0.4140393356054125
+total_num_epochs,Emittance_test_loss,0.4140393356054125
+patience,test_loss,0.4140393356054125
+avg_epoch_time,Beam Spread_test_accuracy,-0.4114755998989118
+num_epochs_early_stopping,accuracy_threshold,0.40824829046386296
+num_epochs_early_stopping,Beam Energy_test_accuracy,-0.3944053188733077
+num_epochs_early_stopping,Emittance_train_loss,-0.3944053188733077
+patience,Emittance_test_accuracy,0.3834824944236852
+total_num_epochs,Emittance_test_accuracy,0.3834824944236852
+no_nodes,Beam Energy_train_loss,0.37796447300922725
+no_nodes,Beam Spread_train_loss,0.37796447300922725
+no_hidden_layers,batch_size,0.3746343246326776
+Emittance_train_loss,Emittance_test_accuracy,-0.3704792868174742
+batch_size,accuracy_threshold,0.3627381250550058
+no_hidden_layers,training_loss,0.35634832254989923
+no_hidden_layers,no_nodes,0.35355339059327384
+batch_size,Beam Energy_train_loss,-0.3504383220252312
+batch_size,Beam Energy_test_accuracy,0.3504383220252312
+no_nodes,Emittance_test_accuracy,0.35007002100700246
+test_loss_error,Beam Energy_test_loss,0.33333333333333337
+avg_epoch_time,training_loss,-0.33333333333333337
+Beam Spread_train_loss,Beam Spread_test_loss,0.33333333333333337
+Beam Energy_test_accuracy,Beam Spread_train_loss,-0.33333333333333337
+total_training_time,test_loss,0.33333333333333337
+training_loss,Emittance_test_loss,-0.33333333333333337
+Beam Energy_test_loss,Beam Spread_test_loss,0.33333333333333337
+test_loss,training_loss,-0.33333333333333337
+total_training_time,Emittance_test_loss,0.33333333333333337
+total_training_time,Beam Energy_test_accuracy,-0.33333333333333337
+batch_size,Beam Spread_test_accuracy,0.32444284226152503
+Beam Spread_train_loss,Beam Spread_test_accuracy,-0.3086066999241839
+total_training_time,Beam Spread_test_accuracy,-0.3086066999241839
+total_num_epochs,accuracy_threshold,0.3
+patience,accuracy_threshold,0.3
+num_epochs_early_stopping,Beam Spread_test_loss,0.2817180849095055
+num_epochs_early_stopping,test_loss,0.2817180849095055
+num_epochs_early_stopping,Emittance_test_loss,0.2817180849095055
+batch_size,Emittance_test_accuracy,0.2782074420373286
+test_loss,accuracy_threshold,0.2760262237369417
+accuracy_threshold,Beam Energy_test_accuracy,0.2760262237369417
+accuracy_threshold,Emittance_test_loss,0.2760262237369417
+test_loss,Emittance_test_accuracy,0.2646280620124816
+Emittance_test_accuracy,Beam Energy_test_loss,-0.2646280620124816
+Emittance_test_loss,Emittance_test_accuracy,0.2646280620124816
+Emittance_test_accuracy,Beam Spread_train_loss,-0.2646280620124816
+no_nodes,Emittance_train_loss,0.25197631533948484
+no_nodes,Beam Energy_test_loss,0.25197631533948484
+test_loss,batch_size,-0.25031308716087947
+batch_size,Emittance_test_loss,-0.2503130871608794
+batch_size,Beam Spread_train_loss,-0.2503130871608794
+avg_epoch_time,Beam Energy_train_loss,0.23809523809523814
+test_loss,Emittance_train_loss,-0.23809523809523814
+Beam Energy_train_loss,Beam Spread_test_loss,0.23809523809523814
+test_loss_error,Beam Spread_test_loss,0.23809523809523814
+avg_epoch_time,Beam Spread_test_loss,0.23809523809523814
+test_loss_error,Emittance_train_loss,-0.23809523809523814
+Emittance_train_loss,Emittance_test_loss,-0.23809523809523814
+Emittance_train_loss,Beam Energy_test_loss,0.23809523809523814
+test_loss_error,Beam Energy_train_loss,0.23809523809523814
+training_loss,Beam Spread_test_accuracy,-0.2057377999494559
+test_loss_error,Beam Spread_test_accuracy,-0.2057377999494559
+Beam Energy_train_loss,Beam Spread_test_accuracy,-0.2057377999494559
+batch_size,no_nodes,0.19867985355975654
+no_hidden_layers,Beam Spread_test_accuracy,-0.1924500897298753
+num_epochs_early_stopping,Beam Spread_test_accuracy,-0.18257418583505539
+no_hidden_layers,Beam Spread_test_loss,0.17817416127494962
+avg_epoch_time,no_hidden_layers,-0.17817416127494962
+total_training_time,no_hidden_layers,-0.17817416127494962
+test_loss_error,no_hidden_layers,-0.17817416127494962
+no_hidden_layers,Beam Energy_test_accuracy,-0.17817416127494962
+no_hidden_layers,Beam Energy_test_loss,-0.17817416127494962
+num_epochs_early_stopping,training_loss,0.16903085094570333
+num_epochs_early_stopping,test_loss_error,0.16903085094570333
+Emittance_test_accuracy,Beam Spread_test_loss,0.15877683720748895
+total_training_time,Emittance_test_accuracy,-0.15877683720748895
+test_loss_error,Emittance_test_accuracy,-0.15877683720748895
+Emittance_test_accuracy,Beam Energy_train_loss,-0.15877683720748895
+batch_size,Beam Spread_test_loss,-0.15018785229652765
+accuracy_threshold,Beam Spread_test_accuracy,0.14907119849998599
+total_num_epochs,batch_size,0.14509525002200233
+patience,batch_size,0.14509525002200233
 test_loss,Beam Energy_test_loss,0.14285714285714288
-Emittance_test_loss,Beam Energy_train_loss,-0.14285714285714288
-test_loss,Beam Energy_train_loss,-0.14285714285714288
-total_training_time,test_loss,-0.14285714285714288
-training_loss,Beam Energy_test_loss,-0.14285714285714288
+test_loss_error,Beam Spread_train_loss,0.14285714285714288
+total_training_time,Beam Spread_test_loss,0.14285714285714288
+total_training_time,Beam Energy_train_loss,0.14285714285714288
+Emittance_test_loss,Beam Spread_train_loss,0.14285714285714288
+total_training_time,Emittance_train_loss,-0.14285714285714288
+training_loss,Beam Spread_train_loss,0.14285714285714288
+Emittance_test_loss,Beam Energy_test_loss,0.14285714285714288
 avg_epoch_time,Beam Spread_train_loss,0.14285714285714288
-total_training_time,Emittance_test_loss,-0.14285714285714288
-dropout_rate,Beam Spread_train_loss,0.12598815766974242
-dropout_rate,Beam Energy_train_loss,-0.12598815766974242
-total_training_time,dropout_rate,0.12598815766974242
-patience,Beam Spread_train_loss,-0.1091089451179962
-patience,Emittance_train_loss,-0.1091089451179962
-patience,training_loss,-0.1091089451179962
-total_training_time,patience,0.1091089451179962
-tets_loss_error,Beam Energy_train_loss,-0.04761904761904762
-num_epochs_early_stopping,Beam Energy_test_loss,-0.04761904761904762
-Beam Energy_test_loss,Beam Spread_train_loss,-0.04761904761904762
-avg_epoch_time,Beam Energy_train_loss,-0.04761904761904762
-avg_epoch_time,total_training_time,-0.04761904761904762
-dropout_rate,Beam Energy_test_loss,0.0
+test_loss,Beam Spread_train_loss,0.14285714285714288
+test_loss_error,accuracy_threshold,-0.13801311186847084
+patience,training_loss,0.13801311186847084
+total_num_epochs,test_loss_error,0.13801311186847084
+patience,test_loss_error,0.13801311186847084
+patience,Beam Energy_test_loss,0.13801311186847084
+total_num_epochs,Beam Energy_test_loss,0.13801311186847084
+total_num_epochs,training_loss,0.13801311186847084
+total_training_time,accuracy_threshold,-0.13801311186847084
+training_loss,accuracy_threshold,-0.13801311186847084
+avg_epoch_time,accuracy_threshold,-0.13801311186847084
+test_loss,no_nodes,0.12598815766974242
+test_loss_error,no_nodes,-0.12598815766974242
+total_training_time,no_nodes,-0.12598815766974242
+no_nodes,Emittance_test_loss,0.12598815766974242
+num_epochs_early_stopping,batch_size,0.11846977555181845
+Emittance_train_loss,Beam Spread_test_accuracy,-0.10286889997472795
+no_nodes,accuracy_threshold,-0.09128709291752769
+avg_epoch_time,num_epochs_early_stopping,0.05634361698190111
+total_training_time,num_epochs_early_stopping,0.05634361698190111
+num_epochs_early_stopping,Beam Energy_test_loss,0.0563436169819011
+num_epochs_early_stopping,Beam Energy_train_loss,0.0563436169819011
+num_epochs_early_stopping,Beam Spread_train_loss,-0.0563436169819011
+training_loss,Emittance_test_accuracy,0.05292561240249632
+Emittance_test_accuracy,Beam Energy_test_accuracy,0.05292561240249632
+avg_epoch_time,Emittance_test_accuracy,-0.05292561240249632
+batch_size,Emittance_train_loss,-0.05006261743217588
+total_training_time,Beam Spread_train_loss,0.04761904761904762
+avg_epoch_time,Emittance_train_loss,-0.04761904761904762
+training_loss,Beam Energy_test_accuracy,-0.04761904761904762
+training_loss,Beam Spread_test_loss,0.04761904761904762
+Emittance_test_loss,Beam Energy_train_loss,0.04761904761904762
+training_loss,Beam Energy_test_loss,-0.04761904761904762
+training_loss,Beam Energy_train_loss,0.04761904761904762
+Emittance_train_loss,Beam Spread_test_loss,-0.04761904761904762
+Emittance_train_loss,Beam Energy_test_accuracy,0.04761904761904762
+test_loss,Beam Energy_train_loss,0.04761904761904762
+avg_epoch_time,total_num_epochs,0.0
+no_hidden_layers,Emittance_test_loss,0.0
+total_training_time,total_num_epochs,0.0
+accuracy_threshold,Beam Spread_test_loss,0.0
+total_training_time,patience,0.0
+avg_epoch_time,patience,0.0
+patience,Beam Energy_train_loss,0.0
+test_loss,no_hidden_layers,0.0
+total_num_epochs,Beam Energy_train_loss,0.0
+patience,Beam Spread_train_loss,0.0
+Emittance_test_accuracy,Beam Spread_test_accuracy,0.0
+total_num_epochs,Beam Spread_train_loss,0.0
+avg_epoch_time,no_nodes,0.0
 avg_epoch_time,learning_rate,
-avg_epoch_time,batch_size,
+avg_epoch_time,dropout_rate,
 total_training_time,learning_rate,
-total_training_time,batch_size,
+total_training_time,dropout_rate,
 total_num_epochs,learning_rate,
-total_num_epochs,batch_size,
+total_num_epochs,dropout_rate,
 num_epochs_early_stopping,learning_rate,
-num_epochs_early_stopping,batch_size,
+num_epochs_early_stopping,dropout_rate,
 patience,learning_rate,
-patience,batch_size,
+patience,dropout_rate,
 test_loss,learning_rate,
-test_loss,batch_size,
-tets_loss_error,learning_rate,
-tets_loss_error,batch_size,
+test_loss,dropout_rate,
+test_loss_error,learning_rate,
+test_loss_error,dropout_rate,
 learning_rate,no_hidden_layers,
 learning_rate,batch_size,
 learning_rate,no_nodes,
 learning_rate,training_loss,
 learning_rate,dropout_rate,
+learning_rate,accuracy_threshold,
 learning_rate,Emittance_train_loss,
 learning_rate,Emittance_test_loss,
+learning_rate,Emittance_test_accuracy,
 learning_rate,Beam Energy_train_loss,
 learning_rate,Beam Energy_test_loss,
+learning_rate,Beam Energy_test_accuracy,
 learning_rate,Beam Spread_train_loss,
 learning_rate,Beam Spread_test_loss,
-no_hidden_layers,batch_size,
-batch_size,no_nodes,
-batch_size,training_loss,
+learning_rate,Beam Spread_test_accuracy,
+no_hidden_layers,dropout_rate,
 batch_size,dropout_rate,
-batch_size,Emittance_train_loss,
-batch_size,Emittance_test_loss,
-batch_size,Beam Energy_train_loss,
-batch_size,Beam Energy_test_loss,
-batch_size,Beam Spread_train_loss,
-batch_size,Beam Spread_test_loss,
+no_nodes,dropout_rate,
+training_loss,dropout_rate,
+dropout_rate,accuracy_threshold,
+dropout_rate,Emittance_train_loss,
+dropout_rate,Emittance_test_loss,
+dropout_rate,Emittance_test_accuracy,
+dropout_rate,Beam Energy_train_loss,
+dropout_rate,Beam Energy_test_loss,
+dropout_rate,Beam Energy_test_accuracy,
+dropout_rate,Beam Spread_train_loss,
+dropout_rate,Beam Spread_test_loss,
+dropout_rate,Beam Spread_test_accuracy,

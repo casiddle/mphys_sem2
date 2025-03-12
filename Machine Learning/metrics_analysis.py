@@ -10,8 +10,17 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # Change the current working directory to the script directory
 os.chdir(script_dir)
 
+def data_frame_cleaning(data_frame):
+  data_frame.dropna(inplace=True)
+  num_duplicates = data_frame.duplicated().sum()
+  print(f"Number of duplicate rows: {num_duplicates}")
+  data_frame.drop_duplicates(inplace=True)
+  print("Cleaning Complete")
+  return data_frame
+
 data_set=r"training_metrics_3_targets.csv"
 df = pd.read_csv(data_set)
+df=data_frame_cleaning(df)
 print(df.describe(include='all'))
 df = df.drop(columns=['loss_function','activation_function','predicted_feature','overfitting','optimiser','test_size'])
 
