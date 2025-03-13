@@ -24,13 +24,14 @@ batch_no=10 #batch size
 no_hidden_layers=10 #number of hidden layers 
 learning_rate=0.01 #learning rate
 no_nodes=6 #number of nodes in each hidden layer
-test_size_val=0.2 #proportion of data that is tested, 1-test_size= train_size
+combine_size_val=0.2 #proportion of data that is tested, 1-test_size= train_size
+test_size_val=0.1
 dropout=0.1
 
 input_size=6 #number of input features
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 activation_function="ReLU" #activation function- note this string needs to be changed manually
-threshold=0.05 #percentage threshold for which a prediction can be considerd accurate
+threshold=0.1 #percentage threshold for which a prediction can be considered accurate
 train_test_seed=42
 #train_test_seed=random.randint(1,100)
 print("Train-test split seed:",train_test_seed)
@@ -122,13 +123,15 @@ dataset = EmittanceDataset(X, y)
 dataloader = DataLoader(dataset, batch_size=2, shuffle=True)  # Batch size = 2
 
 # Split data into training and test sets (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size_val, random_state=train_test_seed)
+X_train, X_combine, y_train, y_combine = train_test_split(X, y, test_size=combine_size_val, random_state=train_test_seed)
+X_test,X_validation,y_test,y_validation= train_test_split(X_combine, y_combine, test_size=int(combine_size_val/test_size_val), random_state=train_test_seed)
 
 
 
 # Convert the data into tensors
 X_train_tensor = X_train.clone().detach().float()
 X_test_tensor = X_test.clone().detach().float()
+X_validation_tensor = X_validation.clone().detach().float()
 
 #check if there is any overlap between training and test sets
 # Convert tensors to numpy for easy comparison
@@ -147,6 +150,9 @@ train_dataloader = DataLoader(train_dataset, batch_size=batch_no, shuffle=True)
 # Create test dataset and dataloader
 test_dataset = EmittanceDataset(X_test_tensor, y_test)
 test_dataloader = DataLoader(test_dataset, batch_size=batch_no, shuffle=False)
+
+validation_dataset=EmittanceDataset(X_validation_tensor, y_validation)
+validation_dataloader = DataLoader(validation_dataset, batch_size=batch_no, shuffle=False)
 
 # for batch_features, batch_targets in train_dataloader:
 #     print("Features:", batch_features)
@@ -200,22 +206,34 @@ for epoch in range(epochs):
         epoch_duration = end_time - start_time
         epoch_times.append(epoch_duration)
 
-            # Check if the loss has improved
-    if running_loss < best_loss:
-        best_loss = running_loss
-        epochs_since_improvement = 0
-    else:
-        epochs_since_improvement += 1
-
-    if epochs_since_improvement >= patience and epoch>epochs/2:
-        print("Early stopping triggered!")
-        break
-    
     # Print loss for every epoch
     print(f"Epoch [{epoch+1}/{epochs}], Loss: {running_loss/len(train_dataloader)}")
     epoch_array=np.append(epoch_array,epoch)
     loss_array=np.append(loss_array,running_loss/len(train_dataloader))
+    # Validation step
+    model.eval()  # Evaluation mode (important for layers like dropout, batchnorm)
+    val_loss = 0.0
+    with torch.no_grad():  # Disable gradient computation for efficiency
+        for val_features, val_targets in validation_dataloader:
+            val_features, val_targets = val_features.to(device), val_targets.to(device)
+            val_predictions = model(val_features)
+            val_loss += loss_fn(val_predictions, val_targets).item()
 
+    avg_train_loss = running_loss / len(train_dataloader)
+    avg_val_loss = val_loss / len(validation_dataloader)
+
+    print(f"Epoch [{epoch+1}/{epochs}], Train Loss: {avg_train_loss:.4f}, Validation Loss: {avg_val_loss:.4f}")
+
+    # Early stopping logic
+    if avg_val_loss < best_loss:
+        best_loss = avg_val_loss
+        epochs_since_improvement = 0
+    else:
+        epochs_since_improvement += 1
+
+    if epochs_since_improvement >= patience and epoch > epochs / 2:
+        print("Early stopping triggered!")
+        break
 # End overall training timer
 total_end_time = time.time()
 total_training_time = total_end_time - total_start_time
