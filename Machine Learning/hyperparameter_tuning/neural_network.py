@@ -8,28 +8,40 @@ import numpy as np
 import pandas as pd
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-
+from sklearn.preprocessing import StandardScaler
 import time
 import os
 import random
 import hiddenlayer as hl
+import argparse
 
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
-csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
+csv_file_path = "Machine Learning/hyperparameter_tuning/training_metrics_3_targets_optimisation.csv"
 data_file_path="Processed_Data/data_sets/output_test_600.csv"
 
 epochs = 1000  # Number of epochs to train
-patience = 50  # number of epochs with no improvement before stopping
+patience = 20  # number of epochs with no improvement before stopping
 batch_no=30 #batch size
-no_hidden_layers=10#number of hidden layers 
-learning_rate=0.001 #learning rate
-no_nodes=36 #number of nodes in each hidden layer
 combine_size_val=0.2 
 test_size_val=combine_size_val/2
 dropout=0.2
 
+default_learning_rate=0.01 #learning rate
+default_no_nodes=12 #number of nodes in each hidden layer
+default_no_hidden_layers=300#number of hidden layers 
+
+
+parser = argparse.ArgumentParser(description='Process synchrotron data and generate plots.')
+parser.add_argument('--no_hidden_layers', type=int, default=default_no_hidden_layers, help='Number of hidden layers')
+parser.add_argument('--no_nodes',type=int, default=default_no_nodes, help='number of nodes')
+parser.add_argument('--learning_rate', type=float, default=default_learning_rate, help='Learning Rate')
+# Parse the command-line arguments
+args = parser.parse_args()
+
+no_hidden_layers=args.no_hidden_layers
+no_nodes=args.no_nodes
+learning_rate=args.learning_rate
 
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 predictor_feature=["Mean Radiation Radius",'X-ray Critical Energy', 'X-ray Percentage']
@@ -125,27 +137,17 @@ df['Mean Radiation Radius'] = df['Mean Theta'].apply(lambda theta: theta_to_r(th
 df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
 df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 
-df=df[df['Beam Spread']>0.01]
-df=df[df['Set Emittance']<=10]
-print("Total number of data points:",data_size)
-data_size=len(df)
+# df=df[df['Set Emittance']<=10]
+# print("Total number of data points:",data_size)
+# data_size=len(df)
 # Separate features and target
 X = df[predictor_feature].values # Features
 y = df[predicted_feature].values # Target
 
 
-
-y_scaler = StandardScaler()
-y_scaled = y_scaler.fit_transform(y)
-
-X_scaler = StandardScaler()
-X_scaled = X_scaler.fit_transform(X)
-
-
-
 # Convert to PyTorch tensors
-X = torch.tensor(X_scaled, dtype=torch.float32)
-y = torch.tensor(y_scaled, dtype=torch.float32).reshape(data_size, 3)  # Reshape to match model output
+X = torch.tensor(X, dtype=torch.float32)
+y = torch.tensor(y, dtype=torch.float32).reshape(data_size, 3)  # Reshape to match model output
 
 
 
@@ -257,37 +259,6 @@ print(f"Average time per epoch: {avg_epoch_time:.2f} sec")
 print(f"Total training time: {total_training_time:.2f} sec")
 
 
-# After training is done, plot the results
-# plt.figure(figsize=(10, 6))
-# plt.plot(epoch_array, loss_array, label='Training Loss', color='tab:blue', marker='o')
-# plt.xlabel('Epoch', fontsize=12)
-# plt.ylabel('Loss', fontsize=12)
-# plt.title('Training Loss vs Epoch', fontsize=14)
-# plt.grid(True)
-# plt.legend()
-#plt.savefig(f'Machine Learning/Plots/Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
-
-#focus on the last epochs
-no_epochs_focus=100
-
-if len(epoch_array) > no_epochs_focus:
-    epoch_array_last = epoch_array[-no_epochs_focus:]  # Slice the last no_epochs_focus epochs
-    loss_array_last = loss_array[-no_epochs_focus:]    # Slice the corresponding last no_epochs_focus loss values
-else:
-    # If there are fewer than 20 epochs, use all epochs
-    epoch_array_last = epoch_array
-    loss_array_last= loss_array
-
-# Plot the last 2no_epochs_focus epochs
-# plt.figure(figsize=(10, 6))
-# plt.plot(epoch_array_last, loss_array_last, label='Training Loss', color='tab:blue', marker='o')
-# plt.xlabel('Epoch', fontsize=12)
-# plt.ylabel('Loss', fontsize=12)
-# plt.title(f'Training Loss vs Epoch (Last {no_epochs_focus} Epochs)', fontsize=14)
-# plt.grid(True)
-# plt.legend()
-#plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
-#plt.show()
 
 # Evaluate the model on a test dataset to check its performance___________________________________________________
 
@@ -314,18 +285,10 @@ with torch.no_grad():
         # Make predictions
         predictions = model(batch_features)
 
-         # Inverse scaling: Transform predictions and batch_targets back to the original scale
-        predictions = y_scaler.inverse_transform(predictions.cpu().numpy())
-        batch_targets = y_scaler.inverse_transform(batch_targets.cpu().numpy())
-
-        # Convert predictions and batch_targets back to PyTorch tensors
-        predictions = torch.tensor(predictions, dtype=torch.float32).to(device)
-        batch_targets = torch.tensor(batch_targets, dtype=torch.float32).to(device)
-
         # For each feature, calculate the percentage error
         for i in range(predictions.shape[1]):  # Loop over each feature (output)
-            #print("Predictions:",predictions[:, i])
-            #print("Target:",batch_targets[:, i])
+            print("Predictions:",predictions[:, i])
+            print("Target:",batch_targets[:, i])
             percentage_error = torch.abs(predictions[:, i] - batch_targets[:, i]) / batch_targets[:, i]
             correct_predictions[i] += (percentage_error <= threshold).sum().item()  # Count predictions within threshold
 
@@ -382,15 +345,6 @@ with torch.no_grad():
         
         # Make predictions
         predictions = model(batch_features)
-
-        # Inverse scaling: Transform predictions and batch_targets back to the original scale
-        predictions = y_scaler.inverse_transform(predictions.cpu().numpy())
-        batch_targets = y_scaler.inverse_transform(batch_targets.cpu().numpy())
-
-        # Convert predictions and batch_targets back to PyTorch tensors
-        predictions = torch.tensor(predictions, dtype=torch.float32).to(device)
-        batch_targets = torch.tensor(batch_targets, dtype=torch.float32).to(device)
-
         # Calculate individual losses for each output
         individual_losses_train = [loss_fn(predictions[:, i], batch_targets[:, i]) for i in range(predictions.shape[1])]
         
@@ -456,7 +410,7 @@ for i, feature in enumerate(predicted_feature):
     metrics[f'{feature}_test_accuracy']=accuracy_per_feature[i]
 
 # Print the full metrics dictionary 
-print("Metrics Dictionary:", metrics)
+#print("Metrics Dictionary:", metrics)
 
 
 # Convert the metrics dictionary into a DataFrame
@@ -475,108 +429,3 @@ if save_metrics:
 print(metrics_df)
 
 
-# Save model state dictionary
-torch.save(model.state_dict(), r'Machine Learning\models\model1.pth')
-#______________________________________________________________________________________________________________________________________________________________________
-
-
-model.eval()
-
-
-# Extract all test data in one go
-all_features, all_targets = next(iter(test_dataloader))
-
-# Move data to the correct device
-all_features = all_features.to(device)
-all_targets = all_targets.to(device)
-
-# Disable gradient calculation for efficiency
-with torch.no_grad():
-    predictions = model(all_features).cpu().numpy()
-    # Inverse scaling: Transform predictions and batch_targets back to the original scale
-    predictions = y_scaler.inverse_transform(predictions)
-    actual_values =y_scaler.inverse_transform(all_targets.cpu().numpy())
-
-
-beam_spread_preds = predictions[:, 2]
-beam_energy_preds = predictions[:, 1]
-emittance_preds = predictions[:, 0]
-
-beam_spread_actuals = actual_values[:, 2]
-beam_energy_actuals = actual_values[:, 1]
-emittance_actuals = actual_values[:, 0]
-
-
-
-
-
-print("Emittance predictions:",emittance_preds)
-print("Actual Emittance:",emittance_actuals)
-length=len(emittance_preds)
-print("Length:", length)
-
-mse=(1/length)*np.sum((emittance_preds-emittance_actuals)**2)
-print("My calculated mse:",mse)
-
-#print("Beam spread predictions:",beam_spread_preds)
-#print("Actual Beam spread:",beam_spread_actuals)
-
-
-# Calculate residuals
-beam_spread_residuals = beam_spread_actuals - beam_spread_preds
-beam_energy_residuals = beam_energy_actuals - beam_energy_preds
-emittance_residuals = emittance_actuals - emittance_preds
-
-# Plotting
-plt.figure(figsize=(15, 10))
-
-# Scatter plots
-plt.subplot(2, 3, 1)
-plt.scatter(beam_spread_actuals, beam_spread_preds, color='blue', alpha=0.6)
-plt.plot(beam_spread_actuals, beam_spread_actuals, color='k', linestyle='-')
-plt.title('Beam Spread: Actual vs Predicted')
-plt.xlabel('Actual Beam Spread')
-plt.ylabel('Predicted Beam Spread')
-
-# Residual plots
-plt.subplot(2, 3, 4)
-plt.scatter(beam_spread_actuals, beam_spread_residuals, color='blue', alpha=0.6)
-plt.axhline(0, color='k', linestyle='--')
-plt.title('Beam Spread Residuals')
-plt.xlabel('Actual Beam Spread')
-plt.ylabel('Residual')
-
-# Scatter plots
-plt.subplot(2, 3, 2)
-plt.scatter(beam_energy_actuals, beam_energy_preds, color='green', alpha=0.6)
-plt.plot(beam_energy_actuals, beam_energy_actuals, color='k', linestyle='-')
-plt.title('Beam Energy: Actual vs Predicted')
-plt.xlabel('Actual Beam Energy')
-plt.ylabel('Predicted Beam Energy')
-
-# Residual plots
-plt.subplot(2, 3, 5)
-plt.scatter(beam_energy_actuals, beam_energy_residuals, color='green', alpha=0.6)
-plt.axhline(0, color='k', linestyle='--')
-plt.title('Beam Energy Residuals')
-plt.xlabel('Actual Beam Energy')
-plt.ylabel('Residual')
-
-# Scatter plots
-plt.subplot(2, 3, 3)
-plt.scatter(emittance_actuals, emittance_preds, color='purple', alpha=0.6)
-plt.plot(emittance_actuals, emittance_actuals, color='k', linestyle='-')
-plt.title('Emittance: Actual vs Predicted')
-plt.xlabel('Actual Emittance')
-plt.ylabel('Predicted Emittance')
-
-# Residual plots
-plt.subplot(2, 3, 6)
-plt.scatter(emittance_actuals, emittance_residuals, color='purple', alpha=0.6)
-plt.axhline(0, color='k', linestyle='--')
-plt.title('Emittance Residuals')
-plt.xlabel('Actual Emittance')
-plt.ylabel('Residual')
-
-plt.tight_layout()
-plt.show()

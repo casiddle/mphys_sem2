@@ -160,6 +160,7 @@ def find_largest_file_number(parent_dir):
                 largest_number = number
 
     # Return the largest number found, or -1 if no numbers were found
+    print("LARGEST NUMBER:",largest_number)
     return largest_number
 
 # Function to extract numbers from the folder names

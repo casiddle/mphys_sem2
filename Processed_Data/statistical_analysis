@@ -39,7 +39,7 @@ def distance_correlation_calculator(df, targets):
     return reshaped_df, correlation_df_sorted
 
 
-data_set=r"data_sets\output_test_96.csv"
+data_set=r"data_sets\output_test_600.csv"
 df = pd.read_csv(data_set)
 df = df.drop(columns=['Initial emittance'])
 
@@ -88,14 +88,21 @@ beam_energy_filtered_df = ranked_correlation[(ranked_correlation["Target"]=="Bea
 
 
 X = df[['Emittance','Beam Spread','Beam Energy', 'X-ray Percentage',
-        'X-ray Critical Energy','Mean Radiation Radius','UV Percentage','Other Percentage','Critical Energy']]
+        'X-ray Critical Energy','Mean Radiation Radius']]
 
 matrix_df,rabked_correlation=distance_correlation_calculator(X,targets)
 #print(matrix_df.head(10))
 matrix_df=matrix_df.drop(matrix_df[matrix_df.index.isin(targets)].index)
-plt.figure(figsize=(12, 8))
-sns.heatmap(matrix_df, annot=True, cmap='rocket_r', fmt=".2f", cbar=True)
-plt.title("Distance Correlation Analysis Heatmap")
+fig, ax = plt.subplots(figsize=(12, 8))  # Adjust figsize
+sns.heatmap(matrix_df, annot=True, cmap='rocket_r', fmt=".2f", cbar=True, 
+            annot_kws={'size': 22, 'weight': 'bold'}, ax=ax,
+            xticklabels=True, yticklabels=True)
+# Adjust the aspect ratio
+ax.set_aspect('auto')  # Or you can set a specific aspect ratio like 0.8 or 1.5
+plt.title("Distance Correlation Analysis Heatmap",fontsize=20, fontweight='bold')
+# Increase font size for x and y axis labels (tick labels)
+plt.tick_params(axis='x', labelsize=16)  # X-axis tick labels
+plt.tick_params(axis='y', labelsize=16,rotation=30)  # Y-axis tick labels
 plt.tight_layout()
 plt.savefig('Plots/distance_correlation_heatmap_reduced_parameters.png')
 #plt.show()
@@ -301,4 +308,7 @@ plt.tight_layout()
 # Show the plots
 plt.legend()
 plt.savefig('Plots/beam_energy_parameters_plot.png')
-#plt.show()
+plt.show()
+
+###########################################################################
+
