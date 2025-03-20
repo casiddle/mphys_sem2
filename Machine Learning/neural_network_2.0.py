@@ -17,7 +17,7 @@ import hiddenlayer as hl
 
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
-csv_file_path = "Machine Learning/training_metrics_3_targets.csv"
+csv_file_path = "Machine Learning/training_metrics_3_targets_new.csv"
 data_file_path="Processed_Data/data_sets/output_test_600.csv"
 
 epochs = 1000  # Number of epochs to train
@@ -113,6 +113,12 @@ def theta_to_r(theta, distance):
     
     r=distance*np.tan(theta)
     return r
+
+
+def mse_cal(predictions,actual):
+    length=len(predictions)
+    mse=(1/length)*np.sum((predictions-actual)**2)
+    return mse
 
 # MAIN-------------------------------------------------------------------
 
@@ -515,8 +521,12 @@ print("Actual Emittance:",emittance_actuals)
 length=len(emittance_preds)
 print("Length:", length)
 
-mse=(1/length)*np.sum((emittance_preds-emittance_actuals)**2)
-print("My calculated mse:",mse)
+em_mse=mse_cal(emittance_preds,emittance_actuals)
+energy_mse=mse_cal(beam_energy_preds,beam_energy_actuals)
+spread_mse=mse_cal(beam_spread_preds,beam_spread_actuals)
+print("My calculated emittance mse:",em_mse)
+print("My calculated beam energy mse:",energy_mse)
+print("My calculated beam spread mse:",spread_mse)
 
 #print("Beam spread predictions:",beam_spread_preds)
 #print("Actual Beam spread:",beam_spread_actuals)
