@@ -160,6 +160,7 @@ def find_largest_file_number(parent_dir):
                 largest_number = number
 
     # Return the largest number found, or -1 if no numbers were found
+    print("LARGEST NUMBER:",largest_number)
     return largest_number
 
 # Function to extract numbers from the folder names
@@ -175,10 +176,10 @@ def extract_numbers_from_subfolder(subfolder):
 
 
 run_no=11 #change to run number of interest usually last number in scan 
-data_directory=r"emittance_scan" #change to directory within cluster where scan is
+data_directory=r"..\Data_processing\Parameters\emittance_scan" #change to directory within cluster where scan is
 species=2 #witness beam
 
-suffix_file=r'..\..\Simulations\Beam_builder\test_array.csv'
+suffix_file=r'..\Simulations\Beam_builder\test_array.csv'
 
 # Initialize lists for each column
 emittance = []

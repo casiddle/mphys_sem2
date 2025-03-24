@@ -21,7 +21,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # Change the current working directory to the script directory
 os.chdir(script_dir)
 
-script_dir=os.path.join(script_dir,"emittance_scan")
+script_dir=os.path.join(script_dir,r"..\Data_processing\Parameters\emittance_scan")
 
 def sum_over_theta_and_phi(synchrotron_array):
     photons_per_crit_energy = np.sum(synchrotron_array, axis=(0,1))
