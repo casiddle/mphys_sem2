@@ -17,9 +17,6 @@ export PATH=$HOME/.local/bin:$PATH
 
 # Debugging: Print Python and SciPy version
 python3 -c "import sys; import scipy; print('Python:', sys.version); print('SciPy:', scipy.__version__)"
-
-
-
 python3 ./parameter_extraction.py
 
 conda deactivate
