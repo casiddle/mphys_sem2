@@ -61,9 +61,9 @@ def get_properties( no_hidden_layers, no_nodes, learning_rate):
 
 
 # List of hyperparameters to tune
-hidden_layers_list = np.round(np.linspace(10,100,25),0)  # Example: 1 to 3 hidden layers
-nodes_list = np.round(np.linspace(6,12,6),0)  # Example: 50 to 150 nodes
-learning_rate_list = [0.001,0.005,0.01 ]  # Example: 3 different learning rates
+hidden_layers_list = np.round(np.linspace(10,100,25),0)  
+nodes_list = np.round(np.linspace(12,36,5),0)  
+learning_rate_list = [0.01]  
 
 # Store results
 results = []
