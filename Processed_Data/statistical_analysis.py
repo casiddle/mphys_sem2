@@ -41,7 +41,7 @@ def distance_correlation_calculator(df, targets):
 
 data_set=r"data_sets\output_test_600.csv"
 df = pd.read_csv(data_set)
-df = df.drop(columns=['Initial emittance'])
+#df = df.drop(columns=['Initial emittance'])
 
 
 # Apply the function to the column
@@ -111,10 +111,10 @@ plt.savefig('Plots/distance_correlation_heatmap_reduced_parameters.png')
 
 set_radius=1
 emittance_check_df=df[['Emittance','X-ray Percentage',
-        'X-ray Critical Energy','Mean Radiation Radius','UV Percentage','Other Percentage','Critical Energy','Set Radius']]
+        'X-ray Critical Energy','Mean Radiation Radius','UV Percentage','Other Percentage','Critical Energy','Set Radius','Initial emittance']]
 
-red_points = emittance_check_df[emittance_check_df['Set Radius'] == set_radius]
-other_points = emittance_check_df[emittance_check_df['Set Radius'] != set_radius]
+red_points = emittance_check_df[emittance_check_df['Initial emittance'] >=5]
+other_points = emittance_check_df[emittance_check_df['Initial emittance'] <5]
 #other_points = emittance_check_df[emittance_check_df['Set Radius'] == 0]
 
 
@@ -178,11 +178,11 @@ plt.savefig('Plots/emittance_parameters_plot.png')
 
 # Create the DataFrame with relevant columns
 beam_spread_check_df = df[['Beam Spread', 'X-ray Percentage', 'X-ray Critical Energy', 'Mean Radiation Radius', 
-                           'UV Percentage', 'Other Percentage', 'Critical Energy', 'Set Radius']]
+                           'UV Percentage', 'Other Percentage', 'Critical Energy', 'Set Radius','Initial emittance']]
 
 # Split the data based on Set Radius
-red_points = beam_spread_check_df[beam_spread_check_df['Set Radius'] == set_radius]
-other_points = beam_spread_check_df[beam_spread_check_df['Set Radius'] != set_radius]
+red_points = beam_spread_check_df[beam_spread_check_df['Initial emittance'] >=5]
+other_points = beam_spread_check_df[beam_spread_check_df['Initial emittance'] < 5]
 
 # Create a figure with a 2x3 grid of subplots
 fig, axes = plt.subplots(2, 3, figsize=(18, 12))
@@ -245,11 +245,11 @@ plt.savefig('Plots/beam_spread_parameters_plot.png')
 
 # Create the DataFrame with relevant columns
 beam_energy_check_df = df[['Beam Energy', 'X-ray Percentage', 'X-ray Critical Energy', 'Mean Radiation Radius', 
-                           'UV Percentage', 'Other Percentage', 'Critical Energy', 'Set Radius']]
+                           'UV Percentage', 'Other Percentage', 'Critical Energy', 'Set Radius','Initial emittance']]
 
 # Split the data based on Set Radius
-red_points = beam_energy_check_df[beam_energy_check_df['Set Radius'] == set_radius]
-other_points = beam_energy_check_df[beam_energy_check_df['Set Radius'] != set_radius]
+red_points = beam_energy_check_df[beam_energy_check_df['Initial emittance'] >=5]
+other_points = beam_energy_check_df[beam_energy_check_df['Initial emittance'] <5]
 
 # Create a figure with a 2x3 grid of subplots
 fig, axes = plt.subplots(2, 3, figsize=(18, 12))
