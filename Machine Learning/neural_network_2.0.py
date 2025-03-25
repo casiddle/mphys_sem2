@@ -19,7 +19,7 @@ save_metrics = True # Change this to False if you don’t want to save for this 
 csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
 data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
 
-epochs = 5000  # Number of epochs to train
+epochs = 800  # Number of epochs to train
 patience = 200  # number of epochs with no improvement before stopping
 batch_no=10 #batch size
 no_hidden_layers=10#number of hidden layers 
