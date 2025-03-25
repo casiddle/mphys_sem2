@@ -144,6 +144,12 @@ df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 X = df[predictor_feature].values # Features
 y = df[predicted_feature].values # Target
 
+y_scaler = StandardScaler()
+y_scaled = y_scaler.fit_transform(y)
+
+X_scaler = StandardScaler()
+X_scaled = X_scaler.fit_transform(X)
+
 
 # Convert to PyTorch tensors
 X = torch.tensor(X, dtype=torch.float32)
@@ -283,7 +289,17 @@ with torch.no_grad():
         batch_features, batch_targets = batch_features.to(device), batch_targets.to(device)
         
         # Make predictions
+        # Make predictions
         predictions = model(batch_features)
+
+         # Inverse scaling: Transform predictions and batch_targets back to the original scale
+        predictions = y_scaler.inverse_transform(predictions.cpu().numpy())
+        batch_targets = y_scaler.inverse_transform(batch_targets.cpu().numpy())
+
+        # Convert predictions and batch_targets back to PyTorch tensors
+        predictions = torch.tensor(predictions, dtype=torch.float32).to(device)
+        batch_targets = torch.tensor(batch_targets, dtype=torch.float32).to(device)
+
 
         # For each feature, calculate the percentage error
         for i in range(predictions.shape[1]):  # Loop over each feature (output)
@@ -345,6 +361,15 @@ with torch.no_grad():
         
         # Make predictions
         predictions = model(batch_features)
+        
+         # Inverse scaling: Transform predictions and batch_targets back to the original scale
+        predictions = y_scaler.inverse_transform(predictions.cpu().numpy())
+        batch_targets = y_scaler.inverse_transform(batch_targets.cpu().numpy())
+
+        # Convert predictions and batch_targets back to PyTorch tensors
+        predictions = torch.tensor(predictions, dtype=torch.float32).to(device)
+        batch_targets = torch.tensor(batch_targets, dtype=torch.float32).to(device)
+
         # Calculate individual losses for each output
         individual_losses_train = [loss_fn(predictions[:, i], batch_targets[:, i]) for i in range(predictions.shape[1])]
         

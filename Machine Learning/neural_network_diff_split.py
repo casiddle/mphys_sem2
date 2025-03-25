@@ -17,16 +17,16 @@ import hiddenlayer as hl
 
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
-csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
+csv_file_path = "Machine Learning/training_metrics_3_targets_diff_split.csv"
 data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
 
-epochs = 3000  # Number of epochs to train
-patience = 100  # number of epochs with no improvement before stopping
+epochs = 2000  # Number of epochs to train
+patience = 50  # number of epochs with no improvement before stopping
 batch_no=30 #batch size
-no_hidden_layers=10#number of hidden layers 
-learning_rate=1e-4 #learning rate
+no_hidden_layers=100#number of hidden layers 
+learning_rate=0.001 #learning rate
 no_nodes=36 #number of nodes in each hidden layer
-combine_size_val=0.2
+combine_size_val=0.4
 test_size_val=combine_size_val/2
 dropout=0.2
 
@@ -66,8 +66,6 @@ class NeuralNetwork(nn.Module):  # Define custom neural network
         layers.append(nn.Linear(hidden_size, num_outputs))  # Output layer (single output)
         #layers.append(nn.ReLU())
         layers.append(nn.LeakyReLU(negative_slope=0.001))  
-        #layers.append(nn.Softplus())  
-
         
         # Use Sequential to combine layers
         self.linear_relu_stack = nn.Sequential(*layers)
@@ -77,12 +75,6 @@ class NeuralNetwork(nn.Module):  # Define custom neural network
         return logits
 
 
-class WeightedMSELoss(nn.Module):
-    def forward(self, y_pred, y_true):
-        weights = 1 / (y_true + 1)  # Higher weight for smaller values
-        return torch.mean(weights * (y_pred - y_true) ** 2)
-
-#loss_fn = WeightedMSELoss()
 
 
 # Check if a GPU (CUDA) is available, otherwise default to CPU
@@ -169,10 +161,14 @@ y = torch.tensor(y_scaled, dtype=torch.float32).reshape(data_size, 3)  # Reshape
 dataset = EmittanceDataset(X, y)
 dataloader = DataLoader(dataset, batch_size=batch_no, shuffle=True)  # Batch size = 2
 
-# Split data into training and test sets (80% train, 20% test)
-X_train, X_combine, y_train, y_combine = train_test_split(X, y, test_size=combine_size_val, random_state=train_test_seed)
-X_test,X_validation,y_test,y_validation= train_test_split(X_combine, y_combine, test_size=int(combine_size_val/test_size_val), random_state=train_test_seed)
+# Split data into training and test sets (first 80% train, last 20% test)
+# Assuming X and y are already sorted by the desired order (e.g., time series)
+split_index = int(0.8 * len(X))
 
+# Split the data
+X_train, X_combine = X[:split_index], X[split_index:]
+y_train, y_combine = y[:split_index], y[split_index:]
+X_test,X_validation,y_test,y_validation= train_test_split(X_combine, y_combine, test_size=int(combine_size_val/test_size_val), random_state=train_test_seed)
 
 
 
