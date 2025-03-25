@@ -1,49 +1,52 @@
 ,Target,Feature,Correlation
-21,Beam Spread,Beam Spread,1.0000000000000016
+23,Beam Spread,Beam Spread,1.0000000000000016
 0,Emittance,Emittance,1.000000000000001
-36,Beam Energy,Beam Energy,0.9999999999999932
-10,Emittance,Total Charge,0.9728866629491328
-6,Emittance,Beam Radius,0.962237109620215
-41,Beam Energy,Total no. Photons,0.9466951863512486
-35,Beam Energy,Critical Energy,0.9403238581664244
-5,Emittance,Beam Spread,0.9085527120169564
-16,Beam Spread,Emittance,0.9085527120169519
-26,Beam Spread,Total Charge,0.8769235164111447
-39,Beam Energy,X-ray Percentage,0.8612908232990585
-33,Beam Energy,X-ray/UV,0.8542686192251795
-13,Emittance,Mean Radiation Radius,0.8513076002709943
-2,Emittance,Mean Theta,0.8513075750017266
-47,Beam Energy,Other Percentage,0.8509173413883716
-22,Beam Spread,Beam Radius,0.8478484419923963
-40,Beam Energy,X-ray Critical Energy,0.805629240027275
-11,Emittance,Set Emittance,0.7008896036268463
-29,Beam Spread,Mean Radiation Radius,0.6948809985872074
-18,Beam Spread,Mean Theta,0.6948809221993528
-46,Beam Energy,UV Percentage,0.6699234262713785
-27,Beam Spread,Set Emittance,0.6488072936230173
-31,Beam Spread,Other Percentage,0.6022654200084636
-30,Beam Spread,UV Percentage,0.4962945139785159
-37,Beam Energy,Beam Spread,0.48378920549861953
-20,Beam Spread,Beam Energy,0.48378920549858867
-19,Beam Spread,Critical Energy,0.3649425238667532
-25,Beam Spread,Total no. Photons,0.36276491282241446
-28,Beam Spread,Set Radius,0.32083291779782713
-24,Beam Spread,X-ray Critical Energy,0.3102949723208939
-14,Emittance,UV Percentage,0.30258827880220107
-12,Emittance,Set Radius,0.3019740536338036
-8,Emittance,X-ray Critical Energy,0.2445138405355909
-45,Beam Energy,Mean Radiation Radius,0.23993353288308208
-34,Beam Energy,Mean Theta,0.23993348373889262
-23,Beam Spread,X-ray Percentage,0.20934675592742563
-43,Beam Energy,Set Emittance,0.2060619046094761
-17,Beam Spread,X-ray/UV,0.20372151664376234
-32,Beam Energy,Emittance,0.1823751567230046
-4,Emittance,Beam Energy,0.18237515672296242
-15,Emittance,Other Percentage,0.18034885881322288
-42,Beam Energy,Total Charge,0.17767199631292574
+39,Beam Energy,Beam Energy,0.9999999999999932
+11,Emittance,Total Charge,0.9728866629491328
+7,Emittance,Beam Radius,0.962237109620215
+44,Beam Energy,Total no. Photons,0.9466951863512486
+38,Beam Energy,Critical Energy,0.9403238581664244
+6,Emittance,Beam Spread,0.9085527120169564
+17,Beam Spread,Emittance,0.9085527120169519
+28,Beam Spread,Total Charge,0.8769235164111447
+42,Beam Energy,X-ray Percentage,0.8612908232990585
+35,Beam Energy,X-ray/UV,0.8542686192251795
+14,Emittance,Mean Radiation Radius,0.8513076002709943
+3,Emittance,Mean Theta,0.8513075750017266
+50,Beam Energy,Other Percentage,0.8509173413883716
+24,Beam Spread,Beam Radius,0.8478484419923963
+43,Beam Energy,X-ray Critical Energy,0.805629240027275
+12,Emittance,Set Emittance,0.7008896036268463
+2,Emittance,Initial emittance,0.7008688418160652
+31,Beam Spread,Mean Radiation Radius,0.6948809985872074
+20,Beam Spread,Mean Theta,0.6948809221993528
+49,Beam Energy,UV Percentage,0.6699234262713785
+29,Beam Spread,Set Emittance,0.6488072936230173
+19,Beam Spread,Initial emittance,0.648753000207298
+33,Beam Spread,Other Percentage,0.6022654200084636
+32,Beam Spread,UV Percentage,0.4962945139785159
+40,Beam Energy,Beam Spread,0.48378920549861953
+22,Beam Spread,Beam Energy,0.48378920549858867
+21,Beam Spread,Critical Energy,0.3649425238667532
+27,Beam Spread,Total no. Photons,0.36276491282241446
+30,Beam Spread,Set Radius,0.32083291779782713
+26,Beam Spread,X-ray Critical Energy,0.3102949723208939
+15,Emittance,UV Percentage,0.30258827880220107
+13,Emittance,Set Radius,0.3019740536338036
+9,Emittance,X-ray Critical Energy,0.2445138405355909
+48,Beam Energy,Mean Radiation Radius,0.23993353288308208
+37,Beam Energy,Mean Theta,0.23993348373889262
+25,Beam Spread,X-ray Percentage,0.20934675592742563
+46,Beam Energy,Set Emittance,0.2060619046094761
+36,Beam Energy,Initial emittance,0.20606145177458637
+18,Beam Spread,X-ray/UV,0.20372151664376234
+34,Beam Energy,Emittance,0.1823751567230046
+5,Emittance,Beam Energy,0.18237515672296242
+16,Emittance,Other Percentage,0.18034885881322288
+45,Beam Energy,Total Charge,0.17767199631292574
 1,Emittance,X-ray/UV,0.13840867024165635
-7,Emittance,X-ray Percentage,0.13772011965725534
-9,Emittance,Total no. Photons,0.13600227952024643
-3,Emittance,Critical Energy,0.11575266260136348
-44,Beam Energy,Set Radius,0.108456216317848
-38,Beam Energy,Beam Radius,0.10663122277052767
+8,Emittance,X-ray Percentage,0.13772011965725534
+10,Emittance,Total no. Photons,0.13600227952024643
+4,Emittance,Critical Energy,0.11575266260136348
+47,Beam Energy,Set Radius,0.108456216317848
+41,Beam Energy,Beam Radius,0.10663122277052767
