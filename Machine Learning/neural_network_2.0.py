@@ -9,26 +9,25 @@ import pandas as pd
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-
 import time
 import os
 import random
 import hiddenlayer as hl
 
 # Key inputs
-save_metrics = True  # Change this to False if you don’t want to save for this run
+save_metrics = True # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
 data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
 
-epochs = 3000  # Number of epochs to train
-patience = 100  # number of epochs with no improvement before stopping
-batch_no=30 #batch size
+epochs = 5000  # Number of epochs to train
+patience = 200  # number of epochs with no improvement before stopping
+batch_no=10 #batch size
 no_hidden_layers=10#number of hidden layers 
 learning_rate=1e-4 #learning rate
 no_nodes=36 #number of nodes in each hidden layer
 combine_size_val=0.2
 test_size_val=combine_size_val/2
-dropout=0.2
+dropout=0.1
 
 
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
@@ -37,7 +36,7 @@ input_size=len(predictor_feature)#number of input features
 activation_function="Leaky ReLU" #activation function- note this string needs to be changed manually
 threshold=0.1 #percentage threshold for which a prediction can be considered accurate
 #train_test_seed=42
-train_test_seed=random.randint(1,100)
+train_test_seed=random.randint(1,300)
 print("Train-test split seed:",train_test_seed)
 
 # Define the neural network class and relative loss and optimiser functions
@@ -65,7 +64,7 @@ class NeuralNetwork(nn.Module):  # Define custom neural network
         # Output layer
         layers.append(nn.Linear(hidden_size, num_outputs))  # Output layer (single output)
         #layers.append(nn.ReLU())
-        layers.append(nn.LeakyReLU(negative_slope=0.001))  
+        layers.append(nn.LeakyReLU(negative_slope=0.01))  
         #layers.append(nn.Softplus())  
 
         
@@ -81,8 +80,16 @@ class WeightedMSELoss(nn.Module):
     def forward(self, y_pred, y_true):
         weights = 1 / (y_true + 1)  # Higher weight for smaller values
         return torch.mean(weights * (y_pred - y_true) ** 2)
+    
+class RMSELoss(nn.Module):
+    def __init__(self, eps=1e-8):  # eps prevents division by zero errors
+        super().__init__()
+        self.mse = nn.MSELoss()
 
-#loss_fn = WeightedMSELoss()
+    def forward(self, y_pred, y_true,eps=1e-8):
+        return torch.sqrt(self.mse(y_pred, y_true) + eps)
+
+#loss_fn = RMSELoss()
 
 
 # Check if a GPU (CUDA) is available, otherwise default to CPU
@@ -94,7 +101,7 @@ print(f"Using {device} device")
 model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature), dropout_rate=dropout).to(device)  # Initialize the model
 print(model)
 loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Adam optimizer with learning rate = 0.001
+optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-10)  # Adam optimizer with learning rate 
 
 
 class EmittanceDataset(Dataset):
@@ -142,13 +149,16 @@ df['X-ray Mean Radiation Radius'] = df['X-ray Mean Theta'].apply(lambda theta: t
 df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
 df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 
+#df = df[df['Emittance'] < 20]
+#df = df[df['Set Radius'] ==1]
 
-print("Total number of data points:",data_size)
+
+
 data_size=len(df)
+print("Total number of data points:",data_size)
 # Separate features and target
 X = df[predictor_feature].values # Features
 y = df[predicted_feature].values # Target
-
 
 
 y_scaler = StandardScaler()
@@ -156,6 +166,7 @@ y_scaled = y_scaler.fit_transform(y)
 
 X_scaler = StandardScaler()
 X_scaled = X_scaler.fit_transform(X)
+
 
 
 
@@ -171,8 +182,7 @@ dataloader = DataLoader(dataset, batch_size=batch_no, shuffle=True)  # Batch siz
 
 # Split data into training and test sets (80% train, 20% test)
 X_train, X_combine, y_train, y_combine = train_test_split(X, y, test_size=combine_size_val, random_state=train_test_seed)
-X_test,X_validation,y_test,y_validation= train_test_split(X_combine, y_combine, test_size=int(combine_size_val/test_size_val), random_state=train_test_seed)
-
+X_test,X_validation,y_test,y_validation= train_test_split(X_combine, y_combine, test_size=0.5, random_state=train_test_seed)
 
 
 
@@ -202,6 +212,8 @@ test_dataloader = DataLoader(test_dataset, batch_size=batch_no, shuffle=False)
 #Create validation dataset and dataloader
 validation_dataset=EmittanceDataset(X_validation_tensor, y_validation)
 validation_dataloader = DataLoader(validation_dataset, batch_size=batch_no, shuffle=False)
+print(f"Validation data size: {len(X_validation)}")  # Check size of validation data
+print("Length validation data loader:",len(validation_dataloader))
 
 
 
@@ -215,6 +227,7 @@ best_loss = float('inf')  # Start with infinity, so any loss will be smaller
 
 epoch_array=np.empty(0)
 loss_array=np.empty(0)
+val_loss_array=np.empty(0)
 
 total_start_time = time.time()
 for epoch in range(epochs):
@@ -232,6 +245,7 @@ for epoch in range(epochs):
         predictions = model(batch_features)
         loss = loss_fn(predictions, batch_targets)
         loss.backward() #check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
         optimizer.step()
         running_loss += loss.item()
         end_time = time.time()
@@ -245,13 +259,18 @@ for epoch in range(epochs):
     model.eval()  
     val_loss = 0.0
     with torch.no_grad():  # Disable gradient computation for efficiency
-        for val_features, val_targets in validation_dataloader:
+        for val_features, val_targets in validation_dataloader:  
             val_features, val_targets = val_features.to(device), val_targets.to(device)
             val_predictions = model(val_features)
             val_loss += loss_fn(val_predictions, val_targets).item()
 
     avg_train_loss = running_loss / len(train_dataloader)
+    #print("Running loss:",running_loss)
+    #print("Length train dataloader:",len(train_dataloader))
+    #print("Running validation loss:",val_loss)
+    #print("Length validation data loader",len(validation_dataloader))
     avg_val_loss = val_loss / len(validation_dataloader)
+    val_loss_array=np.append(val_loss_array,avg_val_loss)
 
     print(f"Epoch [{epoch+1}/{epochs}], Train Loss: {avg_train_loss:.4f}, Validation Loss: {avg_val_loss:.4f}")
 
@@ -275,13 +294,14 @@ print(f"Total training time: {total_training_time:.2f} sec")
 
 
 # After training is done, plot the results
-# plt.figure(figsize=(10, 6))
-# plt.plot(epoch_array, loss_array, label='Training Loss', color='tab:blue', marker='o')
-# plt.xlabel('Epoch', fontsize=12)
-# plt.ylabel('Loss', fontsize=12)
-# plt.title('Training Loss vs Epoch', fontsize=14)
-# plt.grid(True)
-# plt.legend()
+plt.figure(figsize=(10, 6))
+plt.plot(epoch_array, loss_array, label='Training Loss', color='tab:blue', marker='o')
+plt.plot(epoch_array, val_loss_array, label='Validation Loss', color='tab:red', marker='.')
+plt.xlabel('Epoch', fontsize=12)
+plt.ylabel('Loss', fontsize=12)
+plt.title('Training Loss vs Epoch', fontsize=14)
+plt.grid(True)
+plt.legend()
 #plt.savefig(f'Machine Learning/Plots/Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
 
 #focus on the last epochs
@@ -290,20 +310,23 @@ no_epochs_focus=100
 if len(epoch_array) > no_epochs_focus:
     epoch_array_last = epoch_array[-no_epochs_focus:]  # Slice the last no_epochs_focus epochs
     loss_array_last = loss_array[-no_epochs_focus:]    # Slice the corresponding last no_epochs_focus loss values
+    val_loss_array_last=val_loss_array[-no_epochs_focus:]
 else:
     # If there are fewer than 20 epochs, use all epochs
     epoch_array_last = epoch_array
     loss_array_last= loss_array
+    val_loss_array_last=val_loss_array
 
 # Plot the last 2no_epochs_focus epochs
-# plt.figure(figsize=(10, 6))
-# plt.plot(epoch_array_last, loss_array_last, label='Training Loss', color='tab:blue', marker='o')
-# plt.xlabel('Epoch', fontsize=12)
-# plt.ylabel('Loss', fontsize=12)
-# plt.title(f'Training Loss vs Epoch (Last {no_epochs_focus} Epochs)', fontsize=14)
-# plt.grid(True)
-# plt.legend()
-#plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
+plt.figure(figsize=(10, 6))
+plt.plot(epoch_array_last, loss_array_last, label='Training Loss', color='tab:blue', marker='o')
+plt.plot(epoch_array_last, val_loss_array_last, label='Validation Loss', color='tab:red', marker='.')
+plt.xlabel('Epoch', fontsize=12)
+plt.ylabel('Loss', fontsize=12)
+plt.title(f'Training Loss vs Epoch (Last {no_epochs_focus} Epochs)', fontsize=14)
+plt.grid(True)
+plt.legend()
+plt.savefig(f'Machine Learning/Plots/Last_{no_epochs_focus}_Epochs_vs_loss_{epochs}_epochs.png', dpi=250)
 #plt.show()
 
 # Evaluate the model on a test dataset to check its performance___________________________________________________
@@ -501,7 +524,8 @@ model.eval()
 
 
 # Extract all test data in one go
-all_features, all_targets = next(iter(test_dataloader))
+all_features = torch.cat([batch[0] for batch in test_dataloader], dim=0).to(device)
+all_targets = torch.cat([batch[1] for batch in test_dataloader], dim=0).to(device)
 
 # Move data to the correct device
 all_features = all_features.to(device)
@@ -544,9 +568,9 @@ print("My calculated beam spread mse:",spread_mse)
 
 
 # Calculate residuals
-beam_spread_residuals = beam_spread_actuals - beam_spread_preds
-beam_energy_residuals = beam_energy_actuals - beam_energy_preds
-emittance_residuals = emittance_actuals - emittance_preds
+beam_spread_residuals =  beam_spread_preds-beam_spread_actuals
+beam_energy_residuals =  beam_energy_preds-beam_energy_actuals 
+emittance_residuals = emittance_preds-emittance_actuals  
 
 # Plotting
 plt.figure(figsize=(15, 10))
