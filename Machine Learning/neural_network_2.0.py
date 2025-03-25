@@ -18,7 +18,7 @@ import hiddenlayer as hl
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_3_targets_new.csv"
-data_file_path="Processed_Data/data_sets/output_test_600.csv"
+data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
 
 epochs = 1000  # Number of epochs to train
 patience = 50  # number of epochs with no improvement before stopping
@@ -32,7 +32,7 @@ dropout=0.2
 
 
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
-predictor_feature=["Mean Radiation Radius",'X-ray Critical Energy', 'X-ray Percentage']
+predictor_feature=["X-ray Mean Radiation Radius",'X-ray Critical Energy', 'X-ray Percentage']
 input_size=len(predictor_feature)#number of input features
 activation_function="Leaky ReLU" #activation function- note this string needs to be changed manually
 threshold=0.1 #percentage threshold for which a prediction can be considered accurate
@@ -127,12 +127,11 @@ def mse_cal(predictions,actual):
 df = pd.read_csv(data_file_path)
 data_size=len(df)
 print("Total number of data points:",data_size)
-df['Mean Radiation Radius'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
+df['X-ray Mean Radiation Radius'] = df['X-ray Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
 df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
 df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 
-df=df[df['Beam Spread']>0.01]
-df=df[df['Set Emittance']<=10]
+
 print("Total number of data points:",data_size)
 data_size=len(df)
 # Separate features and target

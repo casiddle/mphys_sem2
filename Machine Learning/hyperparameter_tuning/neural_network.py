@@ -17,7 +17,7 @@ import argparse
 
 # Key inputs
 save_metrics = True  # Change this to False if you don’t want to save for this run
-csv_file_path = "Machine Learning/hyperparameter_tuning/training_metrics_3_targets_optimisation.csv"
+csv_file_path = "Machine Learning/hyperparameter_tuning/training_metrics_3_targets_optimisation_correct_data.csv"
 data_file_path="Processed_Data/data_sets/output_test_600.csv"
 
 epochs = 1000  # Number of epochs to train
