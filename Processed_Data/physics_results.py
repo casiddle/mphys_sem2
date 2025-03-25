@@ -48,18 +48,17 @@ axes[2].plot(filtered_df5['Set Emittance'], filtered_df5['Emittance'], label='5*
 axes[2].plot(filtered_df05['Set Emittance'], filtered_df05['Emittance'], label='0.5*Matched Radius')
 
 # Add labels and titles
-axes[0].set_ylabel('Beam Energy')
-axes[1].set_ylabel('Beam Spread')
-axes[2].set_ylabel('Final Emittance')
-axes[2].set_xlabel('Set Emittance')
+axes[0].set_ylabel('Beam Energy (GeV)')
+axes[1].set_ylabel('Beam Spread (%)')
+axes[2].set_ylabel(r'Final Emittance ($\mu m$)')
+axes[2].set_xlabel(r'Set Emittance ($\mu m$)')
 
 # Add legends
 for ax in axes:
     ax.legend()
     ax.grid(True)
 
-plt.tight_layout()  # Ensures better spacing between plots
-plt.title("Final parameters variance with initial radius")
+plt.suptitle("Final beam parameters against set emittance and radius", fontsize=18)
 plt.savefig('Plots/fixed_emittance_varying_radius.png')
 plt.show()
 
@@ -69,10 +68,10 @@ print(filtered_df_check[['Set Emittance','Set Radius','Beam Spread']])
 
 # Filter data based on different Set Emittances
 filtered_df1 = df[df['Set Emittance'] == 2]
-filtered_df2 = df[df['Set Emittance'] == 2.7771]
-filtered_df3 = df[df['Set Emittance'] == 8.0704]
-filtered_df4 = df[df['Set Emittance'] == 10.6094]
-filtered_df5 = df[df['Set Emittance'] == 15.56]
+filtered_df2 = df[df['Set Emittance'] == 4.5455]
+filtered_df3 = df[df['Set Emittance'] == 8.5051]
+filtered_df4 = df[df['Set Emittance'] == 13.3131]
+filtered_df5 = df[df['Set Emittance'] == 20.3838]
 filtered_df05 = df[df['Set Emittance'] == 30]
 
 # Print a subset of data for verification
@@ -82,32 +81,32 @@ print(filtered_df1[['Set Radius', 'Set Emittance', 'Beam Spread', 'Beam Energy',
 fig, axes = plt.subplots(3, 1, figsize=(8, 10), sharex=True)
 
 # Plot each variable on its own subplot
-axes[0].plot(filtered_df1['Set Radius'], filtered_df1['Beam Energy'], label='Set Emittance = 3')
-axes[0].plot(filtered_df2['Set Radius'], filtered_df2['Beam Energy'], label='Set Emittance = 2.7771')
-axes[0].plot(filtered_df3['Set Radius'], filtered_df3['Beam Energy'], label='Set Emittance = 8.0704')
-axes[0].plot(filtered_df4['Set Radius'], filtered_df4['Beam Energy'], label='Set Emittance = 10.6094')
-axes[0].plot(filtered_df5['Set Radius'], filtered_df5['Beam Energy'], label='Set Emittance = 15.56')
+axes[0].plot(filtered_df1['Set Radius'], filtered_df1['Beam Energy'], label='Set Emittance = 2')
+axes[0].plot(filtered_df2['Set Radius'], filtered_df2['Beam Energy'], label='Set Emittance = 4.5455')
+axes[0].plot(filtered_df3['Set Radius'], filtered_df3['Beam Energy'], label='Set Emittance = 8.5051')
+axes[0].plot(filtered_df4['Set Radius'], filtered_df4['Beam Energy'], label='Set Emittance = 13.3131')
+axes[0].plot(filtered_df5['Set Radius'], filtered_df5['Beam Energy'], label='Set Emittance = 20.3838')
 axes[0].plot(filtered_df05['Set Radius'], filtered_df05['Beam Energy'], label='Set Emittance = 30')
 
 axes[1].plot(filtered_df1['Set Radius'], filtered_df1['Beam Spread'], label='Set Emittance = 2')
-axes[1].plot(filtered_df2['Set Radius'], filtered_df2['Beam Spread'], label='Set Emittance = 2.7771')
-axes[1].plot(filtered_df3['Set Radius'], filtered_df3['Beam Spread'], label='Set Emittance = 8.0704')
-axes[1].plot(filtered_df4['Set Radius'], filtered_df4['Beam Spread'], label='Set Emittance = 10.6094')
-axes[1].plot(filtered_df5['Set Radius'], filtered_df5['Beam Spread'], label='Set Emittance = 15.56')
+axes[1].plot(filtered_df2['Set Radius'], filtered_df2['Beam Spread'], label='Set Emittance = 4.5455')
+axes[1].plot(filtered_df3['Set Radius'], filtered_df3['Beam Spread'], label='Set Emittance = 8.5051')
+axes[1].plot(filtered_df4['Set Radius'], filtered_df4['Beam Spread'], label='Set Emittance = 13.3131')
+axes[1].plot(filtered_df5['Set Radius'], filtered_df5['Beam Spread'], label='Set Emittance = 20.3838')
 axes[1].plot(filtered_df05['Set Radius'], filtered_df05['Beam Spread'], label='Set Emittance = 30')
 
 axes[2].plot(filtered_df1['Set Radius'], filtered_df1['Emittance'], label='Set Emittance = 2')
-axes[2].plot(filtered_df2['Set Radius'], filtered_df2['Emittance'], label='Set Emittance = 2.7771')
-axes[2].plot(filtered_df3['Set Radius'], filtered_df3['Emittance'], label='Set Emittance = 8.0704')
-axes[2].plot(filtered_df4['Set Radius'], filtered_df4['Emittance'], label='Set Emittance = 10.6094')
-axes[2].plot(filtered_df5['Set Radius'], filtered_df5['Emittance'], label='Set Emittance = 15.56')
+axes[2].plot(filtered_df2['Set Radius'], filtered_df2['Emittance'], label='Set Emittance = 4.5455')
+axes[2].plot(filtered_df3['Set Radius'], filtered_df3['Emittance'], label='Set Emittance = 8.5051')
+axes[2].plot(filtered_df4['Set Radius'], filtered_df4['Emittance'], label='Set Emittance = 13.3131')
+axes[2].plot(filtered_df5['Set Radius'], filtered_df5['Emittance'], label='Set Emittance = 20.3838')
 axes[2].plot(filtered_df05['Set Radius'], filtered_df05['Emittance'], label='Set Emittance = 30')
 
 # Add labels and titles
-axes[0].set_ylabel('Beam Energy')
-axes[1].set_ylabel('Beam Spread')
-axes[2].set_ylabel('Final Emittance')
-axes[2].set_xlabel('Set Radius')
+axes[0].set_ylabel('Beam Energy (GeV)')
+axes[1].set_ylabel('Beam Spread (%)')
+axes[2].set_ylabel(r'Final Emittance ($\mu m$)')
+axes[2].set_xlabel(r'Set Radius ($\sigma_{ic}$)')
 
 # Add legends
 for ax in axes:
@@ -115,10 +114,10 @@ for ax in axes:
     ax.grid(True)
 
 # Tight layout to ensure proper spacing
-plt.tight_layout()
+#plt.tight_layout()
 
 # Save the plot to a file (finish the save path)
-plt.title("Final parameters variance with initial emittance")
+plt.suptitle("Final beam parameters against set emittance and radius", fontsize=16)
 plt.savefig('Plots/parameter_variation_vs_emittance.png')
 
 # Show the plot
