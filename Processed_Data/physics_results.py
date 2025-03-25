@@ -10,9 +10,9 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # Change the current working directory to the script directory
 os.chdir(script_dir)
 
-data_set=r"data_sets\output_test_600.csv"
+data_set=r"data_sets\big_scan_correct.csv"
 df = pd.read_csv(data_set)
-df=df[df['Beam Spread']>0.01]
+#df=df[df['Beam Spread']>0.01]
 
 filtered_df1=df[df['Set Radius']==1]#& df['Beam Spread']>0.01]
 filtered_df2=df[df['Set Radius']==2]
@@ -59,6 +59,7 @@ for ax in axes:
     ax.grid(True)
 
 plt.tight_layout()  # Ensures better spacing between plots
+plt.title("Final parameters variance with initial radius")
 plt.savefig('Plots/fixed_emittance_varying_radius.png')
 plt.show()
 
@@ -117,6 +118,7 @@ for ax in axes:
 plt.tight_layout()
 
 # Save the plot to a file (finish the save path)
+plt.title("Final parameters variance with initial emittance")
 plt.savefig('Plots/parameter_variation_vs_emittance.png')
 
 # Show the plot

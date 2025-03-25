@@ -39,7 +39,7 @@ def distance_correlation_calculator(df, targets):
     return reshaped_df, correlation_df_sorted
 
 
-data_set=r"data_sets\output_test_600.csv"
+data_set=r"data_sets\big_scan_correct.csv.csv"
 df = pd.read_csv(data_set)
 #df = df.drop(columns=['Initial emittance'])
 
