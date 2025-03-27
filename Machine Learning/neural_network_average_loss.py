@@ -19,10 +19,14 @@ save_metrics = True # Change this to False if you don’t want to save for this 
 csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
 data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
 
-data_no_array=np.array([50,60,70,80,90,100,110,120,130,140,150])
+
 emittance_loss_array=np.empty(0)
 spread_loss_array=np.empty(0)
 energy_loss_array=np.empty(0)
+
+train_emittance_loss_array=np.empty(0)
+train_spread_loss_array=np.empty(0)
+train_energy_loss_array=np.empty(0)
 
 learning_rate=1e-3 #learning rate
 no_nodes=36 #number of nodes in each hidden layer
@@ -31,7 +35,7 @@ test_size_val=combine_size_val/2
 dropout=0.1
 epochs = 500  # Number of epochs to train
 patience = 80  # number of epochs with no improvement before stopping
-batch_no=10 #batch size
+batch_no=30 #batch size
 no_hidden_layers=10
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 predictor_feature=["X-ray Mean Radiation Radius",'X-ray Critical Energy', 'X-ray Percentage']
@@ -39,8 +43,8 @@ input_size=len(predictor_feature)#number of input features
 activation_function="Leaky ReLU" #activation function- note this string needs to be changed manually
 threshold=0.1 #percentage threshold for which a prediction can be considered accurate
 #train_test_seed=42
-train_test_seed=random.randint(1,300)
-print("Train-test split seed:",train_test_seed)
+
+#print("Train-test split seed:",train_test_seed)
 
 # Define the neural network class and relative loss and optimiser functions
 class NeuralNetwork(nn.Module):  # Define custom neural network
@@ -136,8 +140,8 @@ def theta_to_r(theta, distance):
 def mse_cal(predictions,actual):
     length=len(predictions)
     total_loss_squared=np.sum((predictions-actual)**2)
-    print("Length:",length)
-    print("Total loss squared:",total_loss_squared)
+    #print("Length:",length)
+    #print("Total loss squared:",total_loss_squared)
     mse=(1/length)*total_loss_squared
     return mse
 def get_random_rows(df, n):
@@ -161,12 +165,8 @@ def get_random_rows(df, n):
     return random_rows
 
 
-for i in data_no_array:
-    batch_no=int(0.1*i)
-    #batch_no=10
-
-
-
+for i in range(0,1):
+    train_test_seed=random.randint(1,300)
 
     
     # MAIN-------------------------------------------------------------------
@@ -179,10 +179,7 @@ for i in data_no_array:
     df['X-ray Mean Radiation Radius'] = df['X-ray Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
     df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
     df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
-    df=get_random_rows(df,i)
 
-    #df = df[df['Emittance'] < 20]
-    #df = df[df['Set Radius'] ==1]
 
 
 
@@ -244,8 +241,8 @@ for i in data_no_array:
     #Create validation dataset and dataloader
     validation_dataset=EmittanceDataset(X_validation_tensor, y_validation)
     validation_dataloader = DataLoader(validation_dataset, batch_size=batch_no, shuffle=False)
-    print(f"Validation data size: {len(X_validation)}")  # Check size of validation data
-    print("Length validation data loader:",len(validation_dataloader))
+    #print(f"Validation data size: {len(X_validation)}")  # Check size of validation data
+    #print("Length validation data loader:",len(validation_dataloader))
 
 
 
@@ -448,10 +445,17 @@ for i in data_no_array:
     loss_error=np.std(loss_array_train)
     mse=average_loss
     mean_individual_losses_train = individual_loss_array_train / num_samples
+    print("Mean individual losses train:",mean_individual_losses_train)
     # Display Results
     print(f"Overall Train Loss: {average_loss_train:.4f}")
     for i, feature in enumerate(predicted_feature):
+        #print("i:",i)
         print(f"{feature} Train Loss: {mean_individual_losses_train[i]:.4f}")
+    
+    
+    train_emittance_loss_array=np.append(train_emittance_loss_array,mean_individual_losses_train[0])
+    train_energy_loss_array=np.append(train_energy_loss_array,mean_individual_losses_train[1])
+    train_spread_loss_array=np.append(train_spread_loss_array,mean_individual_losses_train[2])
 
     if average_loss>average_loss_train:
         overfitting='Overfitting'
@@ -491,7 +495,7 @@ for i in data_no_array:
         metrics[f'{feature}_test_accuracy']=accuracy_per_feature[i]
 
     # Print the full metrics dictionary 
-    print("Metrics Dictionary:", metrics)
+    #print("Metrics Dictionary:", metrics)
 
 
     # Convert the metrics dictionary into a DataFrame
@@ -546,64 +550,40 @@ for i in data_no_array:
 
 
 
-    print("Emittance predictions:",emittance_preds)
-    print("Actual Emittance:",emittance_actuals)
+    #print("Emittance predictions:",emittance_preds)
+    #print("Actual Emittance:",emittance_actuals)
     length=len(emittance_preds)
-    print("Length:", length)
+    #print("Length:", length)
 
     em_mse=mse_cal(emittance_preds,emittance_actuals)
     energy_mse=mse_cal(beam_energy_preds,beam_energy_actuals)
     spread_mse=mse_cal(beam_spread_preds,beam_spread_actuals)
-    print("My calculated emittance mse:",em_mse)
-    print("My calculated beam energy mse:",energy_mse)
-    print("My calculated beam spread mse:",spread_mse)
+    #print("My calculated emittance mse:",em_mse)
+    #print("My calculated beam energy mse:",energy_mse)
+    #print("My calculated beam spread mse:",spread_mse)
 
     emittance_loss_array=np.append(emittance_loss_array,em_mse)
     energy_loss_array=np.append(energy_loss_array,energy_mse)
     spread_loss_array=np.append(spread_loss_array,spread_mse)
 
+#print("Emittance train loss array:",train_emittance_loss_array)
+#print("Energy train loss array:",train_energy_loss_array)
+#print("Spread train loss array:",train_spread_loss_array)
 
-# Creating the DataFrame
-data = {
-    'Emittance Loss': emittance_loss_array,
-    'Energy Loss': energy_loss_array,
-    'Spread Loss': spread_loss_array,
-    'No. Data Points': data_no_array
-}
+print("MSE____________________________")
+print("Emittance loss:",np.mean(emittance_loss_array),"+/-",np.std(emittance_loss_array))
+print("Beam Energy loss:",np.mean(energy_loss_array),"+/-",np.std(energy_loss_array))
+print("Beam Spread loss:",np.mean(spread_loss_array),"+/-",np.std(spread_loss_array))
 
-df = pd.DataFrame(data)
-df.to_csv(r'Machine Learning\loss_data.csv', index=False,header=False, mode='a')
+print("Train Emittance loss:",np.mean(train_emittance_loss_array),"+/-",np.std(train_emittance_loss_array))
+print("Train Beam Energy loss:",np.mean(train_energy_loss_array),"+/-",np.std(train_energy_loss_array))
+print("Train Beam Spread loss:",np.mean(train_spread_loss_array),"+/-",np.std(train_spread_loss_array))
 
+print("RMSE____________________________")
+print("Emittance loss:",np.mean(np.sqrt(emittance_loss_array)),"+/-",np.std(np.sqrt(emittance_loss_array)))
+print("Beam Energy loss:",np.mean(np.sqrt(energy_loss_array)),"+/-",np.std(np.sqrt(energy_loss_array)))
+print("Beam Spread loss:",np.mean(np.sqrt(spread_loss_array)),"+/-",np.std(np.sqrt(spread_loss_array)))
 
-print(df)
-
-# Create a figure with 3 subplots (1 row, 3 columns)
-fig, axes = plt.subplots(1, 3, figsize=(18, 6))  # 1 row, 3 columns
-# Plotting each loss array in its respective subplot
-axes[0].plot(data_no_array, emittance_loss_array, label='Emittance Loss', color='b', linestyle='-', marker='o')
-axes[0].set_title('Emittance Loss', fontsize=14)
-axes[0].set_xlabel('No. Data points', fontsize=12)
-axes[0].set_ylabel('Loss Value', fontsize=12)
-axes[0].grid(True)
-axes[0].legend()
-
-axes[1].plot(data_no_array, energy_loss_array, label='Energy Loss', color='g', linestyle='--', marker='x')
-axes[1].set_title('Energy Loss', fontsize=14)
-axes[1].set_xlabel('No. Data points', fontsize=12)
-axes[1].set_ylabel('Loss Value', fontsize=12)
-axes[1].grid(True)
-axes[1].legend()
-
-axes[2].plot(data_no_array, spread_loss_array, label='Spread Loss', color='r', linestyle='-.', marker='s')
-axes[2].set_title('Spread Loss', fontsize=14)
-axes[2].set_xlabel('No. Data points', fontsize=12)
-axes[2].set_ylabel('Loss Value', fontsize=12)
-axes[2].grid(True)
-axes[2].legend()
-
-# Adjust layout to prevent overlapping of titles and labels
-plt.tight_layout()
-
-# Showing the plot
-plt.show()
-
+print("Train Emittance loss:",np.mean(np.sqrt(train_emittance_loss_array)),"+/-",np.std(np.sqrt(train_emittance_loss_array)))
+print("Train Beam Energy loss:",np.mean(np.sqrt(train_energy_loss_array)),"+/-",np.std(np.sqrt(train_energy_loss_array)))
+print("Train Beam Spread loss:",np.mean(np.sqrt(train_spread_loss_array)),"+/-",np.std(np.sqrt(train_spread_loss_array)))

@@ -113,61 +113,57 @@ set_radius=1
 emittance_check_df=df[['Emittance','X-ray Percentage',
         'X-ray Critical Energy','X-ray Mean Radiation Radius','UV Percentage','Other Percentage','Critical Energy','Set Radius','Initial emittance']]
 
-red_points = emittance_check_df[emittance_check_df['Set Radius'] ==set_radius]
-other_points = emittance_check_df[emittance_check_df['Set Radius'] !=set_radius]
-#other_points = emittance_check_df[emittance_check_df['Set Radius'] == 0]
+red_points = emittance_check_df[emittance_check_df['Set Radius'] ==1]
+other_points = emittance_check_df[emittance_check_df['Set Radius'] ==5]
+points_05 = emittance_check_df[emittance_check_df['Set Radius'] == 0.5]
+points_2 = emittance_check_df[emittance_check_df['Set Radius'] == 2]
+points_3 = emittance_check_df[emittance_check_df['Set Radius'] == 3]
+points_4 = emittance_check_df[emittance_check_df['Set Radius'] == 4]
+
 
 
 # Create a figure with a 2x3 grid of subplots
-fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+fig, axes = plt.subplots(1, 3, figsize=(18, 12))
 
 # Plot Emittance vs Mean Radiation Radius on the first subplot (axes[0, 0])
-axes[0, 0].scatter(red_points['Emittance'], red_points['X-ray Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 0].scatter(other_points['Emittance'], other_points['X-ray Mean Radiation Radius'], color='blue', alpha=0.6)
-axes[0, 0].set_title('Emittance vs Mean Radiation Radius')
-axes[0, 0].set_xlabel('Emittance')
-axes[0, 0].set_ylabel('Mean Radiation Radius')
-axes[0, 0].grid(True)
+axes[0].scatter(red_points['Emittance'], red_points['X-ray Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = 1')
+axes[0].scatter(other_points['Emittance'], other_points['X-ray Mean Radiation Radius'], color='blue', alpha=0.6, label=f'Set Radius = 5')
+axes[0].scatter(red_points['Emittance'], points_05['X-ray Mean Radiation Radius'], color='green', alpha=0.6, label=f'Set Radius = 0.5')
+axes[0].scatter(red_points['Emittance'], points_2['X-ray Mean Radiation Radius'], color='magenta', alpha=0.6, label=f'Set Radius = 2')
+axes[0].scatter(red_points['Emittance'], points_3['X-ray Mean Radiation Radius'], color='orange', alpha=0.6, label=f'Set Radius = 3')
+axes[0].scatter(red_points['Emittance'], points_4['X-ray Mean Radiation Radius'], color='black', alpha=0.6, label=f'Set Radius = 4')
+axes[0].set_title('Emittance vs X-ray Mean Radiation Radius')
+axes[0].set_xlabel('Emittance')
+axes[0].set_ylabel('X-ray Mean Radiation Radius')
+axes[0].grid(True)
 
 # Plot Emittance vs Critical Energy on the second subplot (axes[0, 1])
-axes[0, 1].scatter(red_points['Emittance'], red_points['Critical Energy'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 1].scatter(other_points['Emittance'], other_points['Critical Energy'], color='blue', alpha=0.6)
-axes[0, 1].set_title('Emittance vs Critical Energy')
-axes[0, 1].set_xlabel('Emittance')
-axes[0, 1].set_ylabel('Critical Energy')
-axes[0, 1].grid(True)
+axes[1].scatter(red_points['Emittance'], red_points['X-ray Critical Energy'], color='red', alpha=0.6, label=f'Set Radius = 1')
+axes[1].scatter(other_points['Emittance'], other_points['X-ray Critical Energy'], color='blue', alpha=0.6, label=f'Set Radius = 5')
+axes[1].scatter(red_points['Emittance'], points_05['X-ray Critical Energy'], color='green', alpha=0.6, label=f'Set Radius = 0.5')
+axes[1].scatter(red_points['Emittance'], points_2['X-ray Critical Energy'], color='magenta', alpha=0.6, label=f'Set Radius = 2')
+axes[1].scatter(red_points['Emittance'], points_3['X-ray Critical Energy'], color='orange', alpha=0.6, label=f'Set Radius = 3')
+axes[1].scatter(red_points['Emittance'], points_4['X-ray Critical Energy'], color='black', alpha=0.6, label=f'Set Radius = 4')
+axes[1].set_title('Emittance vs X-ray Critical Energy')
+axes[1].set_xlabel('Emittance')
+axes[1].set_ylabel('X-ray Critical Energy')
+axes[1].grid(True)
 
-# Plot Emittance vs Other Percentage on the third subplot (axes[0, 2])
-axes[0, 2].scatter(red_points['Emittance'], red_points['Other Percentage'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 2].scatter(other_points['Emittance'], other_points['Other Percentage'], color='blue', alpha=0.6)
-axes[0, 2].set_title('Emittance vs Other Percentage')
-axes[0, 2].set_xlabel('Emittance')
-axes[0, 2].set_ylabel('Other Percentage')
-axes[0, 2].grid(True)
 
 # Plot Emittance vs X-ray Percentage on the fourth subplot (axes[1, 0])
-axes[1, 0].scatter(red_points['Emittance'], red_points['X-ray Percentage'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[1, 0].scatter(other_points['Emittance'], other_points['X-ray Percentage'], color='blue', alpha=0.6)
-axes[1, 0].set_title('Emittance vs X-ray Percentage')
-axes[1, 0].set_xlabel('Emittance')
-axes[1, 0].set_ylabel('X-ray Percentage')
-axes[1, 0].grid(True)
+axes[2].scatter(red_points['Emittance'], red_points['X-ray Percentage'], color='red', alpha=0.6, label=f'Set Radius = 1')
+axes[2].scatter(other_points['Emittance'], other_points['X-ray Percentage'], color='blue', alpha=0.6, label=f'Set Radius = 5')
+axes[2].scatter(red_points['Emittance'], points_05['X-ray Percentage'], color='green', alpha=0.6, label=f'Set Radius = 0.5')
+axes[2].scatter(red_points['Emittance'], points_2['X-ray Percentage'], color='magenta', alpha=0.6, label=f'Set Radius = 2')
+axes[2].scatter(red_points['Emittance'], points_3['X-ray Percentage'], color='orange', alpha=0.6, label=f'Set Radius = 3')
+axes[2].scatter(red_points['Emittance'], points_4['X-ray Percentage'], color='black', alpha=0.6, label=f'Set Radius = 4')
+axes[2].set_title('Emittance vs X-ray Percentage')
+axes[2].set_xlabel('Emittance')
+axes[2].set_ylabel('X-ray Percentage')
+axes[2].grid(True)
 
-# Plot Emittance vs X-ray Critical Energy on the fifth subplot (axes[1, 1])
-axes[1, 1].scatter(red_points['Emittance'], red_points['X-ray Critical Energy'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[1, 1].scatter(other_points['Emittance'], other_points['X-ray Critical Energy'], color='blue', alpha=0.6)
-axes[1, 1].set_title('Emittance vs X-ray Critical Energy')
-axes[1, 1].set_xlabel('Emittance')
-axes[1, 1].set_ylabel('X-ray Critical Energy')
-axes[1, 1].grid(True)
 
-# Plot Emittance vs UV Percentage on the sixth subplot (axes[1, 2])
-axes[1, 2].scatter(red_points['Emittance'], red_points['UV Percentage'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[1, 2].scatter(other_points['Emittance'], other_points['UV Percentage'], color='blue', alpha=0.6)
-axes[1, 2].set_title('Emittance vs UV Percentage')
-axes[1, 2].set_xlabel('Emittance')
-axes[1, 2].set_ylabel('UV Percentage')
-axes[1, 2].grid(True)
+
 
 # Adjust layout for better spacing
 plt.tight_layout()
@@ -181,59 +177,54 @@ beam_spread_check_df = df[['Beam Spread', 'X-ray Percentage', 'X-ray Critical En
                            'UV Percentage', 'Other Percentage', 'Critical Energy', 'Set Radius','Initial emittance']]
 
 # Split the data based on Set Radius
-red_points = beam_spread_check_df[beam_spread_check_df['Set Radius'] ==set_radius]
-other_points = beam_spread_check_df[beam_spread_check_df['Set Radius'] ==set_radius]
+red_points = beam_spread_check_df[beam_spread_check_df['Set Radius'] ==1]
+other_points = beam_spread_check_df[beam_spread_check_df['Set Radius'] ==5]
+points_05 = beam_spread_check_df[beam_spread_check_df['Set Radius'] == 0.5]
+points_2 = beam_spread_check_df[beam_spread_check_df['Set Radius'] == 2]
+points_3 = beam_spread_check_df[beam_spread_check_df['Set Radius'] == 3]
+points_4 = beam_spread_check_df[beam_spread_check_df['Set Radius'] == 4]
+
 
 # Create a figure with a 2x3 grid of subplots
-fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+fig, axes = plt.subplots(1, 3, figsize=(18, 12))
 
-# Plot Beam Spread vs Mean Radiation Radius on the first subplot (axes[0, 0])
-axes[0, 0].scatter(red_points['Beam Spread'], red_points['X-ray Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 0].scatter(other_points['Beam Spread'], other_points['X-ray Mean Radiation Radius'], color='blue', alpha=0.6)
-axes[0, 0].set_title('Beam Spread vs Mean Radiation Radius')
-axes[0, 0].set_xlabel('Beam Spread')
-axes[0, 0].set_ylabel('Mean Radiation Radius')
-axes[0, 0].grid(True)
+# Plot Emittance vs Mean Radiation Radius on the first subplot (axes[0, 0])
+axes[0].scatter(red_points['Beam Spread'], red_points['X-ray Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = 1')
+axes[0].scatter(other_points['Beam Spread'], other_points['X-ray Mean Radiation Radius'], color='blue', alpha=0.6, label=f'Set Radius = 5')
+axes[0].scatter(red_points['Beam Spread'], points_05['X-ray Mean Radiation Radius'], color='green', alpha=0.6, label=f'Set Radius = 0.5')
+axes[0].scatter(red_points['Beam Spread'], points_2['X-ray Mean Radiation Radius'], color='magenta', alpha=0.6, label=f'Set Radius = 2')
+axes[0].scatter(red_points['Beam Spread'], points_3['X-ray Mean Radiation Radius'], color='orange', alpha=0.6, label=f'Set Radius = 3')
+axes[0].scatter(red_points['Beam Spread'], points_4['X-ray Mean Radiation Radius'], color='black', alpha=0.6, label=f'Set Radius = 4')
+axes[0].set_title('Beam Spread vs X-ray Mean Radiation Radius')
+axes[0].set_xlabel('Beam Spread')
+axes[0].set_ylabel('X-ray Mean Radiation Radius')
+axes[0].grid(True)
 
-# Plot Beam Spread vs Critical Energy on the second subplot (axes[0, 1])
-axes[0, 1].scatter(red_points['Beam Spread'], red_points['Critical Energy'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 1].scatter(other_points['Beam Spread'], other_points['Critical Energy'], color='blue', alpha=0.6)
-axes[0, 1].set_title('Beam Spread vs Critical Energy')
-axes[0, 1].set_xlabel('Beam Spread')
-axes[0, 1].set_ylabel('Critical Energy')
-axes[0, 1].grid(True)
+# Plot Emittance vs Critical Energy on the second subplot (axes[0, 1])
+axes[1].scatter(red_points['Beam Spread'], red_points['X-ray Critical Energy'], color='red', alpha=0.6, label=f'Set Radius = 1')
+axes[1].scatter(other_points['Beam Spread'], other_points['X-ray Critical Energy'], color='blue', alpha=0.6, label=f'Set Radius = 5')
+axes[1].scatter(red_points['Beam Spread'], points_05['X-ray Critical Energy'], color='green', alpha=0.6, label=f'Set Radius = 0.5')
+axes[1].scatter(red_points['Beam Spread'], points_2['X-ray Critical Energy'], color='magenta', alpha=0.6, label=f'Set Radius = 2')
+axes[1].scatter(red_points['Beam Spread'], points_3['X-ray Critical Energy'], color='orange', alpha=0.6, label=f'Set Radius = 3')
+axes[1].scatter(red_points['Beam Spread'], points_4['X-ray Critical Energy'], color='black', alpha=0.6, label=f'Set Radius = 4')
+axes[1].set_title('Beam Spread vs X-ray Critical Energy')
+axes[1].set_xlabel('Beam Spread')
+axes[1].set_ylabel('X-ray Critical Energy')
+axes[1].grid(True)
 
-# Plot Beam Spread vs Other Percentage on the third subplot (axes[0, 2])
-axes[0, 2].scatter(red_points['Beam Spread'], red_points['Other Percentage'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 2].scatter(other_points['Beam Spread'], other_points['Other Percentage'], color='blue', alpha=0.6)
-axes[0, 2].set_title('Beam Spread vs Other Percentage')
-axes[0, 2].set_xlabel('Beam Spread')
-axes[0, 2].set_ylabel('Other Percentage')
-axes[0, 2].grid(True)
 
-# Plot Beam Spread vs X-ray Percentage on the fourth subplot (axes[1, 0])
-axes[1, 0].scatter(red_points['Beam Spread'], red_points['X-ray Percentage'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[1, 0].scatter(other_points['Beam Spread'], other_points['X-ray Percentage'], color='blue', alpha=0.6)
-axes[1, 0].set_title('Beam Spread vs X-ray Percentage')
-axes[1, 0].set_xlabel('Beam Spread')
-axes[1, 0].set_ylabel('X-ray Percentage')
-axes[1, 0].grid(True)
+# Plot Emittance vs X-ray Percentage on the fourth subplot (axes[1, 0])
+axes[2].scatter(red_points['Beam Spread'], red_points['X-ray Percentage'], color='red', alpha=0.6, label=f'Set Radius = 1')
+axes[2].scatter(other_points['Beam Spread'], other_points['X-ray Percentage'], color='blue', alpha=0.6, label=f'Set Radius = 5')
+axes[2].scatter(red_points['Beam Spread'], points_05['X-ray Percentage'], color='green', alpha=0.6, label=f'Set Radius = 0.5')
+axes[2].scatter(red_points['Beam Spread'], points_2['X-ray Percentage'], color='magenta', alpha=0.6, label=f'Set Radius = 2')
+axes[2].scatter(red_points['Beam Spread'], points_3['X-ray Percentage'], color='orange', alpha=0.6, label=f'Set Radius = 3')
+axes[2].scatter(red_points['Beam Spread'], points_4['X-ray Percentage'], color='black', alpha=0.6, label=f'Set Radius = 4')
+axes[2].set_title('Beam Spread vs X-ray Percentage')
+axes[2].set_xlabel('Beam Spread')
+axes[2].set_ylabel('X-ray Percentage')
+axes[2].grid(True)
 
-# Plot Beam Spread vs X-ray Critical Energy on the fifth subplot (axes[1, 1])
-axes[1, 1].scatter(red_points['Beam Spread'], red_points['X-ray Critical Energy'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[1, 1].scatter(other_points['Beam Spread'], other_points['X-ray Critical Energy'], color='blue', alpha=0.6)
-axes[1, 1].set_title('Beam Spread vs X-ray Critical Energy')
-axes[1, 1].set_xlabel('Beam Spread')
-axes[1, 1].set_ylabel('X-ray Critical Energy')
-axes[1, 1].grid(True)
-
-# Plot Beam Spread vs UV Percentage on the sixth subplot (axes[1, 2])
-axes[1, 2].scatter(red_points['Beam Spread'], red_points['UV Percentage'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[1, 2].scatter(other_points['Beam Spread'], other_points['UV Percentage'], color='blue', alpha=0.6)
-axes[1, 2].set_title('Beam Spread vs UV Percentage')
-axes[1, 2].set_xlabel('Beam Spread')
-axes[1, 2].set_ylabel('UV Percentage')
-axes[1, 2].grid(True)
 
 # Adjust layout for better spacing
 plt.tight_layout()
@@ -248,59 +239,52 @@ beam_energy_check_df = df[['Beam Energy', 'X-ray Percentage', 'X-ray Critical En
                            'UV Percentage', 'Other Percentage', 'Critical Energy', 'Set Radius','Initial emittance']]
 
 # Split the data based on Set Radius
-red_points = beam_energy_check_df[beam_energy_check_df['Set Radius'] ==set_radius]
-other_points = beam_energy_check_df[beam_energy_check_df['Set Radius'] ==set_radius]
+red_points = beam_energy_check_df[beam_energy_check_df['Set Radius'] ==1]
+other_points = beam_energy_check_df[beam_energy_check_df['Set Radius'] ==5]
+points_05 = beam_energy_check_df[beam_energy_check_df['Set Radius'] == 0.5]
+points_2 = beam_energy_check_df[beam_energy_check_df['Set Radius'] == 2]
+points_3 = beam_energy_check_df[beam_energy_check_df['Set Radius'] == 3]
+points_4 = beam_energy_check_df[beam_energy_check_df['Set Radius'] == 4]
 
 # Create a figure with a 2x3 grid of subplots
-fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+fig, axes = plt.subplots(1, 3, figsize=(18, 12))
 
-# Plot Beam Energy vs Mean Radiation Radius on the first subplot (axes[0, 0])
-axes[0, 0].scatter(red_points['Beam Energy'], red_points['X-ray Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 0].scatter(other_points['Beam Energy'], other_points['X-ray Mean Radiation Radius'], color='blue', alpha=0.6)
-axes[0, 0].set_title('Beam Energy vs Mean Radiation Radius')
-axes[0, 0].set_xlabel('Beam Energy')
-axes[0, 0].set_ylabel('Mean Radiation Radius')
-axes[0, 0].grid(True)
+# Plot Emittance vs Mean Radiation Radius on the first subplot (axes[0, 0])
+axes[0].scatter(red_points['Beam Energy'], red_points['X-ray Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = 1')
+axes[0].scatter(other_points['Beam Energy'], other_points['X-ray Mean Radiation Radius'], color='blue', alpha=0.6, label=f'Set Radius = 5')
+axes[0].scatter(red_points['Beam Energy'], points_05['X-ray Mean Radiation Radius'], color='green', alpha=0.6, label=f'Set Radius = 0.5')
+axes[0].scatter(red_points['Beam Energy'], points_2['X-ray Mean Radiation Radius'], color='magenta', alpha=0.6, label=f'Set Radius = 2')
+axes[0].scatter(red_points['Beam Energy'], points_3['X-ray Mean Radiation Radius'], color='orange', alpha=0.6, label=f'Set Radius = 3')
+axes[0].scatter(red_points['Beam Energy'], points_4['X-ray Mean Radiation Radius'], color='black', alpha=0.6, label=f'Set Radius = 4')
+axes[0].set_title('Beam Energy vs X-ray Mean Radiation Radius')
+axes[0].set_xlabel('Beam Energy')
+axes[0].set_ylabel('X-ray Mean Radiation Radius')
+axes[0].grid(True)
 
-# Plot Beam Energy vs Critical Energy on the second subplot (axes[0, 1])
-axes[0, 1].scatter(red_points['Beam Energy'], red_points['Critical Energy'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 1].scatter(other_points['Beam Energy'], other_points['Critical Energy'], color='blue', alpha=0.6)
-axes[0, 1].set_title('Beam Energy vs Critical Energy')
-axes[0, 1].set_xlabel('Beam Energy')
-axes[0, 1].set_ylabel('Critical Energy')
-axes[0, 1].grid(True)
+# Plot Emittance vs Critical Energy on the second subplot (axes[0, 1])
+axes[1].scatter(red_points['Beam Energy'], red_points['X-ray Critical Energy'], color='red', alpha=0.6, label=f'Set Radius = 1')
+axes[1].scatter(other_points['Beam Energy'], other_points['X-ray Critical Energy'], color='blue', alpha=0.6, label=f'Set Radius = 5')
+axes[1].scatter(red_points['Beam Energy'], points_05['X-ray Critical Energy'], color='green', alpha=0.6, label=f'Set Radius = 0.5')
+axes[1].scatter(red_points['Beam Energy'], points_2['X-ray Critical Energy'], color='magenta', alpha=0.6, label=f'Set Radius = 2')
+axes[1].scatter(red_points['Beam Energy'], points_3['X-ray Critical Energy'], color='orange', alpha=0.6, label=f'Set Radius = 3')
+axes[1].scatter(red_points['Beam Energy'], points_4['X-ray Critical Energy'], color='black', alpha=0.6, label=f'Set Radius = 4')
+axes[1].set_title('Beam Energy vs X-ray Critical Energy')
+axes[1].set_xlabel('Beam Energy')
+axes[1].set_ylabel('X-ray Critical Energy')
+axes[1].grid(True)
 
-# Plot Beam Energy vs Other Percentage on the third subplot (axes[0, 2])
-axes[0, 2].scatter(red_points['Beam Energy'], red_points['Other Percentage'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 2].scatter(other_points['Beam Energy'], other_points['Other Percentage'], color='blue', alpha=0.6)
-axes[0, 2].set_title('Beam Energy vs Other Percentage')
-axes[0, 2].set_xlabel('Beam Energy')
-axes[0, 2].set_ylabel('Other Percentage')
-axes[0, 2].grid(True)
 
-# Plot Beam Energy vs X-ray Percentage on the fourth subplot (axes[1, 0])
-axes[1, 0].scatter(red_points['Beam Energy'], red_points['X-ray Percentage'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[1, 0].scatter(other_points['Beam Energy'], other_points['X-ray Percentage'], color='blue', alpha=0.6)
-axes[1, 0].set_title('Beam Energy vs X-ray Percentage')
-axes[1, 0].set_xlabel('Beam Energy')
-axes[1, 0].set_ylabel('X-ray Percentage')
-axes[1, 0].grid(True)
-
-# Plot Beam Energy vs X-ray Critical Energy on the fifth subplot (axes[1, 1])
-axes[1, 1].scatter(red_points['Beam Energy'], red_points['X-ray Critical Energy'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[1, 1].scatter(other_points['Beam Energy'], other_points['X-ray Critical Energy'], color='blue', alpha=0.6)
-axes[1, 1].set_title('Beam Energy vs X-ray Critical Energy')
-axes[1, 1].set_xlabel('Beam Energy')
-axes[1, 1].set_ylabel('X-ray Critical Energy')
-axes[1, 1].grid(True)
-
-# Plot Beam Energy vs UV Percentage on the sixth subplot (axes[1, 2])
-axes[1, 2].scatter(red_points['Beam Energy'], red_points['UV Percentage'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[1, 2].scatter(other_points['Beam Energy'], other_points['UV Percentage'], color='blue', alpha=0.6)
-axes[1, 2].set_title('Beam Energy vs UV Percentage')
-axes[1, 2].set_xlabel('Beam Energy')
-axes[1, 2].set_ylabel('UV Percentage')
-axes[1, 2].grid(True)
+# Plot Emittance vs X-ray Percentage on the fourth subplot (axes[1, 0])
+axes[2].scatter(red_points['Beam Energy'], red_points['X-ray Percentage'], color='red', alpha=0.6, label=f'Set Radius = 1')
+axes[2].scatter(other_points['Beam Energy'], other_points['X-ray Percentage'], color='blue', alpha=0.6, label=f'Set Radius = 5')
+axes[2].scatter(red_points['Beam Energy'], points_05['X-ray Percentage'], color='green', alpha=0.6, label=f'Set Radius = 0.5')
+axes[2].scatter(red_points['Beam Energy'], points_2['X-ray Percentage'], color='magenta', alpha=0.6, label=f'Set Radius = 2')
+axes[2].scatter(red_points['Beam Energy'], points_3['X-ray Percentage'], color='orange', alpha=0.6, label=f'Set Radius = 3')
+axes[2].scatter(red_points['Beam Energy'], points_4['X-ray Percentage'], color='black', alpha=0.6, label=f'Set Radius = 4')
+axes[2].set_title('Beam Energy vs X-ray Percentage')
+axes[2].set_xlabel('Beam Energy')
+axes[2].set_ylabel('X-ray Percentage')
+axes[2].grid(True)
 
 # Adjust layout for better spacing
 plt.tight_layout()
