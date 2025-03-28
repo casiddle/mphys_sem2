@@ -15,11 +15,11 @@ import random
 import hiddenlayer as hl
 
 # Key inputs
-save_metrics = True # Change this to False if you don’t want to save for this run
+save_metrics = False # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
 data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
 
-data_no_array=np.array([50,60,70,80,90,100,110,120,130,140,150])
+data_no_array=np.array([400,500,600])
 emittance_loss_array=np.empty(0)
 spread_loss_array=np.empty(0)
 energy_loss_array=np.empty(0)
@@ -605,5 +605,5 @@ axes[2].legend()
 plt.tight_layout()
 
 # Showing the plot
-plt.show()
+#plt.show()
 
