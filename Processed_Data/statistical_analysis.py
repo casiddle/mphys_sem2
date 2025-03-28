@@ -55,6 +55,10 @@ df = df.drop(columns=['No. UV Photons','No. Other Photons','No. X-ray Photons','
 #print(df.columns)
 print(df.describe(include='all'))
 
+print("RANGES")
+print("Emittance ranged from ",df['Emittance'].min()," to ",df['Emittance'].max())
+print("Beam Spread ranged from ",df['Beam Spread'].min()," to ",df['Beam Spread'].max())
+print("Beam Energy ranged from ",df['Beam Energy'].min()," to ",df['Beam Energy'].max())
 
 #Calculating distance correlation using distance correlation
 # List of multiple target variables
