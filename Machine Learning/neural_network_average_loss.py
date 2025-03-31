@@ -18,7 +18,7 @@ import hiddenlayer as hl
 save_metrics = True # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
 data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
-
+#torch.manual_seed(42)
 
 emittance_loss_array=np.empty(0)
 spread_loss_array=np.empty(0)
@@ -28,13 +28,17 @@ train_emittance_loss_array=np.empty(0)
 train_spread_loss_array=np.empty(0)
 train_energy_loss_array=np.empty(0)
 
+# big_train_emittance_loss_array=np.empty(0)
+# big_train_spread_loss_array=np.empty(0)
+# big_train_energy_loss_array=np.empty(0)
+
 learning_rate=1e-3 #learning rate
 no_nodes=36 #number of nodes in each hidden layer
 combine_size_val=0.2
 test_size_val=combine_size_val/2
 dropout=0.1
-epochs = 500  # Number of epochs to train
-patience = 80  # number of epochs with no improvement before stopping
+epochs = 800  # Number of epochs to train
+patience = 200  # number of epochs with no improvement before stopping
 batch_no=30 #batch size
 no_hidden_layers=10
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
@@ -140,7 +144,7 @@ def theta_to_r(theta, distance):
 def mse_cal(predictions,actual):
     length=len(predictions)
     total_loss_squared=np.sum((predictions-actual)**2)
-    #print("Length:",length)
+    print("Length:",length)
     #print("Total loss squared:",total_loss_squared)
     mse=(1/length)*total_loss_squared
     return mse
@@ -201,17 +205,17 @@ for i in range(0,1):
 
     # Convert to PyTorch tensors
     X = torch.tensor(X_scaled, dtype=torch.float32)
-    y = torch.tensor(y_scaled, dtype=torch.float32).reshape(data_size, 3)  # Reshape to match model output
+    y = torch.tensor(y_scaled, dtype=torch.float32).reshape(data_size, len(predicted_feature))  # Reshape to match model output
 
 
 
     # Create dataset and dataloader
-    dataset = EmittanceDataset(X, y)
-    dataloader = DataLoader(dataset, batch_size=batch_no, shuffle=True)  # Batch size = 2
+    #dataset = EmittanceDataset(X, y)
+    #dataloader = DataLoader(dataset, batch_size=batch_no, shuffle=True)  # Batch size = 2
 
     # Split data into training and test sets (80% train, 20% test)
     X_train, X_combine, y_train, y_combine = train_test_split(X, y, test_size=combine_size_val, random_state=train_test_seed)
-    X_test,X_validation,y_test,y_validation= train_test_split(X_combine, y_combine, test_size=0.5, random_state=train_test_seed)
+    X_test,X_validation,y_test,y_validation= train_test_split(X_combine, y_combine, test_size=0.5, random_state=train_test_seed+1)
 
 
 
@@ -232,7 +236,8 @@ for i in range(0,1):
 
     # Create training dataset and dataloader
     train_dataset = EmittanceDataset(X_train_tensor, y_train)
-    train_dataloader = DataLoader(train_dataset, batch_size=batch_no, shuffle=True)
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_no, shuffle=True) #shuffle should be true
+    print("TRAINIG DATA LENGTH:",len(train_dataset),'-----',len(train_dataloader))
 
     # Create test dataset and dataloader
     test_dataset = EmittanceDataset(X_test_tensor, y_test)
@@ -444,7 +449,10 @@ for i in range(0,1):
     average_loss_train = total_loss_train / num_samples_train
     loss_error=np.std(loss_array_train)
     mse=average_loss
-    mean_individual_losses_train = individual_loss_array_train / num_samples
+    print("Legth individual loss array:",len(individual_loss_array))
+    print("individual losses train:",individual_losses_train)
+    print("Num samples:",num_samples_train)
+    mean_individual_losses_train = individual_loss_array_train / num_samples_train
     print("Mean individual losses train:",mean_individual_losses_train)
     # Display Results
     print(f"Overall Train Loss: {average_loss_train:.4f}")
@@ -546,6 +554,30 @@ for i in range(0,1):
     beam_energy_actuals = actual_values[:, 1]
     emittance_actuals = actual_values[:, 0]
 
+    # # Extract all train data in one go------------------------------------------------------
+    # all_features_2 = torch.cat([batch[0] for batch in train_dataloader], dim=0).to(device)
+    # all_targets_2 = torch.cat([batch[1] for batch in train_dataloader], dim=0).to(device)
+
+    # # Move data to the correct device
+    # all_features_2 = all_features_2.to(device)
+    # all_targets_2 = all_targets_2.to(device)
+
+    # # Disable gradient calculation for efficiency
+    # with torch.no_grad():
+    #     predictions = model(all_features_2).cpu().numpy()
+    #     # Inverse scaling: Transform predictions and batch_targets back to the original scale
+    #     predictions = y_scaler.inverse_transform(predictions)
+    #     actual_values =y_scaler.inverse_transform(all_targets_2.cpu().numpy())
+
+
+    # train_beam_spread_preds = predictions[:, 2]
+    # train_beam_energy_preds = predictions[:, 1]
+    # train_emittance_preds = predictions[:, 0]
+
+    # train_beam_spread_actuals = actual_values[:, 2]
+    # train_beam_energy_actuals = actual_values[:, 1]
+    # train_emittance_actuals = actual_values[:, 0]
+
 
 
 
@@ -562,9 +594,15 @@ for i in range(0,1):
     #print("My calculated beam energy mse:",energy_mse)
     #print("My calculated beam spread mse:",spread_mse)
 
+    # train_em_mse=mse_cal(train_emittance_preds,train_emittance_actuals)
+    # train_energy_mse=mse_cal(train_beam_energy_preds,train_beam_energy_actuals)
+    # train_spread_mse=mse_cal(train_beam_spread_preds,train_beam_spread_actuals)
+
     emittance_loss_array=np.append(emittance_loss_array,em_mse)
     energy_loss_array=np.append(energy_loss_array,energy_mse)
     spread_loss_array=np.append(spread_loss_array,spread_mse)
+
+
 
 #print("Emittance train loss array:",train_emittance_loss_array)
 #print("Energy train loss array:",train_energy_loss_array)
@@ -579,6 +617,9 @@ print("Train Emittance loss:",np.mean(train_emittance_loss_array),"+/-",np.std(t
 print("Train Beam Energy loss:",np.mean(train_energy_loss_array),"+/-",np.std(train_energy_loss_array))
 print("Train Beam Spread loss:",np.mean(train_spread_loss_array),"+/-",np.std(train_spread_loss_array))
 
+
+
+
 print("RMSE____________________________")
 print("Emittance loss:",np.mean(np.sqrt(emittance_loss_array)),"+/-",np.std(np.sqrt(emittance_loss_array)))
 print("Beam Energy loss:",np.mean(np.sqrt(energy_loss_array)),"+/-",np.std(np.sqrt(energy_loss_array)))
@@ -587,3 +628,124 @@ print("Beam Spread loss:",np.mean(np.sqrt(spread_loss_array)),"+/-",np.std(np.sq
 print("Train Emittance loss:",np.mean(np.sqrt(train_emittance_loss_array)),"+/-",np.std(np.sqrt(train_emittance_loss_array)))
 print("Train Beam Energy loss:",np.mean(np.sqrt(train_energy_loss_array)),"+/-",np.std(np.sqrt(train_energy_loss_array)))
 print("Train Beam Spread loss:",np.mean(np.sqrt(train_spread_loss_array)),"+/-",np.std(np.sqrt(train_spread_loss_array)))
+
+em_rmse=np.mean(np.sqrt(emittance_loss_array))
+energy_rmse=np.mean(np.sqrt(energy_loss_array))
+spread_rmse=np.mean(np.sqrt(spread_loss_array))
+
+#plotting
+model.eval()
+# Extract all test data in one go
+all_features = torch.cat([batch[0] for batch in test_dataloader], dim=0).to(device)
+all_targets = torch.cat([batch[1] for batch in test_dataloader], dim=0).to(device)
+
+# Move data to the correct device
+all_features = all_features.to(device)
+all_targets = all_targets.to(device)
+
+# Disable gradient calculation for efficiency
+with torch.no_grad():
+    predictions = model(all_features).cpu().numpy()
+    # Inverse scaling: Transform predictions and batch_targets back to the original scale
+    predictions = y_scaler.inverse_transform(predictions)
+    actual_values =y_scaler.inverse_transform(all_targets.cpu().numpy())
+
+
+beam_spread_preds = predictions[:, 2]
+beam_energy_preds = predictions[:, 1]
+emittance_preds = predictions[:, 0]
+
+beam_spread_actuals = actual_values[:, 2]
+beam_energy_actuals = actual_values[:, 1]
+emittance_actuals = actual_values[:, 0]
+
+length=len(emittance_preds)
+print("Length:", length)
+
+
+
+#print("Beam spread predictions:",beam_spread_preds)
+#print("Actual Beam spread:",beam_spread_actuals)
+
+
+# Calculate residuals
+beam_spread_residuals =  beam_spread_preds-beam_spread_actuals
+beam_energy_residuals =  beam_energy_preds-beam_energy_actuals 
+emittance_residuals = emittance_preds-emittance_actuals 
+
+em_x=np.linspace(min(min(emittance_actuals), min(emittance_preds)),max(max(emittance_actuals), max(emittance_preds)),100)
+em_y_upper = em_x + em_rmse
+em_y_lower = em_x - em_rmse
+
+spread_x=np.linspace(min(min(beam_spread_actuals), min(beam_spread_preds)),max(max(beam_spread_actuals), max(beam_spread_preds)),100)
+spread_y_upper = spread_x + spread_rmse
+spread_y_lower = spread_x - spread_rmse
+
+energy_x=np.linspace(min(min(beam_energy_actuals), min(beam_energy_preds)),max(max(beam_energy_actuals), max(beam_energy_preds)),100)
+energy_y_upper = energy_x + energy_rmse
+energy_y_lower = energy_x - energy_rmse
+
+# Create figure and GridSpec
+fig = plt.figure(figsize=(15, 10))
+gs = fig.add_gridspec(2, 3, height_ratios=[3, 1], hspace=0.4)
+
+# Scatter plots
+ax1 = fig.add_subplot(gs[0, 0])
+ax1.scatter(beam_spread_actuals, beam_spread_preds, color='tab:blue', alpha=0.6)
+ax1.plot(beam_spread_actuals, beam_spread_actuals, color='k', linestyle='-')
+ax1.fill_between(spread_x,spread_y_lower,spread_y_upper , color="red", alpha=0.2, label=(r"RMSE$: "+str(np.round(spread_rmse,3))))
+ax1.set_title('Beam Spread: Actual vs Predicted')
+ax1.set_xlabel('Actual Beam Spread')
+ax1.set_ylabel('Predicted Beam Spread')
+ax1.grid(True, linestyle='--', alpha=0.5)
+
+ax2 = fig.add_subplot(gs[0, 1])
+ax2.scatter(beam_energy_actuals, beam_energy_preds, color='tab:green', alpha=0.6)
+ax2.plot(beam_energy_actuals, beam_energy_actuals, color='k', linestyle='-')
+ax2.fill_between(energy_x,energy_y_lower,energy_y_upper , color="red", alpha=0.2, label=(r"RMSE$: "+str(np.round(energy_rmse,3))))
+ax2.set_title('Beam Energy: Actual vs Predicted')
+ax2.set_xlabel('Actual Beam Energy')
+ax2.set_ylabel('Predicted Beam Energy')
+ax2.grid(True, linestyle='--', alpha=0.5)
+
+ax3 = fig.add_subplot(gs[0, 2])
+ax3.scatter(emittance_actuals, emittance_preds, color='tab:purple', alpha=0.6)
+ax3.plot(emittance_actuals, emittance_actuals, color='k', linestyle='-')
+ax3.fill_between(em_x,em_y_lower,em_y_upper , color="red", alpha=0.2, label=(r"RMSE$: "+str(np.round(em_rmse,3))))
+ax3.set_title('Emittance: Actual vs Predicted')
+ax3.set_xlabel('Actual Emittance')
+ax3.set_ylabel('Predicted Emittance')
+ax3.grid(True, linestyle='--', alpha=0.5)
+
+# Residual plots
+ax4 = fig.add_subplot(gs[1, 0])
+ax4.scatter(beam_spread_actuals, beam_spread_residuals/spread_rmse, color='tab:blue', alpha=0.6)
+ax4.axhline(0, color='k', linestyle='-')
+ax4.axhline(-1,color='r',linestyle='--',linewidth=1)
+ax4.axhline(1,color='r',linestyle='--',linewidth=1)
+ax4.set_title('Beam Spread Residuals')
+ax4.set_xlabel('Actual Beam Spread')
+ax4.set_ylabel('Residual')
+ax4.grid(True, linestyle='--', alpha=0.5)
+
+ax5 = fig.add_subplot(gs[1, 1])
+ax5.scatter(beam_energy_actuals, beam_energy_residuals/energy_rmse, color='tab:green', alpha=0.6)
+ax5.axhline(0, color='k', linestyle='-')
+ax5.axhline(-1,color='r',linestyle='--',linewidth=1)
+ax5.axhline(1,color='r',linestyle='--',linewidth=1)
+ax5.set_title('Beam Energy Residuals')
+ax5.set_xlabel('Actual Beam Energy')
+ax5.set_ylabel('Residual')
+ax5.grid(True, linestyle='--', alpha=0.5)
+
+ax6 = fig.add_subplot(gs[1, 2])
+ax6.scatter(emittance_actuals, emittance_residuals/em_rmse, color='tab:purple', alpha=0.6)
+ax6.axhline(0, color='k', linestyle='-')
+ax6.axhline(-1,color='r',linestyle='--',linewidth=1)
+ax6.axhline(1,color='r',linestyle='--',linewidth=1)
+ax6.set_title('Emittance Residuals')
+ax6.set_xlabel('Actual Emittance')
+ax6.set_ylabel('Residual')
+ax6.grid(True, linestyle='--', alpha=0.5)
+plt.savefig(r'Machine Learning\plots\emittance_energy_spread.png', dpi=300, bbox_inches='tight')
+plt.show()
