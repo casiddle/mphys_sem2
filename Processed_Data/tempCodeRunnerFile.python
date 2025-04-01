@@ -1,0 +1,2 @@
+data_set=r"data_sets\output_test_96.csv"
+df = pd.read_csv(data_set)

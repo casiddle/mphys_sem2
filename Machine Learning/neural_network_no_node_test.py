@@ -19,18 +19,18 @@ save_metrics = True # Change this to False if you don’t want to save for this 
 csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
 data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
 
-hidden_array=np.array([5,10,20,30,40,50,60,70,80,90,100])
+learning_rate_array=np.array([1e-2,1e-3,1e-4,1e-5,1e-6])
 emittance_loss_array=np.empty(0)
 spread_loss_array=np.empty(0)
 energy_loss_array=np.empty(0)
 
 learning_rate=1e-3 #learning rate
-no_nodes=36 #number of nodes in each hidden layer
+no_nodes=36
 combine_size_val=0.2
 test_size_val=combine_size_val/2
 dropout=0.1
 epochs = 500  # Number of epochs to train
-patience = 80  # number of epochs with no improvement before stopping
+patience = 100  # number of epochs with no improvement before stopping
 batch_no=10 #batch size
 no_hidden_layers=10
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
@@ -142,15 +142,12 @@ def mse_cal(predictions,actual):
     return mse
 
 
-for i in hidden_array:
+for i in learning_rate_array:
 
-    no_hidden_layers=i#number of hidden layers 
-
-
+    learning_rate=i # learning rate
+    print("learning rate: " + str(learning_rate))
     
     # MAIN-------------------------------------------------------------------
-
-
 
     df = pd.read_csv(data_file_path)
     data_size=len(df)
@@ -160,7 +157,7 @@ for i in hidden_array:
     df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 
     #df = df[df['Emittance'] < 20]
-    #df = df[df['Set Radius'] ==1]
+    #df = df[df['Set Radius'] ==2]
 
 
 
@@ -545,23 +542,26 @@ for i in hidden_array:
 fig, axes = plt.subplots(3, 1, figsize=(8, 12), sharex=True)
 
 # Plot Emittance Loss
-axes[0].plot(hidden_array, emittance_loss_array, label='Emittance Loss', color='b', linestyle='-', marker='o')
+axes[0].plot(learning_rate_array, emittance_loss_array, label='Emittance Loss', color='b', linestyle='-', marker='o')
 axes[0].set_title('Emittance Loss Curve', fontsize=12)
 axes[0].set_ylabel('Loss Value', fontsize=10)
+axes[0].set_xscale('log')
 axes[0].legend()
 axes[0].grid(True)
 
 # Plot Energy Loss
-axes[1].plot(hidden_array, energy_loss_array, label='Energy Loss', color='g', linestyle='--', marker='x')
+axes[1].plot(learning_rate_array, energy_loss_array, label='Energy Loss', color='g', linestyle='--', marker='x')
 axes[1].set_title('Energy Loss Curve', fontsize=12)
 axes[1].set_ylabel('Loss Value', fontsize=10)
+axes[1].set_xscale('log')
 axes[1].legend()
 axes[1].grid(True)
 
 # Plot Spread Loss
-axes[2].plot(hidden_array, spread_loss_array, label='Spread Loss', color='r', linestyle='-.', marker='s')
+axes[2].plot(learning_rate_array, spread_loss_array, label='Spread Loss', color='r', linestyle='-.', marker='s')
 axes[2].set_title('Spread Loss Curve', fontsize=12)
-axes[2].set_xlabel('Hidden Layer Size', fontsize=10)
+axes[2].set_xlabel('Learning rate', fontsize=10)
+axes[2].set_xscale('log')
 axes[2].set_ylabel('Loss Value', fontsize=10)
 axes[2].legend()
 axes[2].grid(True)

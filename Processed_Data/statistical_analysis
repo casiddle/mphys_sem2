@@ -13,7 +13,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
 
 def theta_to_r(theta, distance):
-    r=distance*np.tan(theta)*1000
+    r=distance*np.tan(theta)
     return r
 
 def distance_correlation_calculator(df, targets):
@@ -39,13 +39,13 @@ def distance_correlation_calculator(df, targets):
     return reshaped_df, correlation_df_sorted
 
 
-data_set=r"data_sets\big_scan_correct.csv"
+data_set=r"data_sets\output_test_600.csv"
 df = pd.read_csv(data_set)
-#df = df.drop(columns=['Initial emittance'])
+df = df.drop(columns=['Initial emittance'])
 
 
 # Apply the function to the column
-df['X-ray Mean Radiation Radius'] = df['X-ray Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
+df['Mean Radiation Radius'] = df['Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
 df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
 df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 df['Total Percentage']=df['UV Percentage']+df['X-ray Percentage']+df['Other Percentage']
@@ -88,7 +88,7 @@ beam_energy_filtered_df = ranked_correlation[(ranked_correlation["Target"]=="Bea
 
 
 X = df[['Emittance','Beam Spread','Beam Energy', 'X-ray Percentage',
-        'X-ray Critical Energy','X-ray Mean Radiation Radius']]
+        'X-ray Critical Energy','Mean Radiation Radius']]
 
 matrix_df,rabked_correlation=distance_correlation_calculator(X,targets)
 #print(matrix_df.head(10))
@@ -111,10 +111,10 @@ plt.savefig('Plots/distance_correlation_heatmap_reduced_parameters.png')
 
 set_radius=1
 emittance_check_df=df[['Emittance','X-ray Percentage',
-        'X-ray Critical Energy','X-ray Mean Radiation Radius','UV Percentage','Other Percentage','Critical Energy','Set Radius','Initial emittance']]
+        'X-ray Critical Energy','Mean Radiation Radius','UV Percentage','Other Percentage','Critical Energy','Set Radius']]
 
-red_points = emittance_check_df[emittance_check_df['Set Radius'] ==set_radius]
-other_points = emittance_check_df[emittance_check_df['Set Radius'] !=set_radius]
+red_points = emittance_check_df[emittance_check_df['Set Radius'] == set_radius]
+other_points = emittance_check_df[emittance_check_df['Set Radius'] != set_radius]
 #other_points = emittance_check_df[emittance_check_df['Set Radius'] == 0]
 
 
@@ -122,8 +122,8 @@ other_points = emittance_check_df[emittance_check_df['Set Radius'] !=set_radius]
 fig, axes = plt.subplots(2, 3, figsize=(18, 12))
 
 # Plot Emittance vs Mean Radiation Radius on the first subplot (axes[0, 0])
-axes[0, 0].scatter(red_points['Emittance'], red_points['X-ray Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 0].scatter(other_points['Emittance'], other_points['X-ray Mean Radiation Radius'], color='blue', alpha=0.6)
+axes[0, 0].scatter(red_points['Emittance'], red_points['Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
+axes[0, 0].scatter(other_points['Emittance'], other_points['Mean Radiation Radius'], color='blue', alpha=0.6)
 axes[0, 0].set_title('Emittance vs Mean Radiation Radius')
 axes[0, 0].set_xlabel('Emittance')
 axes[0, 0].set_ylabel('Mean Radiation Radius')
@@ -177,19 +177,19 @@ plt.savefig('Plots/emittance_parameters_plot.png')
 #plt.show()
 
 # Create the DataFrame with relevant columns
-beam_spread_check_df = df[['Beam Spread', 'X-ray Percentage', 'X-ray Critical Energy', 'X-ray Mean Radiation Radius', 
-                           'UV Percentage', 'Other Percentage', 'Critical Energy', 'Set Radius','Initial emittance']]
+beam_spread_check_df = df[['Beam Spread', 'X-ray Percentage', 'X-ray Critical Energy', 'Mean Radiation Radius', 
+                           'UV Percentage', 'Other Percentage', 'Critical Energy', 'Set Radius']]
 
 # Split the data based on Set Radius
-red_points = beam_spread_check_df[beam_spread_check_df['Set Radius'] ==set_radius]
-other_points = beam_spread_check_df[beam_spread_check_df['Set Radius'] ==set_radius]
+red_points = beam_spread_check_df[beam_spread_check_df['Set Radius'] == set_radius]
+other_points = beam_spread_check_df[beam_spread_check_df['Set Radius'] != set_radius]
 
 # Create a figure with a 2x3 grid of subplots
 fig, axes = plt.subplots(2, 3, figsize=(18, 12))
 
 # Plot Beam Spread vs Mean Radiation Radius on the first subplot (axes[0, 0])
-axes[0, 0].scatter(red_points['Beam Spread'], red_points['X-ray Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 0].scatter(other_points['Beam Spread'], other_points['X-ray Mean Radiation Radius'], color='blue', alpha=0.6)
+axes[0, 0].scatter(red_points['Beam Spread'], red_points['Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
+axes[0, 0].scatter(other_points['Beam Spread'], other_points['Mean Radiation Radius'], color='blue', alpha=0.6)
 axes[0, 0].set_title('Beam Spread vs Mean Radiation Radius')
 axes[0, 0].set_xlabel('Beam Spread')
 axes[0, 0].set_ylabel('Mean Radiation Radius')
@@ -244,19 +244,19 @@ plt.savefig('Plots/beam_spread_parameters_plot.png')
 #plt.show()
 
 # Create the DataFrame with relevant columns
-beam_energy_check_df = df[['Beam Energy', 'X-ray Percentage', 'X-ray Critical Energy', 'X-ray Mean Radiation Radius', 
-                           'UV Percentage', 'Other Percentage', 'Critical Energy', 'Set Radius','Initial emittance']]
+beam_energy_check_df = df[['Beam Energy', 'X-ray Percentage', 'X-ray Critical Energy', 'Mean Radiation Radius', 
+                           'UV Percentage', 'Other Percentage', 'Critical Energy', 'Set Radius']]
 
 # Split the data based on Set Radius
-red_points = beam_energy_check_df[beam_energy_check_df['Set Radius'] ==set_radius]
-other_points = beam_energy_check_df[beam_energy_check_df['Set Radius'] ==set_radius]
+red_points = beam_energy_check_df[beam_energy_check_df['Set Radius'] == set_radius]
+other_points = beam_energy_check_df[beam_energy_check_df['Set Radius'] != set_radius]
 
 # Create a figure with a 2x3 grid of subplots
 fig, axes = plt.subplots(2, 3, figsize=(18, 12))
 
 # Plot Beam Energy vs Mean Radiation Radius on the first subplot (axes[0, 0])
-axes[0, 0].scatter(red_points['Beam Energy'], red_points['X-ray Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
-axes[0, 0].scatter(other_points['Beam Energy'], other_points['X-ray Mean Radiation Radius'], color='blue', alpha=0.6)
+axes[0, 0].scatter(red_points['Beam Energy'], red_points['Mean Radiation Radius'], color='red', alpha=0.6, label=f'Set Radius = {set_radius}')
+axes[0, 0].scatter(other_points['Beam Energy'], other_points['Mean Radiation Radius'], color='blue', alpha=0.6)
 axes[0, 0].set_title('Beam Energy vs Mean Radiation Radius')
 axes[0, 0].set_xlabel('Beam Energy')
 axes[0, 0].set_ylabel('Mean Radiation Radius')
