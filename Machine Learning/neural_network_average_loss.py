@@ -169,7 +169,7 @@ def get_random_rows(df, n):
     return random_rows
 
 
-for i in range(0,1):
+for i in range(0,3):
     train_test_seed=random.randint(1,300)
 
     
@@ -183,6 +183,8 @@ for i in range(0,1):
     df['X-ray Mean Radiation Radius'] = df['X-ray Mean Theta'].apply(lambda theta: theta_to_r(theta, 11))
     df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
     df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
+
+    #df=df[df['Set Radius']!=0.5]
 
 
 
@@ -523,7 +525,7 @@ for i in range(0,1):
 
 
     # Save model state dictionary
-    torch.save(model.state_dict(), r'Machine Learning\models\model1.pth')
+    #torch.save(model.state_dict(), r'Machine Learning\models\model1.pth')
     #______________________________________________________________________________________________________________________________________________________________________
 
 
@@ -691,30 +693,33 @@ gs = fig.add_gridspec(2, 3, height_ratios=[3, 1], hspace=0.4)
 
 # Scatter plots
 ax1 = fig.add_subplot(gs[0, 0])
-ax1.scatter(beam_spread_actuals, beam_spread_preds, color='tab:blue', alpha=0.6)
-ax1.plot(beam_spread_actuals, beam_spread_actuals, color='k', linestyle='-')
-ax1.fill_between(spread_x,spread_y_lower,spread_y_upper , color="red", alpha=0.2, label=(r"RMSE$: "+str(np.round(spread_rmse,3))))
-ax1.set_title('Beam Spread: Actual vs Predicted')
-ax1.set_xlabel('Actual Beam Spread')
+ax1.scatter(beam_spread_actuals, beam_spread_preds, color='tab:blue', alpha=0.6,label="Beam Spread Data")
+ax1.plot(beam_spread_actuals, beam_spread_actuals, color='k', linestyle='-',label="y=x")
+ax1.fill_between(spread_x,spread_y_lower,spread_y_upper , color="red", alpha=0.2, label=(r"RMSE: "+str(np.round(spread_rmse,3))))
+ax1.set_title('Beam Spread: Simulation vs Predicted')
+ax1.set_xlabel('Simulation Beam Spread')
 ax1.set_ylabel('Predicted Beam Spread')
+ax1.legend()
 ax1.grid(True, linestyle='--', alpha=0.5)
 
 ax2 = fig.add_subplot(gs[0, 1])
-ax2.scatter(beam_energy_actuals, beam_energy_preds, color='tab:green', alpha=0.6)
-ax2.plot(beam_energy_actuals, beam_energy_actuals, color='k', linestyle='-')
-ax2.fill_between(energy_x,energy_y_lower,energy_y_upper , color="red", alpha=0.2, label=(r"RMSE$: "+str(np.round(energy_rmse,3))))
-ax2.set_title('Beam Energy: Actual vs Predicted')
-ax2.set_xlabel('Actual Beam Energy')
+ax2.scatter(beam_energy_actuals, beam_energy_preds, color='tab:green', alpha=0.6,label="Beam Energy Data")
+ax2.plot(beam_energy_actuals, beam_energy_actuals, color='k', linestyle='-',label="y=x")
+ax2.fill_between(energy_x,energy_y_lower,energy_y_upper , color="red", alpha=0.2, label=(r"RMSE: "+str(np.round(energy_rmse,3))))
+ax2.set_title('Beam Energy: Simulation vs Predicted')
+ax2.set_xlabel('Simulation Beam Energy')
 ax2.set_ylabel('Predicted Beam Energy')
+ax2.legend()
 ax2.grid(True, linestyle='--', alpha=0.5)
 
 ax3 = fig.add_subplot(gs[0, 2])
-ax3.scatter(emittance_actuals, emittance_preds, color='tab:purple', alpha=0.6)
-ax3.plot(emittance_actuals, emittance_actuals, color='k', linestyle='-')
-ax3.fill_between(em_x,em_y_lower,em_y_upper , color="red", alpha=0.2, label=(r"RMSE$: "+str(np.round(em_rmse,3))))
-ax3.set_title('Emittance: Actual vs Predicted')
-ax3.set_xlabel('Actual Emittance')
+ax3.scatter(emittance_actuals, emittance_preds, color='tab:purple', alpha=0.6,label="Emittance Data")
+ax3.plot(emittance_actuals, emittance_actuals, color='k', linestyle='-',label="y=x")
+ax3.fill_between(em_x,em_y_lower,em_y_upper , color="red", alpha=0.2, label=(r"RMSE: "+str(np.round(em_rmse,3))))
+ax3.set_title('Emittance: Simulation vs Predicted')
+ax3.set_xlabel('Simulation Emittance')
 ax3.set_ylabel('Predicted Emittance')
+ax3.legend()
 ax3.grid(True, linestyle='--', alpha=0.5)
 
 # Residual plots
@@ -725,6 +730,7 @@ ax4.axhline(-1,color='r',linestyle='--',linewidth=1)
 ax4.axhline(1,color='r',linestyle='--',linewidth=1)
 ax4.set_title('Beam Spread Residuals')
 ax4.set_xlabel('Actual Beam Spread')
+ax4.set_ylim(-3,3)
 ax4.set_ylabel('Residual')
 ax4.grid(True, linestyle='--', alpha=0.5)
 
@@ -735,6 +741,7 @@ ax5.axhline(-1,color='r',linestyle='--',linewidth=1)
 ax5.axhline(1,color='r',linestyle='--',linewidth=1)
 ax5.set_title('Beam Energy Residuals')
 ax5.set_xlabel('Actual Beam Energy')
+ax5.set_ylim(-3,3)
 ax5.set_ylabel('Residual')
 ax5.grid(True, linestyle='--', alpha=0.5)
 
@@ -745,7 +752,8 @@ ax6.axhline(-1,color='r',linestyle='--',linewidth=1)
 ax6.axhline(1,color='r',linestyle='--',linewidth=1)
 ax6.set_title('Emittance Residuals')
 ax6.set_xlabel('Actual Emittance')
+ax6.set_ylim(-3,3)
 ax6.set_ylabel('Residual')
 ax6.grid(True, linestyle='--', alpha=0.5)
-plt.savefig(r'Machine Learning\plots\emittance_energy_spread.png', dpi=300, bbox_inches='tight')
+plt.savefig(r'Machine Learning\plots\emittance_energy_spread_2000.png', dpi=300, bbox_inches='tight')
 plt.show()
