@@ -13,7 +13,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
 
 def theta_to_r(theta, distance):
-    r=distance*np.tan(theta)
+    r=distance*np.tan(theta)*1000
     return r
 
 def distance_correlation_calculator(df, targets):

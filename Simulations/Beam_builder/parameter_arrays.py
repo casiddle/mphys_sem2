@@ -91,5 +91,5 @@ df = pd.DataFrame(results, columns=["Emittance (um)", "Beam Radius (um)","Beam R
 
 
 # Optionally, save the DataFrame to a CSV file
-df.to_csv(r"Simulations\Beam_builder\constant_radius.csv", index=False)
+df.to_csv(r"Simulations\Beam_builder\big_scan_3.csv", index=False)
 

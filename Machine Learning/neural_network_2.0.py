@@ -20,17 +20,17 @@ csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.cs
 data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
 
 epochs = 800  # Number of epochs to train
-patience = 200  # number of epochs with no improvement before stopping
-batch_no=10 #batch size
+patience = 50  # number of epochs with no improvement before stopping
+batch_no=30 #batch size
 no_hidden_layers=10#number of hidden layers 
-learning_rate=1e-4 #learning rate
+learning_rate=1e-3 #learning rate
 no_nodes=36 #number of nodes in each hidden layer
 combine_size_val=0.2
 test_size_val=combine_size_val/2
 dropout=0.1
 
 
-predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
+predicted_feature=["Emittance"] #name of the features to be predicted
 predictor_feature=["X-ray Mean Radiation Radius",'X-ray Critical Energy', 'X-ray Percentage']
 input_size=len(predictor_feature)#number of input features
 activation_function="Leaky ReLU" #activation function- note this string needs to be changed manually
@@ -100,7 +100,7 @@ print(f"Using {device} device")
 
 model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature), dropout_rate=dropout).to(device)  # Initialize the model
 print(model)
-loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
+loss_fn = nn.L1Loss()  # Mean Squared Error Loss for regression
 optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-10)  # Adam optimizer with learning rate 
 
 
@@ -172,7 +172,7 @@ X_scaled = X_scaler.fit_transform(X)
 
 # Convert to PyTorch tensors
 X = torch.tensor(X_scaled, dtype=torch.float32)
-y = torch.tensor(y_scaled, dtype=torch.float32).reshape(data_size, 3)  # Reshape to match model output
+y = torch.tensor(y_scaled, dtype=torch.float32).reshape(data_size, 1)  # Reshape to match model output
 
 
 
@@ -539,12 +539,12 @@ with torch.no_grad():
     actual_values =y_scaler.inverse_transform(all_targets.cpu().numpy())
 
 
-beam_spread_preds = predictions[:, 2]
-beam_energy_preds = predictions[:, 1]
+# beam_spread_preds = predictions[:, 2]
+# beam_energy_preds = predictions[:, 1]
 emittance_preds = predictions[:, 0]
 
-beam_spread_actuals = actual_values[:, 2]
-beam_energy_actuals = actual_values[:, 1]
+# beam_spread_actuals = actual_values[:, 2]
+# beam_energy_actuals = actual_values[:, 1]
 emittance_actuals = actual_values[:, 0]
 
 
@@ -557,19 +557,19 @@ length=len(emittance_preds)
 print("Length:", length)
 
 em_mse=mse_cal(emittance_preds,emittance_actuals)
-energy_mse=mse_cal(beam_energy_preds,beam_energy_actuals)
-spread_mse=mse_cal(beam_spread_preds,beam_spread_actuals)
+# energy_mse=mse_cal(beam_energy_preds,beam_energy_actuals)
+# spread_mse=mse_cal(beam_spread_preds,beam_spread_actuals)
 print("My calculated emittance mse:",em_mse)
-print("My calculated beam energy mse:",energy_mse)
-print("My calculated beam spread mse:",spread_mse)
+# print("My calculated beam energy mse:",energy_mse)
+# print("My calculated beam spread mse:",spread_mse)
 
 #print("Beam spread predictions:",beam_spread_preds)
 #print("Actual Beam spread:",beam_spread_actuals)
 
 
 # Calculate residuals
-beam_spread_residuals =  beam_spread_preds-beam_spread_actuals
-beam_energy_residuals =  beam_energy_preds-beam_energy_actuals 
+# beam_spread_residuals =  beam_spread_preds-beam_spread_actuals
+# beam_energy_residuals =  beam_energy_preds-beam_energy_actuals 
 emittance_residuals = emittance_preds-emittance_actuals  
 
 # Plotting
@@ -577,15 +577,15 @@ plt.figure(figsize=(15, 10))
 
 # Scatter plots
 plt.subplot(2, 3, 1)
-plt.scatter(beam_spread_actuals, beam_spread_preds, color='blue', alpha=0.6)
-plt.plot(beam_spread_actuals, beam_spread_actuals, color='k', linestyle='-')
+# plt.scatter(beam_spread_actuals, beam_spread_preds, color='blue', alpha=0.6)
+# plt.plot(beam_spread_actuals, beam_spread_actuals, color='k', linestyle='-')
 plt.title('Beam Spread: Actual vs Predicted')
 plt.xlabel('Actual Beam Spread')
 plt.ylabel('Predicted Beam Spread')
 
 # Residual plots
 plt.subplot(2, 3, 4)
-plt.scatter(beam_spread_actuals, beam_spread_residuals, color='blue', alpha=0.6)
+# plt.scatter(beam_spread_actuals, beam_spread_residuals, color='blue', alpha=0.6)
 plt.axhline(0, color='k', linestyle='--')
 plt.title('Beam Spread Residuals')
 plt.xlabel('Actual Beam Spread')
@@ -593,15 +593,15 @@ plt.ylabel('Residual')
 
 # Scatter plots
 plt.subplot(2, 3, 2)
-plt.scatter(beam_energy_actuals, beam_energy_preds, color='green', alpha=0.6)
-plt.plot(beam_energy_actuals, beam_energy_actuals, color='k', linestyle='-')
+# plt.scatter(beam_energy_actuals, beam_energy_preds, color='green', alpha=0.6)
+# plt.plot(beam_energy_actuals, beam_energy_actuals, color='k', linestyle='-')
 plt.title('Beam Energy: Actual vs Predicted')
 plt.xlabel('Actual Beam Energy')
 plt.ylabel('Predicted Beam Energy')
 
 # Residual plots
 plt.subplot(2, 3, 5)
-plt.scatter(beam_energy_actuals, beam_energy_residuals, color='green', alpha=0.6)
+# plt.scatter(beam_energy_actuals, beam_energy_residuals, color='green', alpha=0.6)
 plt.axhline(0, color='k', linestyle='--')
 plt.title('Beam Energy Residuals')
 plt.xlabel('Actual Beam Energy')
