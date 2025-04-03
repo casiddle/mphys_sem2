@@ -141,6 +141,9 @@ def get_random_rows(df, n):
 
 
 for i in data_no_array:
+    #model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature), dropout_rate=dropout).to(device)  # Initialize the model
+    #loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
+    #optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-10)  # Adam optimizer with learning rate 
 
     
     # MAIN-------------------------------------------------------------------

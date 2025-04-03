@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 data = pd.read_csv(r'Machine Learning\loss_data_check.csv')
-
+print(data[data['No. Data Points']==2400])
 # Apply square root transformation to the first three columns
 data.iloc[:, :3] = np.sqrt(data.iloc[:, :3])
 
@@ -19,6 +19,7 @@ average_losses=average_losses[average_losses['No. Data Points'].isin(point_array
 
 # Display the result
 print(average_losses)
+
 
 # # Create a figure with 3 subplots (1 row, 3 columns)
 # fig, axes = plt.subplots(1, 3, figsize=(16, 6))  # 1 row, 3 columns

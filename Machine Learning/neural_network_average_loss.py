@@ -521,49 +521,12 @@ for i in range(0,1):
     beam_energy_actuals = actual_values[:, 1]
     emittance_actuals = actual_values[:, 0]
 
-    # # Extract all train data in one go------------------------------------------------------
-    # all_features_2 = torch.cat([batch[0] for batch in train_dataloader], dim=0).to(device)
-    # all_targets_2 = torch.cat([batch[1] for batch in train_dataloader], dim=0).to(device)
-
-    # # Move data to the correct device
-    # all_features_2 = all_features_2.to(device)
-    # all_targets_2 = all_targets_2.to(device)
-
-    # # Disable gradient calculation for efficiency
-    # with torch.no_grad():
-    #     predictions = model(all_features_2).cpu().numpy()
-    #     # Inverse scaling: Transform predictions and batch_targets back to the original scale
-    #     predictions = y_scaler.inverse_transform(predictions)
-    #     actual_values =y_scaler.inverse_transform(all_targets_2.cpu().numpy())
-
-
-    # train_beam_spread_preds = predictions[:, 2]
-    # train_beam_energy_preds = predictions[:, 1]
-    # train_emittance_preds = predictions[:, 0]
-
-    # train_beam_spread_actuals = actual_values[:, 2]
-    # train_beam_energy_actuals = actual_values[:, 1]
-    # train_emittance_actuals = actual_values[:, 0]
-
-
-
-
-
-    #print("Emittance predictions:",emittance_preds)
-    #print("Actual Emittance:",emittance_actuals)
-    length=len(emittance_preds)
     #print("Length:", length)
 
     em_mse=mse_cal(emittance_preds,emittance_actuals)
     energy_mse=mse_cal(beam_energy_preds,beam_energy_actuals)
     spread_mse=mse_cal(beam_spread_preds,beam_spread_actuals)
-    #print("My calculated emittance mse:",em_mse)
-    #print("My calculated beam energy mse:",energy_mse)
-    #print("My calculated beam spread mse:",spread_mse)
 
-    # train_em_mse=mse_cal(train_emittance_preds,train_emittance_actuals)
-    # train_energy_mse=mse_cal(train_beam_energy_preds,train_beam_energy_actuals)
-    # train_spread_mse=mse_cal(train_beam_spread_preds,train_beam_spread_actuals)
 
     emittance_loss_array=np.append(emittance_loss_array,em_mse)
     energy_loss_array=np.append(energy_loss_array,energy_mse)
