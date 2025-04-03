@@ -19,7 +19,7 @@ save_metrics = False # Change this to False if you don’t want to save for this
 csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
 data_file_path="Processed_Data/data_sets/big_scan_2400.csv"
 
-data_no_array=np.array([500,600,700,800,1000,1200,1400,1600,1800,2000,2400])
+data_no_array=np.array([2400])
 emittance_loss_array=np.empty(0)
 spread_loss_array=np.empty(0)
 energy_loss_array=np.empty(0)
@@ -60,17 +60,13 @@ class NeuralNetwork(nn.Module):  # Define custom neural network
         for _ in range(num_hidden_layers - 1):  # Subtract 1 since the first hidden layer is already added
             layers.append(nn.Linear(hidden_size, hidden_size))
             layers.append(nn.BatchNorm1d(hidden_size)) 
-            #layers.append(nn.ReLU())  # ReLU activation for each hidden layer
             layers.append(nn.LeakyReLU(negative_slope=0.01))  
             layers.append(nn.Dropout(dropout_rate))  # Dropout layer after activation
         
         # Output layer
         layers.append(nn.Linear(hidden_size, num_outputs))  # Output layer (single output)
-        #layers.append(nn.ReLU())
         layers.append(nn.LeakyReLU(negative_slope=0.01))  
-        #layers.append(nn.Softplus())  
 
-        
         # Use Sequential to combine layers
         self.linear_relu_stack = nn.Sequential(*layers)
 
@@ -79,28 +75,11 @@ class NeuralNetwork(nn.Module):  # Define custom neural network
         return logits
 
 
-class WeightedMSELoss(nn.Module):
-    def forward(self, y_pred, y_true):
-        weights = 1 / (y_true + 1)  # Higher weight for smaller values
-        return torch.mean(weights * (y_pred - y_true) ** 2)
-    
-class RMSELoss(nn.Module):
-    def __init__(self, eps=1e-8):  # eps prevents division by zero errors
-        super().__init__()
-        self.mse = nn.MSELoss()
-
-    def forward(self, y_pred, y_true,eps=1e-8):
-        return torch.sqrt(self.mse(y_pred, y_true) + eps)
-
-
-
 
 # Check if a GPU (CUDA) is available, otherwise default to CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 # Print the device being used
 print(f"Using {device} device")
-
 model = NeuralNetwork(input_size=input_size, hidden_size=no_nodes, num_hidden_layers=no_hidden_layers, num_outputs=len(predicted_feature), dropout_rate=dropout).to(device)  # Initialize the model
 print(model)
 loss_fn = nn.MSELoss()  # Mean Squared Error Loss for regression
@@ -162,16 +141,9 @@ def get_random_rows(df, n):
 
 
 for i in data_no_array:
-    #batch_no=int(0.1*i)
-    #batch_no=10
-
-
-
 
     
     # MAIN-------------------------------------------------------------------
-
-
 
     df = pd.read_csv(data_file_path)
     data_size=len(df)
@@ -206,17 +178,9 @@ for i in data_no_array:
     X = torch.tensor(X_scaled, dtype=torch.float32)
     y = torch.tensor(y_scaled, dtype=torch.float32).reshape(data_size, 3)  # Reshape to match model output
 
-
-
-    # Create dataset and dataloader
-    dataset = EmittanceDataset(X, y)
-    dataloader = DataLoader(dataset, batch_size=batch_no, shuffle=True)  # Batch size = 2
-
     # Split data into training and test sets (80% train, 20% test)
     X_train, X_combine, y_train, y_combine = train_test_split(X, y, test_size=combine_size_val, random_state=train_test_seed)
     X_test,X_validation,y_test,y_validation= train_test_split(X_combine, y_combine, test_size=0.5, random_state=train_test_seed)
-
-
 
     # Convert the data into tensors
     X_train_tensor = X_train.clone().detach().float()
@@ -236,7 +200,7 @@ for i in data_no_array:
     # Create training dataset and dataloader
     train_dataset = EmittanceDataset(X_train_tensor, y_train)
     train_dataloader = DataLoader(train_dataset, batch_size=batch_no, shuffle=True)
-
+    print("TRAINIG DATA LENGTH:",len(train_dataset),'-----',len(train_dataloader))
     # Create test dataset and dataloader
     test_dataset = EmittanceDataset(X_test_tensor, y_test)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_no, shuffle=False)

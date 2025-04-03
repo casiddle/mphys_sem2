@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 
-data = pd.read_csv(r'Machine Learning\loss_data.csv')
+data = pd.read_csv(r'Machine Learning\loss_data_check.csv')
 
 # Apply square root transformation to the first three columns
 data.iloc[:, :3] = np.sqrt(data.iloc[:, :3])
