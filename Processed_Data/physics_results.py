@@ -14,7 +14,7 @@ data_set=r"data_sets\big_scan_correct.csv"
 df = pd.read_csv(data_set)
 #df=df[df['Beam Spread']>0.01]
 
-filtered_df1=df[df['Set Radius']==1]#& df['Beam Spread']>0.01]
+filtered_df1=df[df['Set Radius']==1]
 filtered_df2=df[df['Set Radius']==2]
 filtered_df3=df[df['Set Radius']==3]
 filtered_df4=df[df['Set Radius']==4]

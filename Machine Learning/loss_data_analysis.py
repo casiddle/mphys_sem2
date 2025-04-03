@@ -77,8 +77,69 @@ print(average_losses)
 # plt.tight_layout()
 # plt.savefig(r'Machine Learning\loss_data_analysis_plot.png')
 
-# # Showing the plot
-# plt.show()
+# Showing the plot
+plt.show()
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create a figure with 3 subplots (1 row, 3 columns)
+fig, axes = plt.subplots(1, 3, figsize=(16, 6))  # 1 row, 3 columns
+
+# Plot variance of Spread Loss
+axes[0].plot(
+    average_losses['No. Data Points'],  # X values
+    average_losses[("Spread Loss", "var")],  # Y values (variance)
+    label='Spread Loss Variance',
+    color='tab:blue',
+    linestyle='-',
+    marker='o'
+)
+axes[0].set_title('Spread Loss Variance', fontsize=14)
+axes[0].set_xlabel('Number of Data Points', fontsize=12)
+axes[0].set_ylabel('Variance', fontsize=12)
+axes[0].grid(True)
+axes[0].legend()
+
+# Plot variance of Energy Loss
+axes[1].plot(
+    average_losses['No. Data Points'],  
+    average_losses[("Energy Loss", "var")],  
+    label='Energy Loss Variance',
+    color='tab:green',
+    linestyle='-',
+    marker='o'
+)
+axes[1].set_title('Energy Loss Variance', fontsize=14)
+axes[1].set_xlabel('Number of Data Points', fontsize=12)
+axes[1].set_ylabel('Variance', fontsize=12)
+axes[1].grid(True)
+axes[1].legend()
+
+# Plot variance of Emittance Loss
+axes[2].plot(
+    average_losses['No. Data Points'],  
+    average_losses[("Emittance Loss", "var")],  
+    label='Emittance Loss Variance',
+    color='tab:purple',
+    linestyle='-',
+    marker='o'
+)
+axes[2].set_title(r'Emittance Loss Variance', fontsize=14)
+axes[2].set_xlabel('Number of Data Points', fontsize=12)
+axes[2].set_ylabel('Variance', fontsize=12)
+axes[2].grid(True)
+axes[2].legend()
+
+# Adjust layout to prevent overlapping
+plt.tight_layout()
+
+# Save the figure
+plt.savefig(r'Machine Learning\variance_plot.png', dpi=300)
+
+# Show the plot
+plt.show()
+
 
 
 # Increase font sizes globally
