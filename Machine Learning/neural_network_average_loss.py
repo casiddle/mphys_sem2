@@ -184,7 +184,7 @@ for i in range(0,3):
     df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
     df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 
-    df=df[df['Set Radius']!=0.5]
+    #df=df[df['Set Radius']!=0.5]
 
 
 
@@ -687,73 +687,134 @@ energy_x=np.linspace(min(min(beam_energy_actuals), min(beam_energy_preds)),max(m
 energy_y_upper = energy_x + energy_rmse
 energy_y_lower = energy_x - energy_rmse
 
-# Create figure and GridSpec
-fig = plt.figure(figsize=(15, 10))
-gs = fig.add_gridspec(2, 3, height_ratios=[3, 1], hspace=0.4)
+# # Create figure and GridSpec
+# fig = plt.figure(figsize=(15, 10))
+# gs = fig.add_gridspec(2, 3, height_ratios=[3, 1], hspace=0.4)
 
-# Scatter plots
-ax1 = fig.add_subplot(gs[0, 0])
-ax1.scatter(beam_spread_actuals, beam_spread_preds, color='tab:blue', alpha=0.6,label="Beam Spread Data")
-ax1.plot(beam_spread_actuals, beam_spread_actuals, color='k', linestyle='-',label="y=x")
-ax1.fill_between(spread_x,spread_y_lower,spread_y_upper , color="red", alpha=0.2, label=(r"RMSE: "+str(np.round(spread_rmse,3))))
-ax1.set_title('Beam Spread: Simulation vs Predicted')
-ax1.set_xlabel('Simulation Beam Spread')
-ax1.set_ylabel('Predicted Beam Spread')
-ax1.legend()
-ax1.grid(True, linestyle='--', alpha=0.5)
+# # Scatter plots
+# ax1 = fig.add_subplot(gs[0, 0])
+# ax1.scatter(beam_spread_actuals, beam_spread_preds, color='tab:blue', alpha=0.6,label="Beam Spread Data")
+# ax1.plot(beam_spread_actuals, beam_spread_actuals, color='k', linestyle='-',label="y=x")
+# ax1.fill_between(spread_x,spread_y_lower,spread_y_upper , color="red", alpha=0.2, label=(r"RMSE: "+str(np.round(spread_rmse,3)) + "%"))
+# ax1.set_title('Beam Spread: Simulation vs Predicted')
+# ax1.set_xlabel('Simulation Beam Spread')
+# ax1.set_ylabel('Predicted Beam Spread')
+# ax1.legend()
+# ax1.grid(True, linestyle='--', alpha=0.5)
 
-ax2 = fig.add_subplot(gs[0, 1])
-ax2.scatter(beam_energy_actuals, beam_energy_preds, color='tab:green', alpha=0.6,label="Beam Energy Data")
-ax2.plot(beam_energy_actuals, beam_energy_actuals, color='k', linestyle='-',label="y=x")
-ax2.fill_between(energy_x,energy_y_lower,energy_y_upper , color="red", alpha=0.2, label=(r"RMSE: "+str(np.round(energy_rmse,3))))
-ax2.set_title('Beam Energy: Simulation vs Predicted')
-ax2.set_xlabel('Simulation Beam Energy')
-ax2.set_ylabel('Predicted Beam Energy')
-ax2.legend()
-ax2.grid(True, linestyle='--', alpha=0.5)
+# ax2 = fig.add_subplot(gs[0, 1])
+# ax2.scatter(beam_energy_actuals, beam_energy_preds, color='tab:green', alpha=0.6,label="Beam Energy Data")
+# ax2.plot(beam_energy_actuals, beam_energy_actuals, color='k', linestyle='-',label="y=x")
+# ax2.fill_between(energy_x,energy_y_lower,energy_y_upper , color="red", alpha=0.2, label=(r"RMSE: "+str(np.round(energy_rmse,3))+ " GeV"))
+# ax2.set_title('Beam Energy: Simulation vs Predicted')
+# ax2.set_xlabel('Simulation Beam Energy')
+# ax2.set_ylabel('Predicted Beam Energy')
+# ax2.legend()
+# ax2.grid(True, linestyle='--', alpha=0.5)
 
-ax3 = fig.add_subplot(gs[0, 2])
-ax3.scatter(emittance_actuals, emittance_preds, color='tab:purple', alpha=0.6,label="Emittance Data")
-ax3.plot(emittance_actuals, emittance_actuals, color='k', linestyle='-',label="y=x")
-ax3.fill_between(em_x,em_y_lower,em_y_upper , color="red", alpha=0.2, label=(r"RMSE: "+str(np.round(em_rmse,3))))
-ax3.set_title('Emittance: Simulation vs Predicted')
-ax3.set_xlabel('Simulation Emittance')
-ax3.set_ylabel('Predicted Emittance')
-ax3.legend()
-ax3.grid(True, linestyle='--', alpha=0.5)
+# ax3 = fig.add_subplot(gs[0, 2])
+# ax3.scatter(emittance_actuals, emittance_preds, color='tab:purple', alpha=0.6,label="Emittance Data")
+# ax3.plot(emittance_actuals, emittance_actuals, color='k', linestyle='-',label="y=x")
+# ax3.fill_between(em_x,em_y_lower,em_y_upper , color="red", alpha=0.2, label=(r"RMSE: "+str(np.round(em_rmse,3)))+ r" $\mu m$")
+# ax3.set_title('Emittance: Simulation vs Predicted')
+# ax3.set_xlabel('Simulation Emittance')
+# ax3.set_ylabel('Predicted Emittance')
+# ax3.legend()
+# ax3.grid(True, linestyle='--', alpha=0.5)
 
-# Residual plots
-ax4 = fig.add_subplot(gs[1, 0])
-ax4.scatter(beam_spread_actuals, beam_spread_residuals/spread_rmse, color='tab:blue', alpha=0.6)
-ax4.axhline(0, color='k', linestyle='-')
-ax4.axhline(-1,color='r',linestyle='--',linewidth=1)
-ax4.axhline(1,color='r',linestyle='--',linewidth=1)
-ax4.set_title('Beam Spread Residuals')
-ax4.set_xlabel('Actual Beam Spread')
-ax4.set_ylim(-3,3)
-ax4.set_ylabel('Residual')
-ax4.grid(True, linestyle='--', alpha=0.5)
+# # Residual plots
+# ax4 = fig.add_subplot(gs[1, 0])
+# ax4.scatter(beam_spread_actuals, beam_spread_residuals/spread_rmse, color='tab:blue', alpha=0.6)
+# ax4.axhline(0, color='k', linestyle='-')
+# ax4.axhline(-1,color='r',linestyle='--',linewidth=1)
+# ax4.axhline(1,color='r',linestyle='--',linewidth=1)
+# ax4.set_title('Beam Spread Residuals')
+# ax4.set_xlabel('Actual Beam Spread')
+# ax4.set_ylim(-3,3)
+# ax4.set_ylabel('Residual')
+# ax4.grid(True, linestyle='--', alpha=0.5)
 
-ax5 = fig.add_subplot(gs[1, 1])
-ax5.scatter(beam_energy_actuals, beam_energy_residuals/energy_rmse, color='tab:green', alpha=0.6)
-ax5.axhline(0, color='k', linestyle='-')
-ax5.axhline(-1,color='r',linestyle='--',linewidth=1)
-ax5.axhline(1,color='r',linestyle='--',linewidth=1)
-ax5.set_title('Beam Energy Residuals')
-ax5.set_xlabel('Actual Beam Energy')
-ax5.set_ylim(-3,3)
-ax5.set_ylabel('Residual')
-ax5.grid(True, linestyle='--', alpha=0.5)
+# ax5 = fig.add_subplot(gs[1, 1])
+# ax5.scatter(beam_energy_actuals, beam_energy_residuals/energy_rmse, color='tab:green', alpha=0.6)
+# ax5.axhline(0, color='k', linestyle='-')
+# ax5.axhline(-1,color='r',linestyle='--',linewidth=1)
+# ax5.axhline(1,color='r',linestyle='--',linewidth=1)
+# ax5.set_title('Beam Energy Residuals')
+# ax5.set_xlabel('Actual Beam Energy')
+# ax5.set_ylim(-3,3)
+# ax5.set_ylabel('Residual')
+# ax5.grid(True, linestyle='--', alpha=0.5)
 
-ax6 = fig.add_subplot(gs[1, 2])
-ax6.scatter(emittance_actuals, emittance_residuals/em_rmse, color='tab:purple', alpha=0.6)
-ax6.axhline(0, color='k', linestyle='-')
-ax6.axhline(-1,color='r',linestyle='--',linewidth=1)
-ax6.axhline(1,color='r',linestyle='--',linewidth=1)
-ax6.set_title('Emittance Residuals')
-ax6.set_xlabel('Actual Emittance')
-ax6.set_ylim(-3,3)
-ax6.set_ylabel('Residual')
-ax6.grid(True, linestyle='--', alpha=0.5)
-plt.savefig(r'Machine Learning\plots\emittance_energy_spread_2000.png', dpi=300, bbox_inches='tight')
-plt.show()
+# ax6 = fig.add_subplot(gs[1, 2])
+# ax6.scatter(emittance_actuals, emittance_residuals/em_rmse, color='tab:purple', alpha=0.6)
+# ax6.axhline(0, color='k', linestyle='-')
+# ax6.axhline(-1,color='r',linestyle='--',linewidth=1)
+# ax6.axhline(1,color='r',linestyle='--',linewidth=1)
+# ax6.set_title('Emittance Residuals')
+# ax6.set_xlabel('Actual Emittance')
+# ax6.set_ylim(-3,3)
+# ax6.set_ylabel('Residual')
+# ax6.grid(True, linestyle='--', alpha=0.5)
+# plt.savefig(r'Machine Learning\plots\emittance_energy_spread_2000.png', dpi=300, bbox_inches='tight')
+# plt.show()
+
+
+
+# PLOTTING -----------------------------------------------------------------------------
+
+# Increase font sizes globally
+plt.rcParams.update({
+    "font.size": 14,           # Default font size
+    "axes.titlesize": 22,      # Title font size
+    "axes.labelsize": 20,      # X and Y label font size
+    "xtick.labelsize": 18,     # X-axis tick font size
+    "ytick.labelsize": 18,     # Y-axis tick font size
+    "legend.fontsize": 20      # Legend font size
+})
+
+# Function to create individual plots
+def create_scatter_plot(x, y, x_label, y_label, title, fill_x=None, fill_y_lower=None, fill_y_upper=None, rmse_text=None, color='tab:blue'):
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.scatter(x, y, color=color, alpha=0.7, label="Data")
+    ax.plot(x, x, color='k', linestyle='-', label="Perfect Model")
+    if fill_x is not None and fill_y_lower is not None and fill_y_upper is not None:
+        ax.fill_between(fill_x, fill_y_lower, fill_y_upper, color="red", alpha=0.2, label=rmse_text)
+    ax.set_title(title)
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+    ax.legend()
+    ax.grid(True, linestyle='--', alpha=0.5)
+    plt.show()
+
+def create_residual_plot(x, residuals, rmse, x_label, title, color='tab:blue'):
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.scatter(x, residuals/rmse, color=color, alpha=0.6)
+    ax.axhline(0, color='k', linestyle='-')
+    ax.axhline(-1, color='r', linestyle='--', linewidth=1)
+    ax.axhline(1, color='r', linestyle='--', linewidth=1)
+    ax.set_title(title)
+    ax.set_xlabel(x_label)
+    ax.set_ylabel('Residual')
+    ax.set_ylim(-3, 3)
+    ax.grid(True, linestyle='--', alpha=0.5)
+    plt.show()
+
+# Scatter Plots
+create_scatter_plot(beam_spread_actuals, beam_spread_preds, 'Simulation Beam Spread (%)', 'Predicted Beam Spread (%)', 
+                    'Beam Spread: Simulation vs NN Predicted', spread_x, spread_y_lower, spread_y_upper, 
+                    f"RMSE: {np.round(spread_rmse, 3)}%", 'tab:blue')
+
+create_scatter_plot(beam_energy_actuals, beam_energy_preds, 'Simulation Beam Energy (GeV)', 'Predicted Beam Energy (GeV)', 
+                    'Beam Energy: Simulation vs NN Predicted', energy_x, energy_y_lower, energy_y_upper, 
+                    f"RMSE: {np.round(energy_rmse, 3)} GeV", 'tab:green')
+
+create_scatter_plot(emittance_actuals, emittance_preds, r'Simulation Emittance $(\mu m)$', r'Predicted Emittance $(\mu m)$', 
+                    'Emittance: Simulation vs NN Predicted', em_x, em_y_lower, em_y_upper, 
+                    f"RMSE: {np.round(em_rmse, 3)} μm", 'tab:purple')
+
+# Residual Plots
+create_residual_plot(beam_spread_actuals, beam_spread_residuals, spread_rmse, 'Actual Beam Spread', 'Beam Spread Residuals', 'tab:blue')
+
+create_residual_plot(beam_energy_actuals, beam_energy_residuals, energy_rmse, 'Actual Beam Energy', 'Beam Energy Residuals', 'tab:green')
+
+create_residual_plot(emittance_actuals, emittance_residuals, em_rmse, 'Actual Emittance', 'Emittance Residuals', 'tab:purple')
