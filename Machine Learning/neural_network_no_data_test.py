@@ -17,9 +17,9 @@ import hiddenlayer as hl
 # Key inputs
 save_metrics = False # Change this to False if you don’t want to save for this run
 csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
-data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
+data_file_path="Processed_Data/data_sets/big_scan_2400.csv"
 
-data_no_array=np.array([400,500,600])
+data_no_array=np.array([100,200,300,400,500,600,800,1000,1400,1800,2000,2400])
 emittance_loss_array=np.empty(0)
 spread_loss_array=np.empty(0)
 energy_loss_array=np.empty(0)

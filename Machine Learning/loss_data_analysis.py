@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 data = pd.read_csv(r'Machine Learning\loss_data.csv')  
 
-point_array=np.array([100,200,300,400,500,600])
+point_array=np.array([100,200,300,400,500,600,1000,2000,2400])
 # Group by 'No. Data Points' and calculate the mean of the losses
 average_losses = data.groupby('No. Data Points').mean()
 average_losses.reset_index(inplace=True)

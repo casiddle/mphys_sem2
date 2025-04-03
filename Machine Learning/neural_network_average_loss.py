@@ -16,8 +16,8 @@ import hiddenlayer as hl
 
 # Key inputs
 save_metrics = True # Change this to False if you don’t want to save for this run
-csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
-data_file_path="Processed_Data/data_sets/big_scan_correct.csv"
+csv_file_path = "Machine Learning/training_metrics_3_targets_2400_points.csv"
+data_file_path="Processed_Data/data_sets/big_scan_2400.csv"
 #torch.manual_seed(42)
 
 emittance_loss_array=np.empty(0)
