@@ -9,7 +9,7 @@ data = pd.read_csv(r'Machine Learning\loss_data.csv')
 # Apply square root transformation to the first three columns
 data.iloc[:, :3] = np.sqrt(data.iloc[:, :3])
 
-point_array=np.array([200,300,400,500,600,800,1000,1400,1800,2000,2400])
+point_array=np.array([500,600,700,800,1000,1200,1400,1600,1800,2000,2400])
 # Group by 'No. Data Points' and calculate the mean of the losses
 average_losses = data.groupby('No. Data Points').agg(['mean', 'var'])
 average_losses.reset_index(inplace=True)

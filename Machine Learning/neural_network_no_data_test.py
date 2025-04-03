@@ -19,7 +19,7 @@ save_metrics = False # Change this to False if you don’t want to save for this
 csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
 data_file_path="Processed_Data/data_sets/big_scan_2400.csv"
 
-data_no_array=np.array([2400])
+data_no_array=np.array([500,600,700,800,1000,1200,1400,1600,1800,2000,2400])
 emittance_loss_array=np.empty(0)
 spread_loss_array=np.empty(0)
 energy_loss_array=np.empty(0)
