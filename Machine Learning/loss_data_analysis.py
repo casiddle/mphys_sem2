@@ -77,8 +77,7 @@ plt.savefig(r'Machine Learning\loss_data_analysis_plot.png')
 # Showing the plot
 plt.show()
 
-import numpy as np
-import matplotlib.pyplot as plt
+
 
 # Create a figure with 3 subplots (1 row, 3 columns)
 fig, axes = plt.subplots(1, 3, figsize=(16, 6))  # 1 row, 3 columns

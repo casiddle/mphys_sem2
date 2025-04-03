@@ -38,8 +38,8 @@ combine_size_val=0.2
 test_size_val=combine_size_val/2
 dropout=0.1
 epochs = 800  # Number of epochs to train
-patience = 200  # number of epochs with no improvement before stopping
-batch_no=30 #batch size
+patience = 80  # number of epochs with no improvement before stopping
+batch_no=120 #batch size
 no_hidden_layers=10
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 predictor_feature=["X-ray Mean Radiation Radius",'X-ray Critical Energy', 'X-ray Percentage']
@@ -169,7 +169,7 @@ def get_random_rows(df, n):
     return random_rows
 
 
-for i in range(0,3):
+for i in range(0,5):
     train_test_seed=random.randint(1,300)
 
     
@@ -184,7 +184,7 @@ for i in range(0,3):
     df['UV Percentage']=df['No. UV Photons']/df['Total no. Photons']
     df['Other Percentage']=df['No. Other Photons']/df['Total no. Photons']
 
-    df=df[df['Set Radius']!=0.5]
+    #df=df[df['Set Radius']!=0.5]
 
 
 

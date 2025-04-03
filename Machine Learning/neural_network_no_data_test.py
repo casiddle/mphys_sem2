@@ -19,7 +19,7 @@ save_metrics = False # Change this to False if you don’t want to save for this
 csv_file_path = "Machine Learning/training_metrics_3_targets_new_correct_data.csv"
 data_file_path="Processed_Data/data_sets/big_scan_2400.csv"
 
-data_no_array=np.array([100,200,300,400,500,600,800,1000,1400,1800,2000,2400])
+data_no_array=np.array([2400])
 emittance_loss_array=np.empty(0)
 spread_loss_array=np.empty(0)
 energy_loss_array=np.empty(0)
@@ -29,9 +29,9 @@ no_nodes=36 #number of nodes in each hidden layer
 combine_size_val=0.2
 test_size_val=combine_size_val/2
 dropout=0.1
-epochs = 500  # Number of epochs to train
+epochs = 800  # Number of epochs to train
 patience = 80  # number of epochs with no improvement before stopping
-batch_no=10 #batch size
+batch_no=120 #batch size
 no_hidden_layers=10
 predicted_feature=["Emittance",'Beam Energy','Beam Spread'] #name of the features to be predicted
 predictor_feature=["X-ray Mean Radiation Radius",'X-ray Critical Energy', 'X-ray Percentage']
@@ -162,7 +162,7 @@ def get_random_rows(df, n):
 
 
 for i in data_no_array:
-    batch_no=int(0.1*i)
+    #batch_no=int(0.1*i)
     #batch_no=10
 
 
@@ -572,7 +572,7 @@ data = {
 }
 
 df = pd.DataFrame(data)
-df.to_csv(r'Machine Learning\loss_data.csv', index=False,header=False, mode='a')
+df.to_csv(r'Machine Learning\loss_data_check.csv', index=False,header=False, mode='a')
 
 
 print(df)
